@@ -12,6 +12,10 @@ class AppDemo {
             queryParams: {
                 i: undefined
             },
+            events: [],
+            performance: {
+                topPerformers: []
+            },
             // id: id,
             // label: fileMetadata?.fileName||"Untitled",
             // dirty: fileMetadata?false:true,
@@ -19,37 +23,10 @@ class AppDemo {
             // parent: this,
             // fileMetadata: fileMetadata||{}
             
-            editors: [],
-            untitledCnt: 1,
-            // last error message
-            errorMessage: undefined,
-            messages: [],
-            last9DaysMessages: [],
-            // id
-            // active
-            // label
-            tabs:[{
-                id: 0,
-                active: true,
-                label: "Effort Dashboard",
-                that: this
-            }],
-            accounts:[],
-            activeTab: 0,
-            onboarding: {
-                hide: true
-            },
             handlers: {
-                handleHide: this.handleHide.bind(this),
-                handleUnhide: this.handleUnhide.bind(this),
-                handleOnboardProject: this.handleOnboardProject.bind(this)
             },
             process:{
                 step: "PREPARE" // PREPARE // WORKOUT                
-            },
-            sync:{
-                code: 0,
-                message: ""
             },
             forms:{
                 f1: {
@@ -77,77 +54,31 @@ class AppDemo {
         return text.substring(0,18)+"..."+text.substr(text.length-28, text.length)
     }
 
-    async handleSetup(e, that){
-        await electronAPI.API.setupEmail(that.model.forms.f1.f1.v)
-        that.model.process.step = "PREPARE"
-        const effortData = await electronAPI.API.effort();  
-        await that.showData2(effortData);  
-    }
 
-    async handleOnboardProject(e, that){
-        const account = that.model.accounts.find((item)=>{
-            return item.id == e.target.dataset.accountId
-        })
-        that.emitter.emit("showModal:onboarding",account)
-    }
-
-    async handleOnboarding(e, that){        
-        that.emitter.emit("showModal:onboarding",{})
-    }
-
-    async handlePreferences(e, that){    
-        const preferences = await electronAPI.API.preferences();
-        that.emitter.emit("showModal:preferences",preferences)
-    }
-
-    async onPreferencesChange(email, syncUrl, accountId, syncIntervalMs){
-        // sync preferences to underlying app
-        await electronAPI.API.setupPreferences(email,[syncUrl], accountId, syncIntervalMs);
-    }
-
-    async onPreferencesReset(){
-        // reset preferences
-        await electronAPI.API.preferencesReset();
-    }
-
-    static async getInstance(emitter, container){
+    static async getInstance(emitter, container){                
         const a = new AppDemo(emitter, container)
-
-        const accounts = await electronAPI.API.accounts();
-        if(accounts.length == 0){
-            // need onboarding
-            window.location = "hello.html";
-        }
-        a.model.accounts = accounts;
-
-        a.emitter.on("PreferencesModalController:preferencesChange", a.onPreferencesChange.bind(a));
-        a.emitter.on("External:preferencesReset", a.onPreferencesReset.bind(a));
-        a.emitter.on("External:accountsReset", async ()=>{await electronAPI.API.accountsReset()});
-
-        electronAPI.listenerAPI.onEventsSync(async (_event, message)=>{
-            // console.log("got sync event", message);
-            if(message&&message.sync){
-                a.model.sync.code = 0
-                a.model.sync.message = message.message
-            }else{
-                a.model.sync.code = 1
-            }
-                
-        })
-
-
-        electronAPI.listenerAPI.onCommitReceived(async (_event, message)=>{        
-            await a.showData2(message);                        
-        })
-
-        electronAPI.listenerAPI.onAppShowed(async (_event, message)=>{
-            const effortData = await electronAPI.API.effort();              
-            a.showData2(effortData)                                                                                       
-        })
-        // load initially        
-        const effortData = await electronAPI.API.effort();        
-        a.showData2(effortData)                   
+        let last15DaysMs = moment().startOf("day").add(-14,"days").valueOf();
+        const events = await BackendApi.getAccountEventsSince("a_execon", last15DaysMs);                        
+        a.model.events = events;
+        a._topPerformers(events);
         return a;
+    }
+
+    _topPerformers(events){
+        const performers = [];
+
+        events.forEach((item)=>{
+            let user = performers.find((performer)=>performer.user == item.user)
+            if(!user){
+                user = {s: 0, user: item.user}
+                performers.push(user);
+            }
+            user.s += item.s;
+        })
+
+        performers.sort((a,b)=>{return a.s-b.s});
+
+        this.model.performance.topPerformers = performers
     }
     
     async drawPlot(){
