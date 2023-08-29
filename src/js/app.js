@@ -76,7 +76,7 @@ class AppDemo {
             user.s += item.s;
         })
 
-        performers.sort((a,b)=>{return a.s-b.s});
+        performers.sort((a,b)=>{return b.s-a.s});
 
         this.model.performance.topPerformers = performers
     }
