@@ -43,12 +43,6 @@ class AppDemo {
                 }                
             }
         }
-
-
-          
-          
-
-          
     }
 
     _ellipsis(text){
