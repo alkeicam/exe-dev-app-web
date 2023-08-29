@@ -1,0 +1,651 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    
+    <!-- <base href="app"> -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Dev Workout</title>
+    <meta name="description" content="Dev Workout">
+    <meta name="author" content="grulka">
+
+    <meta property="og:title" content="Dev Workout">
+    <meta property="og:type" content="website">
+    <meta property="og:url"
+        content="https://spectator-40e33.web.app/?g=xAz4g5">
+    <meta property="og:description" content="Broadcast amateur sport event live and share with friends">
+    <meta property="og:image" content="https://spectator-40e33.web.app/assets/img_51.png.jpg">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+
+    <script src="js/rivet.js"></script>
+    <script src="js/rivet-ext.js"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+
+    
+
+    
+    <script src="js/tinymce/tinymce.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script src="js/plotly-2.24.1.min.js" charset="utf-8"></script>
+
+    
+    
+</head>
+
+<body >
+    <div id="app">        
+        <nav class="navbar is-hidden" role="navigation" aria-label="main navigation" rv-class-is-hidden="model.process.step | eq 'ONBOARDING'">
+            <!-- <div class="navbar-brand">
+            <a class="navbar-item" href="https://bulma.io">
+                <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28">
+            </a>
+        
+            <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
+            </div> -->
+        
+            <div id="navbarBasicExample" class="navbar-menu">
+                <div class="navbar-start">
+                    <!-- <a class="navbar-item" href="hello.html">
+                    Login
+                    </a> -->
+            
+                    <!-- <a class="navbar-item">
+                    Documentation
+                    </a> -->
+            
+                    <!-- <div class="navbar-item has-dropdown is-hoverable">
+                    <a class="navbar-link">
+                        More
+                    </a>
+            
+                    <div class="navbar-dropdown">
+                        <a class="navbar-item">
+                        About
+                        </a>
+                        <a class="navbar-item">
+                        Jobs
+                        </a>
+                        <a class="navbar-item">
+                        Contact
+                        </a>
+                        <hr class="navbar-divider">
+                        <a class="navbar-item">
+                        Report an issue
+                        </a>
+                    </div>
+                    </div> -->
+                </div>
+        
+                <div class="navbar-end">                                    
+                    <div class="navbar-item has-dropdown is-hoverable">
+                        <a class="navbar-link">
+                        Configure project
+                        </a>            
+                        <div class="navbar-dropdown">
+                            <a rv-on-click="model.handlers.handleOnboardProject" rv-each-account="model.accounts" class="navbar-item" rv-data-account-id="account.id">
+                                {{account.project.name}}@{{account.name}}
+                            </a>                      
+                        </div>                    
+                    </div>
+                    <div class="navbar-item">
+                        <a class="is-info" href="hello.html">Join project</a>                              
+                    </div>
+                    <div class="navbar-item">
+                        <a rv-on-click="handlePreferences">
+                            <span class="icon">
+                                <i class="fa fa-cog" aria-hidden="true"></i>
+                            </span>
+                        </a>                              
+                    </div>
+                    <div class="navbar-item is-hidden" rv-class-is-hidden="model.sync.code | neq 0"><span class="icon has-text-success"><i class="fa fa-link" aria-hidden="true"></i></span><small>(in sync)</small></div>
+                    <div class="navbar-item is-hidden" rv-class-is-hidden="model.sync.code | eq 0"><span class="icon has-text-danger"><i class="fas fa-unlink"></i></span><small>(offline)</small></div>                                
+                </div>
+            </div>
+        </nav>
+    
+
+        <!-- <section class="section" style="padding: 0.5rem 0.5rem;">
+            <ul>
+                <li rv-each-message="model.messages" >
+                    {message}              
+                </li>
+            </ul>
+        </section> -->
+
+        <section class="section" style="padding: 0.5rem 0.5rem;">
+        <div class="notification is-danger is-hidden" rv-class-is-hidden="model.errorMessage | empty">
+            <button class="delete" rv-on-click="handleCloseErrorMessage"></button>
+            {{model.errorMessage}}
+        </div>
+        <div class="tabs is-left is-hidden" rv-class-is-hidden="model.tabs | sizeLt 1">
+            <ul class="is-hidden" rv-class-is-hidden="model.process.step | eq 'ONBOARDING'">
+            <li rv-on-click="item.that.handleSwitchEditor" rv-each-item="model.tabs" rv-class-is-active="item.active" >
+                <a>{{item.label}}
+                <!-- <span style="margin-left: 0.25em;font-size: xx-small;" rv-class-is-hidden="editor.dirty"><i  class="fa fa-lock" aria-hidden="true"></i></span> -->
+                <!-- <span style="margin-left: 0.25em;font-size: xx-small;" rv-class-is-hidden="editor.dirty | eq false"><i class="fas fa-lock-open" aria-hidden="true"></i></span> -->
+                <!-- <span rv-class-is-hidden="editor.dirty | eq false">*</span> -->
+                <!-- <sup style="margin-left: 0.3em;" rv-on-click="editor.parent.handleCloseEditor">ⓧ</sup> -->
+                </a>
+            </li>
+            </ul>
+        </div>          
+        <div class="is-hidden" rv-class-is-hidden="model.process.step | neq 'WORKOUT'">
+            <div class="box is-hidden" rv-class-is-hidden="model.last9DaysMessages | sizeLt 1">
+                <h3 class="title is-3">Last 14 days</h3>
+                <div id="userGraph" class="content"></div>
+            </div>
+            <!-- <div class="box is-hidden" rv-class-is-hidden="model.last9DaysMessages | sizeLt 1">
+                <h3 class="title is-3">Last 14 days</h3>
+                <div id="heatmapGraph" class="content"></div>
+            </div> -->
+        </div>   
+        
+        <article class="message is-hidden" rv-class-is-hidden="model.process.step | neq 'ONBOARDING'">
+            <div class="box">
+                <p class="heading">Hello</p>
+                <p class="title">Welcome to Dev Workout</p>
+                <article class="message is-info">
+                    <div class="message-header">
+                    <p>Initial configuration</p>                  
+                    </div>
+                    <div class="message-body">
+                    Please provide your email.
+                    </div>
+                </article>
+                <div class="columns">
+                    <div class="column is-offset-4 is-one-third">
+                        <div class="field">
+                            <label class="label">Email</label>
+                            <div class="control has-icons-left has-icons-right">
+                                <input class="input" type="text" placeholder="i.e. al@capone.com" rv-value="model.forms.f1.f1.v" rv-class-is-danger="model.forms.f1.f1.e.code | neq 0">
+                                <span class="icon is-small is-left">
+                                    <i class="fas fa-envelope"></i>
+                                </span>
+                                <span class="icon is-small is-right is-hidden" rv-class-is-hidden="model.forms.f1.f1.e.code | eq 0">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </span>
+                            </div>
+                            <p class="help is-danger is-hidden" rv-class-is-hidden="model.forms.f1.f1.e.code | eq 0">This email is invalid</p>
+                        </div>
+                        <div class="field is-grouped">
+                            <div class="control">
+                            <button class="button is-link" rv-on-click="handleSetup">Submit</button>
+                            </div>
+                            <!-- <div class="control">
+                            <button class="button is-link is-light">Cancel</button>
+                            </div> -->
+                        </div>
+                    </div>
+                    
+                </div>                          
+            </div>
+        </article>
+        
+        <article class="message is-info is-hidden" rv-class-is-hidden="model.process.step | neq 'PREPARE'">
+            <div class="message-body">
+            Good Day, your daily dev effort and calories list are empty. Let's make some noise, do nice <strong>code</strong> and make some<strong>commits!</strong>.
+            <p class="my-4">Starting with a new project? <a rv-on-click="handleOnboarding">Configure your project git</a></p>
+            </div>
+        </article>  
+        
+        
+        <div class="is-hidden" rv-class-is-hidden="model.process.step | neq 'WORKOUT'">
+            <div class="box" rv-each-user="model.messages.users">
+                <!-- <h3 class="title is-3">Last 9 days</h3>
+                <div id="userGraph" class="content"></div> -->
+                <h3 class="title is-3">Today</h3>
+                <!-- <h1 class="title">{user.id}</h1> -->
+                <nav class="level is-mobile ">
+                    <!-- <div class="level-item has-text-centered">
+                        <div>
+                        <p class="heading">Work Time</p>
+                        <p class="title">{user.work}</p>
+                        </div>
+                    </div> -->
+                    <div class="level-item has-text-centered">
+                        <div class="box">
+                        <p class="heading">Effort</p>
+                        <p class="title">{{user.score | numberRoundDecimal 2}} cal</p>
+                        </div>
+                    </div>
+                    <div class="level-item has-text-centered">
+                        <div class="box">
+                        <p class="heading">Pushes</p>
+                        <p class="title">{{user.pushCnt}}</p>
+                        </div>
+                    </div>
+                    <div class="level-item has-text-centered">
+                        <div class="box">
+                        <p class="heading">Commits</p>
+                        <p class="title">{{user.commitCnt}}</p>
+                        </div>
+                    </div>
+                    <!-- <div class="level-item has-text-centered">
+                        <div>
+                        <p class="heading">Files</p>
+                        <p class="title">{user.files}</p>
+                        </div>
+                    </div>
+                    <div class="level-item has-text-centered">
+                        <div>
+                        <p class="heading">Inserts</p>
+                        <p class="title">{user.inserts}</p>
+                        </div>
+                    </div>
+                    <div class="level-item has-text-centered">
+                        <div>
+                        <p class="heading">Deletions</p>
+                        <p class="title">{user.deletions}</p>
+                        </div>
+                    </div> -->
+                </nav> 
+                <div class="card" style="margin-bottom: 1em;" rv-each-project="user.projects">
+                    <header class="card-header">
+                    <p class="card-header-title">
+                        {{project.id}}<span class="mx-6">{{project.score | numberRoundDecimal 2}} cal, {{project.pushCnt}} pushes, {{project.commitCnt}} commits</span>
+                    </p>
+                    <button class="card-header-icon is-hidden" aria-label="more options" rv-class-is-hidden="project.hide" rv-on-click="model.handlers.handleHide">
+                        <span class="icon " >
+                        <i class="fas fa-angle-up" aria-hidden="true"></i>
+                        </span>
+                    </button>
+                    <button class="card-header-icon is-hidden" aria-label="more options" rv-class-is-hidden="project.hide | neq true" rv-on-click="model.handlers.handleUnhide">
+                        <span class="icon " >
+                        <i class="fas fa-angle-down" aria-hidden="true"></i>
+                        </span>
+                    </button>
+                    </header>
+                    <div class="card-content is-hidden" rv-class-is-hidden="project.hide">                
+                        <div class="content " >
+                            
+                            <p class="title is-6">Project Tasks:</p>
+                            <nav class="level" rv-each-task="project.tasks">
+                                <!-- Left side -->
+                                <div class="level-left">
+                                <div class="level-item">
+                                    <p class="subtitle is-6">
+                                    {{task.id | whenEmpty 'General, use [TASK_ID] in commit message'}}
+                                    <!-- <progress class="progress is-primary" value="15" max="100">15%</progress> -->
+                                    </p>
+                                    
+                                </div>                          
+                                </div>
+                            
+                                <!-- Right side -->
+                                <div class="level-right">
+                                    <!-- <div class="level-item has-text-centered">
+                                        <div>
+                                        <p class="heading is-6">Time Spent</p>
+                                        <p class="title is-6">{task.work}</p>
+                                        </div>
+                                    </div> -->
+                                    <div class="level-item has-text-centered">
+                                        <div>
+                                        <p class="heading is-6">Effort</p>
+                                        <p class="title is-6">{{task.score | numberRoundDecimal 2}} cal</p>
+                                        </div>
+                                    </div>
+                                    <div class="level-item has-text-centered">
+                                        <div>
+                                        <p class="heading is-6">Pushes</p>
+                                        <p class="title is-6">{{task.pushCnt}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="level-item has-text-centered">
+                                        <div>
+                                        <p class="heading is-6">Commits</p>
+                                        <p class="title is-6">{{task.commitCnt}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="level-item has-text-centered">
+                                        <div>
+                                        <p class="heading is-6">Files</p>
+                                        <p class="title is-6">{{task.files}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="level-item has-text-centered">
+                                        <div>
+                                        <p class="heading is-6">Inserts</p>
+                                        <p class="title is-6">{{task.inserts}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="level-item has-text-centered">
+                                        <div>
+                                        <p class="heading is-6">Deletions</p>
+                                        <p class="title is-6">{{task.deletions}}</p>
+                                        </div>
+                                    </div>
+                                <!-- <p class="level-item" ><a class="button is-success is-static" rv-class-is-static="task.id | empty">Log Work</a></p> -->
+                                </div>
+                            </nav>
+                            
+                        </div>
+                    </div>
+                    <footer class="card-footer">
+                        <!-- <a href="#" class="card-footer-item">Save</a>
+                        <a href="#" class="card-footer-item">Edit</a> -->
+                        <!-- <a href="#" class="card-footer-item">Delete</a> -->
+                    </footer>
+                </div>
+                
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+                
+        
+        
+        
+            </div>
+        </div>
+
+            
+        </section>
+    </div>
+    <div id="onboardingModal">
+        <div class="modal" rv-class-is-active="model.display">
+        <!-- <div class="modal" class="is-active"></div> -->
+            <div class="modal-background"></div>
+            <div class="modal-card" style="width:95%">
+                <header class="modal-card-head">
+                    <p class="modal-card-title" rv-class-is-hidden="model.busy">Project Oboarding Guidebook</p>                                        
+                    <button class="delete" aria-label="close" rv-on-click="_handleClose"></button>
+                </header>
+                <section class="modal-card-body">                     
+                        <article>
+                            <div class="content mt-6  is-hidden" rv-class-is-hidden="model | isMac">
+                                <!-- Win Onboarding-->
+                                Windows Onboarding
+                            </div>
+                            <div class="content mt-6 is-hidden" rv-class-is-hidden="model | isWin">
+                                <!-- Mac Onboarding-->
+                                <h1>Joining Project on Mac<a class="is-size-7 mx-1" rv-on-click="_handleClose" data-hide="true">Hide</a></h1>
+                                <p>For each new project that you wish to work on initial git configuration is necessary. Please follow the procedure described below
+                                    to correctly configure your project's git working environment.
+                                </p>
+                                <h2>Step 0.</h2>
+                                <p>Open terminal app in the root directory of your project</p>
+                                <h2>Step 1.</h2>
+                                <p>Make sure you are in your project root git directory:</p>
+                                <pre class="mx-6">
+ls -ltrah .git/hooks/                
+                                </pre>
+                                <pre class="mx-6">
+-rwxr-xr-x   1 grulka  staff   896B Feb  6 22:59 commit-msg.sample
+-rwxr-xr-x   1 grulka  staff   4.8K Feb  6 22:59 pre-rebase.sample
+-rwxr-xr-x   1 grulka  staff   1.6K Feb  6 22:59 pre-commit.sample
+-rwxr-xr-x   1 grulka  staff   478B Feb  6 22:59 applypatch-msg.sample
+-rwxr-xr-x   1 grulka  staff   4.5K Feb  6 22:59 fsmonitor-watchman.sample
+-rwxr-xr-x   1 grulka  staff   544B Feb  6 22:59 pre-receive.sample
+-rwxr-xr-x   1 grulka  staff   1.5K Feb  6 22:59 prepare-commit-msg.sample
+-rwxr-xr-x   1 grulka  staff   189B Feb  6 22:59 post-update.sample
+-rwxr-xr-x   1 grulka  staff   416B Feb  6 22:59 pre-merge-commit.sample
+-rwxr-xr-x   1 grulka  staff   424B Feb  6 22:59 pre-applypatch.sample
+-rwxr-xr-x   1 grulka  staff   1.3K Feb  6 22:59 pre-push.sample
+-rwxr-xr-x   1 grulka  staff   3.6K Feb  6 22:59 update.sample
+-rwxr-xr-x   1 grulka  staff   2.7K Feb  6 22:59 push-to-checkout.sample
+-rwxr-xr-x   1 grulka  staff   228B Feb 12 16:22 commit-msg
+                                </pre>
+                                <h2>Step 2.</h2>
+                                <p>Create post-commit file :</p>
+                                <pre class="mx-6">
+touch .git/hooks/post-commit
+                                </pre>
+                                <p>And paste into it following script :</p>
+                                <pre class="mx-6">
+#!/bin/sh
+GIT_LOG=`git log --stat -1 HEAD | base64`
+GIT_DIFF=`git show --unified | base64`
+REMOTE=`git config --get remote.origin.url`
+LOCAL=`git rev-parse --show-toplevel`
+ACCOUNT="{{model.item.id}}"
+USER="{{model.item.invitee.email}}"
+PROJECT="{{model.item.project.id}}"
+
+FINAL_REMOTE=""
+
+if [ -n "$REMOTE" ]; then
+    FINAL_REMOTE=$REMOTE
+else
+    FINAL_REMOTE=$LOCAL
+fi
+
+POST_BODY="{\"gitlog\":\"$GIT_LOG\",\"oper\":\"commit\",\"remote\":\"$FINAL_REMOTE\",\"diff\":\"$GIT_DIFF\",\"account\":\"$ACCOUNT\",\"user\":\"$USER\",\"project\":\"$PROJECT\"}"
+curl -S -s -H "Content-Type: application/json" -d "$POST_BODY" http://localhost:5001/v1/hooks/commit
+
+exit 0
+                                </pre>
+                                <h3>Step 3.</h3>
+                                <p>Create pre-push file :</p>
+                                <pre class="mx-6">
+touch .git/hooks/pre-push
+                                </pre>
+                                <p>And paste into it following script :</p>
+                                <pre class="mx-6">
+#!/bin/sh
+
+GIT_LOG=`git log --stat -1 HEAD | base64`
+REMOTE=`git config --get remote.origin.url`
+LOCAL=`git rev-parse --show-toplevel`
+ACCOUNT="{{model.item.id}}"
+USER="{{model.item.invitee.email}}"
+PROJECT="{{model.item.project.id}}"
+
+FINAL_REMOTE=""
+
+if [ -n "$REMOTE" ]; then
+    FINAL_REMOTE=$REMOTE
+else
+    FINAL_REMOTE=$LOCAL
+fi
+
+POST_BODY="{\"gitlog\":\"$GIT_LOG\",\"oper\":\"push\",\"remote\":\"$FINAL_REMOTE\",\"account\":\"$ACCOUNT\",\"user\":\"$USER\",\"project\":\"$PROJECT\"}"
+
+curl -S -s -H "Content-Type: application/json" -d "$POST_BODY" http://localhost:5001/v1/hooks/push
+
+exit 0
+                                </pre>                   
+                                <h3>Step 4.</h3>
+                                <p>Make hooks executable :</p>
+                                <pre class="mx-6">
+chmod +x .git/hooks/post-commit && chmod +x .git/hooks/pre-push
+                                </pre>
+                                <h3>Step 5.</h3>
+                                <p>Close this Guidebook and make some commits and pushes and check if the data is presented correctly.</p>                                                                
+                            </div>
+                        </article>                                          
+                </section>
+                <footer class="modal-card-foot" rv-class-is-hidden="model.busy">                    
+                    <button class="button" rv-on-click="_handleClose">Close</button>
+                </footer>
+            </div>
+            <!-- <button class="modal-close is-large" aria-label="close" rv-on-click="_handleConstructionCancel"></button> -->
+        </div>
+    </div>
+    <div id="preferencesModal">
+        <div class="modal" rv-class-is-active="model.display">
+        <!-- <div class="modal" class="is-active"></div> -->
+            <div class="modal-background"></div>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title" rv-class-is-hidden="model.busy">Settings</p>                                        
+                    <button class="delete" aria-label="close" rv-on-click="_handleClose"></button>
+                </header>
+                <section class="modal-card-body">                     
+                    <!-- <div class="field">
+                        <label class="label">Email</label>
+                        <div class="control has-icons-left has-icons-right">
+                          <input class="input" type="email" placeholder="al@capone.com" rv-value="model.form.f1.value" rv-on-input="_handleOnChange" data-field="f1" rv-class-is-danger="model.form.f1.errorMsg | notEmpty" rv-class-is-success="model.form.f1.errorMsg | empty" >
+                          <span class="icon is-small is-left">
+                            <i class="fas fa-user"></i>
+                          </span>
+                          <span class="icon is-small is-right is-hidden" rv-class-is-hidden="model.form.f1.errorMsg | notEmpty">
+                            <i class="fas fa-check"></i>                            
+                          </span>
+                          <span class="icon is-small is-right is-hidden" rv-class-is-hidden="model.form.f1.errorMsg | empty">                            
+                            <i class="fas fa-exclamation-triangle" ></i>
+                          </span>
+                        </div>
+                        <p class="help is-danger is-hidden" rv-class-is-hidden="model.form.f1.errorMsg | empty">{{model.form.f1.errorMsg}}</p>
+                    </div>  -->
+                    <div class="field">
+                        <label class="label">API Url</label>
+                        <div class="control has-icons-left has-icons-right">
+                          <input class="input" type="text" placeholder="https://some..." rv-value="model.form.f2.value" rv-on-input="_handleOnChange" data-field="f2" rv-class-is-danger="model.form.f2.errorMsg | notEmpty" rv-class-is-success="model.form.f2.errorMsg | empty" >
+                          <span class="icon is-small is-left">
+                            <i class="fa fa-link" aria-hidden="true"></i>
+                          </span>
+                          <span class="icon is-small is-right is-hidden" rv-class-is-hidden="model.form.f2.errorMsg | notEmpty">
+                            <i class="fas fa-check"></i>                            
+                          </span>
+                          <span class="icon is-small is-right is-hidden" rv-class-is-hidden="model.form.f2.errorMsg | empty">                            
+                            <i class="fas fa-exclamation-triangle" ></i>
+                          </span>
+                        </div>
+                        <p class="help is-danger is-hidden" rv-class-is-hidden="model.form.f2.errorMsg | empty">{{model.form.f2.errorMsg}}</p>
+                    </div>
+                    <!-- <div class="field">
+                        <label class="label">Account Id</label>
+                        <div class="control has-icons-left has-icons-right">
+                          <input class="input" type="text" placeholder="Text input" rv-value="model.form.f3.value" rv-on-input="_handleOnChange" data-field="f3" rv-class-is-danger="model.form.f3.errorMsg | notEmpty" rv-class-is-success="model.form.f3.errorMsg | empty" >
+                          <span class="icon is-small is-left">
+                            <i class="fa fa-link" aria-hidden="true"></i>
+                          </span>
+                          <span class="icon is-small is-right is-hidden" rv-class-is-hidden="model.form.f3.errorMsg | notEmpty">
+                            <i class="fas fa-check"></i>                            
+                          </span>
+                          <span class="icon is-small is-right is-hidden" rv-class-is-hidden="model.form.f3.errorMsg | empty">                            
+                            <i class="fas fa-exclamation-triangle" ></i>
+                          </span>
+                        </div>
+                        <p class="help is-danger is-hidden" rv-class-is-hidden="model.form.f3.errorMsg | empty">{{model.form.f3.errorMsg}}</p>
+                    </div> -->
+                    <div class="field">
+                        <label class="label">Sync Interval (Ms)</label>
+                        <div class="control has-icons-left has-icons-right">
+                          <input class="input" type="number" placeholder="Min. 60000" rv-value="model.form.f4.value" rv-on-input="_handleOnChange" data-field="f4" rv-class-is-danger="model.form.f4.errorMsg | notEmpty" rv-class-is-success="model.form.f4.errorMsg | empty" >
+                          <span class="icon is-small is-left">
+                            <i class="fa fa-link" aria-hidden="true"></i>
+                          </span>
+                          <span class="icon is-small is-right is-hidden" rv-class-is-hidden="model.form.f4.errorMsg | notEmpty">
+                            <i class="fas fa-check"></i>                            
+                          </span>
+                          <span class="icon is-small is-right is-hidden" rv-class-is-hidden="model.form.f4.errorMsg | empty">                            
+                            <i class="fas fa-exclamation-triangle" ></i>
+                          </span>
+                        </div>
+                        <p class="help is-danger is-hidden" rv-class-is-hidden="model.form.f4.errorMsg | empty">{{model.form.f4.errorMsg}}</p>
+                    </div>
+                </section>
+                <footer class="modal-card-foot" rv-class-is-hidden="model.busy">                    
+                    <button class="button is-success" rv-on-click="_handleOK">Save</button>
+                    <button class="button" rv-on-click="_handleClose">Cancel</button>
+                </footer>
+            </div>
+            <!-- <button class="modal-close is-large" aria-label="close" rv-on-click="_handleConstructionCancel"></button> -->
+        </div>
+    </div>
+        
+    <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    <footer class="footer">
+        <div class="content has-text-centered">
+            <p>
+                Made with <span style="color: #e25555;">&#9829;</span> in PL<br>
+                &copy;
+                <span id="copyright">
+                    <script>document.getElementById('copyright').appendChild(document.createTextNode(new Date().getFullYear()))</script>
+                </span>
+                Dev Workout powered by Execon
+            </p>
+        </div>
+    </footer>        
+    <script src="js/app.js"></script>
+    <script src="js/onboardingModalController.js"></script>
+    <script src="js/preferencesModalController.js"></script>
+    <script>
+
+        
+
+
+        class EventEmitter {
+            constructor() {
+                this.listeners = {};
+            }
+
+            static getInstance() {
+                return new EventEmitter();
+            }
+
+            on(event, callback) {
+                if (!this.listeners.hasOwnProperty(event)) {
+                    this.listeners[event] = [];
+                }
+
+                this.listeners[event].push(callback);
+
+                return this;
+            }
+
+            emit(event, ...data) {
+                if (!this.listeners.hasOwnProperty(event)) {
+                    return null;
+                }
+
+                for (let i = 0; i < this.listeners[event].length; i++) {
+                    const callback = this.listeners[event][i];
+
+                    callback.call(this, ...data);
+                }
+            }
+        }
+        const emitter = EventEmitter.getInstance();
+        const mapCanvas = document.getElementById("map");
+
+        const emitter2 = EventEmitter.getInstance();
+        const mapCanvas2 = document.getElementById("map2");
+
+        rivets.templateDelimiters = ["{{", "}}"]
+
+        AppDemo.getInstance(emitter, "userGraph").then((app)=>{
+            
+            rivets.bind(document.getElementById('app'), app);            
+        })
+        OnboardingModalController.getInstance(emitter).then((controller)=>{
+            rivets.bind(document.getElementById('onboardingModal'),controller);
+        })
+
+        PreferencesModalController.getInstance(emitter).then((controller)=>{
+            rivets.bind(document.getElementById('preferencesModal'),controller);
+        })
+        // console.log(window.location.href);
+
+        window.appEmiter = emitter;
+    </script>
+</body>
+
+</html>
