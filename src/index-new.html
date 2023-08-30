@@ -113,8 +113,104 @@
                             </tbody>
                         </table>                
                     </div>
-                </div>
-                
+                </div>                            
+                <div class="level-item has-text-centered">
+                    <div class="box">
+                    <p class="heading">Top Commiters <small>(last 7 days)</small></p>
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th><abbr title="Position">Person</abbr></th>
+                                <th><abbr title="Played">#Commits</abbr></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr rv-each-user="model.performance.topCommiters7d">
+                                <th>{{user.user}}</th>
+                                <td>{{user.c}}</td>
+                            </tr>                      
+                            </tbody>
+                        </table>                
+                    </div>
+                </div> 
+                <div class="level-item has-text-centered">
+                    <div class="box">
+                    <p class="heading">Top Commiters <small>(last 14 days)</small></p>
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th><abbr title="Position">Person</abbr></th>
+                                <th><abbr title="Played">#Commits</abbr></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr rv-each-user="model.performance.topCommiters14d">
+                                <th>{{user.user}}</th>
+                                <td>{{user.c}}</td>
+                            </tr>                      
+                            </tbody>
+                        </table>                
+                    </div>
+                </div>                            
+            </nav>    
+            <nav class="level">        
+                <div class="level-item has-text-centered">
+                    <div class="box">
+                    <p class="heading">Top Changes <small>(today)</small></p>
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th><abbr title="Position">Person</abbr></th>
+                                <th><abbr title="Played">#Lines</abbr></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr rv-each-user="model.performance.topSLOCToday">
+                                <th>{{user.user}}</th>
+                                <td>{{user.l}}</td>
+                            </tr>                      
+                            </tbody>
+                        </table>                
+                    </div>
+                </div>          
+                <div class="level-item has-text-centered">
+                    <div class="box">
+                    <p class="heading">Top Changes <small>(7 days)</small></p>
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th><abbr title="Position">Person</abbr></th>
+                                <th><abbr title="Played">#Lines</abbr></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr rv-each-user="model.performance.topSLOC7d">
+                                <th>{{user.user}}</th>
+                                <td>{{user.l}}</td>
+                            </tr>                      
+                            </tbody>
+                        </table>                
+                    </div>
+                </div>          
+                <div class="level-item has-text-centered">
+                    <div class="box">
+                    <p class="heading">Top Changes <small>(14 days)</small></p>
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th><abbr title="Position">Person</abbr></th>
+                                <th><abbr title="Played">#Lines</abbr></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr rv-each-user="model.performance.topSLOC14d">
+                                <th>{{user.user}}</th>
+                                <td>{{user.l}}</td>
+                            </tr>                      
+                            </tbody>
+                        </table>                
+                    </div>
+                </div>          
                 
             </nav>          
         </section>

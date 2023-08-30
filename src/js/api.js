@@ -1,5 +1,5 @@
 class BackendApi {
-    static BASE_URL = "https://devjam-lab.azurewebsites.net"
+    static BASE_URL = "http://localhost:7071"
     static API = {
         EVENTS: "/account/{{accountId}}/events/since/{{dateMs}}"
     }
