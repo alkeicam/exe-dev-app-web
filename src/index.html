@@ -32,92 +32,251 @@
 </head>
 
 <body >
-    <div id="app">        
-        <section class="section" style="padding: 0.5rem 0.5rem;">
-            <nav class="level">                
-                <div class="level-item has-text-centered">
-                    <div class="box">
-                    <p class="heading">Top Performers <small>(today)</small></p>
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th><abbr title="Position">Person</abbr></th>
-                                <th><abbr title="Played">Performance</abbr></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr rv-each-user="model.performance.topPerformersToday">
-                                <th>{{user.user}}</th>
-                                <td>{{user.s}}</td>
-                            </tr>                      
-                            </tbody>
-                        </table>                
+    <div id="app"> 
+        <div class="container">
+            <h3 class="title is-3">Performance Stats</h3>
+            <section class="section" style="padding: 0.5rem 0.5rem;">
+                <h3 class="title is-4">Top Performers</h3>
+                <nav class="level">                
+                    <div class="level-item has-text-centered">
+                        <div class="box">
+                        <p class="heading">Top Performers <small>(today)</small></p>
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th><abbr title="Position">Who</abbr></th>
+                                    <th><abbr title="Played">Cal</abbr></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr rv-each-user="model.performance.topPerformersToday">
+                                    <th class="is-size-7">{{user.user}}</th>
+                                    <td class="is-size-7">{{user.s | numberRoundDecimal 2}}</td>
+                                </tr>                      
+                                </tbody>
+                            </table>                
+                        </div>
                     </div>
-                </div>
-                <div class="level-item has-text-centered">
-                    <div class="box">
-                    <p class="heading">Top Performers <small>(last 7 days)</small></p>
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th><abbr title="Position">Person</abbr></th>
-                                <th><abbr title="Played">Performance</abbr></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr rv-each-user="model.performance.topPerformers7d">
-                                <th>{{user.user}}</th>
-                                <td>{{user.s}}</td>
-                            </tr>                      
-                            </tbody>
-                        </table>                
+                    <div class="level-item has-text-centered">
+                        <div class="box">
+                        <p class="heading">Top Performers <small>(yesterday)</small></p>
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th><abbr title="Position">Who</abbr></th>
+                                    <th><abbr title="Played">Cal</abbr></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr rv-each-user="model.performance.topPerformers1d">
+                                    <th class="is-size-7">{{user.user}}</th>
+                                    <td class="is-size-7">{{user.s | numberRoundDecimal 2}}</td>
+                                </tr>                      
+                                </tbody>
+                            </table>                
+                        </div>
                     </div>
-                </div>
-                <div class="level-item has-text-centered">
-                    <div class="box">
-                    <p class="heading">Top Performers <small>(last 14 days)</small></p>
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th><abbr title="Position">Person</abbr></th>
-                                <th><abbr title="Played">Performance</abbr></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr rv-each-user="model.performance.topPerformers">
-                                <th>{{user.user}}</th>
-                                <td>{{user.s}}</td>
-                            </tr>                      
-                            </tbody>
-                        </table>                
+                    <div class="level-item has-text-centered">
+                        <div class="box">
+                        <p class="heading">Top Performers <small>(last 7 days)</small></p>
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th><abbr title="Position">Who</abbr></th>
+                                    <th><abbr title="Played">Cal</abbr></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr rv-each-user="model.performance.topPerformers7d">
+                                    <th class="is-size-7">{{user.user}}</th>
+                                    <td class="is-size-7">{{user.s | numberRoundDecimal 2}}</td>
+                                </tr>                      
+                                </tbody>
+                            </table>                
+                        </div>
                     </div>
-                </div>
-                
-            </nav> 
-            <nav class="level">                
-                <div class="level-item has-text-centered">
-                    <div class="box">
-                    <p class="heading">Top Commiters <small>(today)</small></p>
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th><abbr title="Position">Person</abbr></th>
-                                <th><abbr title="Played">#Commits</abbr></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr rv-each-user="model.performance.topCommitersToday">
-                                <th>{{user.user}}</th>
-                                <td>{{user.c}}</td>
-                            </tr>                      
-                            </tbody>
-                        </table>                
+                    <div class="level-item has-text-centered">
+                        <div class="box">
+                        <p class="heading">Top Performers <small>(last 14 days)</small></p>
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th><abbr title="Position">Who</abbr></th>
+                                    <th><abbr title="Played">Cal</abbr></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr rv-each-user="model.performance.topPerformers">
+                                    <th class="is-size-7">{{user.user}}</th>
+                                    <td class="is-size-7">{{user.s | numberRoundDecimal 2}}</td>
+                                </tr>                      
+                                </tbody>
+                            </table>                
+                        </div>
                     </div>
-                </div>
-                
-                
-            </nav>          
-        </section>
+                    
+                </nav> 
+                <h3 class="title is-4">Top Commiters</h3>
+                <nav class="level">                
+                    <div class="level-item has-text-centered">
+                        <div class="box">
+                        <p class="heading">Top Commiters <small>(today)</small></p>
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th><abbr title="Position">Who</abbr></th>
+                                    <th><abbr title="Played">#Commits</abbr></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr rv-each-user="model.performance.topCommitersToday">
+                                    <th class="is-size-7">{{user.user}}</th>
+                                    <td class="is-size-7">{{user.c}}</td>
+                                </tr>                      
+                                </tbody>
+                            </table>                
+                        </div>
+                    </div>  
+                    <div class="level-item has-text-centered">
+                        <div class="box">
+                        <p class="heading">Top Commiters <small>(yesterday)</small></p>
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th><abbr title="Position">Who</abbr></th>
+                                    <th><abbr title="Played">#Commits</abbr></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr rv-each-user="model.performance.topCommiters1d">
+                                    <th class="is-size-7">{{user.user}}</th>
+                                    <td class="is-size-7">{{user.c}}</td>
+                                </tr>                      
+                                </tbody>
+                            </table>                
+                        </div>
+                    </div>                                                      
+                    <div class="level-item has-text-centered">
+                        <div class="box">
+                        <p class="heading">Top Commiters <small>(last 7 days)</small></p>
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th><abbr title="Position">Who</abbr></th>
+                                    <th><abbr title="Played">#Commits</abbr></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr rv-each-user="model.performance.topCommiters7d">
+                                    <th class="is-size-7">{{user.user}}</th>
+                                    <td class="is-size-7">{{user.c}}</td>
+                                </tr>                      
+                                </tbody>
+                            </table>                
+                        </div>
+                    </div> 
+                    <div class="level-item has-text-centered">
+                        <div class="box">
+                        <p class="heading">Top Commiters <small>(last 14 days)</small></p>
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th><abbr title="Position">Who</abbr></th>
+                                    <th><abbr title="Played">#Commits</abbr></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr rv-each-user="model.performance.topCommiters14d">
+                                    <th class="is-size-7">{{user.user}}</th>
+                                    <td class="is-size-7">{{user.c}}</td>
+                                </tr>                      
+                                </tbody>
+                            </table>                
+                        </div>
+                    </div>                            
+                </nav>    
+                <h3 class="title is-4">Top Liners</h3>
+                <nav class="level">        
+                    <div class="level-item has-text-centered">
+                        <div class="box">
+                        <p class="heading">Top Changes <small>(today)</small></p>
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th><abbr title="Position">Who</abbr></th>
+                                    <th><abbr title="Played">#Lines</abbr></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr rv-each-user="model.performance.topSLOCToday">
+                                    <th class="is-size-7">{{user.user}}</th>
+                                    <td class="is-size-7">{{user.l}}</td>
+                                </tr>                      
+                                </tbody>
+                            </table>                
+                        </div>
+                    </div>      
+                    <div class="level-item has-text-centered">
+                        <div class="box">
+                        <p class="heading">Top Changes <small>(yesterday)</small></p>
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th><abbr title="Position">Who</abbr></th>
+                                    <th><abbr title="Played">#Lines</abbr></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr rv-each-user="model.performance.topSLOC1d">
+                                    <th class="is-size-7">{{user.user}}</th>
+                                    <td class="is-size-7">{{user.l}}</td>
+                                </tr>                      
+                                </tbody>
+                            </table>                
+                        </div>
+                    </div>     
+                    <div class="level-item has-text-centered">
+                        <div class="box">
+                        <p class="heading">Top Changes <small>(7 days)</small></p>
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th><abbr title="Position">Who</abbr></th>
+                                    <th><abbr title="Played">#Lines</abbr></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr rv-each-user="model.performance.topSLOC7d">
+                                    <th class="is-size-7">{{user.user}}</th>
+                                    <td class="is-size-7">{{user.l}}</td>
+                                </tr>                      
+                                </tbody>
+                            </table>                
+                        </div>
+                    </div>          
+                    <div class="level-item has-text-centered">
+                        <div class="box">
+                        <p class="heading">Top Changes <small>(14 days)</small></p>
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th><abbr title="Position">Who</abbr></th>
+                                    <th><abbr title="Played">#Lines</abbr></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr rv-each-user="model.performance.topSLOC14d">
+                                    <th class="is-size-7">{{user.user}}</th>
+                                    <td class="is-size-7">{{user.l}}</td>
+                                </tr>                      
+                                </tbody>
+                            </table>                
+                        </div>
+                    </div>          
+                    
+                </nav>          
+            </section>
+        </div>       
     </div>
     
         
