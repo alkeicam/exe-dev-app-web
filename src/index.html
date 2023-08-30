@@ -35,11 +35,45 @@
     <div id="app"> 
         <div class="container">
             <h3 class="title is-3">Performance Stats</h3>
+            <nav class="level">
+              
+              <div class="level-item">
+                <div class="field">
+                  <label class="label">Filter by project:</label>
+                  <div class="control">
+                    <div class="select" rv-on-change="model.handlers._handleOnChangeProject">
+                      <select rv-value="model.forms.f1.f1.v">
+                        <option value="-1">All</option>
+                        <option rv-each-item="model.forms.f1.f1.e" rv-value="item.k">{{item.v}}</option>                        
+                      </select>
+                    </div>
+                  </div>
+                </div>    
+              </div>
+              <p class="level-item has-text-centered">
+                <span>&nbsp;</span>
+              </p>
+              <p class="level-item has-text-centered">
+                <span>&nbsp;</span>
+              </p>
+              <p class="level-item has-text-centered">
+                <span>&nbsp;</span>
+              </p>
+              <p class="level-item has-text-centered">
+                <span>&nbsp;</span>
+              </p>
+              <p class="level-item has-text-centered">
+                <span>&nbsp;</span>
+              </p>
+            </nav>
+            
             <section class="section" style="padding: 0.5rem 0.5rem;">
                 <h3 class="title is-4">Top Performers</h3>
+                
                 <nav class="level">                
                     <div class="level-item has-text-centered">
                         <div class="box">
+                          
                         <p class="heading">Top Performers <small>(today)</small></p>
                             <table class="table">
                                 <thead>
@@ -49,7 +83,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr rv-each-user="model.performance.topPerformersToday">
+                                <tr rv-each-user="model.performance.c_0.performers">
                                     <th class="is-size-7">{{user.user}}</th>
                                     <td class="is-size-7">{{user.s | numberRoundDecimal 2}}</td>
                                 </tr>                      
@@ -68,7 +102,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr rv-each-user="model.performance.topPerformers1d">
+                                <tr rv-each-user="model.performance.c_1.performers">
                                     <th class="is-size-7">{{user.user}}</th>
                                     <td class="is-size-7">{{user.s | numberRoundDecimal 2}}</td>
                                 </tr>                      
@@ -87,7 +121,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr rv-each-user="model.performance.topPerformers7d">
+                                <tr rv-each-user="model.performance.l_7.performers">
                                     <th class="is-size-7">{{user.user}}</th>
                                     <td class="is-size-7">{{user.s | numberRoundDecimal 2}}</td>
                                 </tr>                      
@@ -106,7 +140,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr rv-each-user="model.performance.topPerformers">
+                                <tr rv-each-user="model.performance.l_14.performers">
                                     <th class="is-size-7">{{user.user}}</th>
                                     <td class="is-size-7">{{user.s | numberRoundDecimal 2}}</td>
                                 </tr>                      
@@ -129,7 +163,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr rv-each-user="model.performance.topCommitersToday">
+                                <tr rv-each-user="model.performance.c_0.commiters">
                                     <th class="is-size-7">{{user.user}}</th>
                                     <td class="is-size-7">{{user.c}}</td>
                                 </tr>                      
@@ -148,7 +182,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr rv-each-user="model.performance.topCommiters1d">
+                                <tr rv-each-user="model.performance.c_1.commiters">
                                     <th class="is-size-7">{{user.user}}</th>
                                     <td class="is-size-7">{{user.c}}</td>
                                 </tr>                      
@@ -167,7 +201,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr rv-each-user="model.performance.topCommiters7d">
+                                <tr rv-each-user="model.performance.l_7.commiters">
                                     <th class="is-size-7">{{user.user}}</th>
                                     <td class="is-size-7">{{user.c}}</td>
                                 </tr>                      
@@ -186,7 +220,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr rv-each-user="model.performance.topCommiters14d">
+                                <tr rv-each-user="model.performance.l_14.commiters">
                                     <th class="is-size-7">{{user.user}}</th>
                                     <td class="is-size-7">{{user.c}}</td>
                                 </tr>                      
@@ -208,7 +242,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr rv-each-user="model.performance.topSLOCToday">
+                                <tr rv-each-user="model.performance.c_0.liners">
                                     <th class="is-size-7">{{user.user}}</th>
                                     <td class="is-size-7">{{user.l}}</td>
                                 </tr>                      
@@ -227,7 +261,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr rv-each-user="model.performance.topSLOC1d">
+                                <tr rv-each-user="model.performance.c_1.liners">
                                     <th class="is-size-7">{{user.user}}</th>
                                     <td class="is-size-7">{{user.l}}</td>
                                 </tr>                      
@@ -246,7 +280,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr rv-each-user="model.performance.topSLOC7d">
+                                <tr rv-each-user="model.performance.l_7.liners">
                                     <th class="is-size-7">{{user.user}}</th>
                                     <td class="is-size-7">{{user.l}}</td>
                                 </tr>                      
@@ -265,7 +299,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr rv-each-user="model.performance.topSLOC14d">
+                                <tr rv-each-user="model.performance.l_14.liners">
                                     <th class="is-size-7">{{user.user}}</th>
                                     <td class="is-size-7">{{user.l}}</td>
                                 </tr>                      

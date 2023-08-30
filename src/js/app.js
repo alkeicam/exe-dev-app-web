@@ -12,20 +12,18 @@ class AppDemo {
             queryParams: {
                 i: undefined
             },
-            events: [],
+            events: {
+                "c_0": [],
+                "c_1": [],
+                "l_7": [],
+                "l_14": []
+            },
+            account: undefined,
             performance: {
-                topPerformers: [],
-                topPerformersToday: [],
-                topPerformers7d: [],
-                topPerformers1d: [],
-                topCommitersToday: [],
-                topCommiters7d: [],
-                topCommiters14d: [],
-                topCommiters1d: [],
-                topSLOCToday: [],
-                topSLOC7d: [],
-                topSLOC14d: [],
-                topSLOC1d: [],
+                "c_0": {performers: [], commiters: [], liners: []},
+                "c_1": {performers: [], commiters: [], liners: []},
+                "l_7": {performers: [], commiters: [], liners: []},
+                "l_14": {performers: [], commiters: [], liners: []},
             },
             // id: id,
             // label: fileMetadata?.fileName||"Untitled",
@@ -35,6 +33,7 @@ class AppDemo {
             // fileMetadata: fileMetadata||{}
             
             handlers: {
+                _handleOnChangeProject: this._handleOnChangeProject.bind(this)
             },
             process:{
                 step: "PREPARE" // PREPARE // WORKOUT                
@@ -42,14 +41,16 @@ class AppDemo {
             forms:{
                 f1: {
                     f1: {
-                        v: "",
+                        v: "-1",
                         e: {
                             code: 0,
                             message: "OK"
-                        }
+                        },
+                        e: [{k: "p1", v:"Projekt #1"}]
                     }
                 }                
             }
+
         }
     }
 
@@ -59,38 +60,80 @@ class AppDemo {
         return text.substring(0,18)+"..."+text.substr(text.length-28, text.length)
     }
 
+    _handleOnChangeProject(e, that){
+        const selectedProjectId = that.model.forms.f1.f1.v;        
+        that.populatePerformers(that.model.events["c_0"], "c_0", selectedProjectId!=-1?selectedProjectId:undefined);
+        that.populatePerformers(that.model.events["c_1"], "c_1", selectedProjectId!=-1?selectedProjectId:undefined);
+        that.populatePerformers(that.model.events["l_7"], "l_7", selectedProjectId!=-1?selectedProjectId:undefined);
+        that.populatePerformers(that.model.events["l_14"], "l_14", selectedProjectId!=-1?selectedProjectId:undefined);
+    }
 
+    async populateEvents(accountId, range){
+        const specifications = range.split("_");
+        console.log(range, JSON.stringify(specifications));
+        let events = []
+        if(specifications[0]=="c"){
+            // "c_0"
+            console.log(range, specifications[1]);
+            let startMs = moment().startOf("day").add(-specifications[1],"days").valueOf();
+            let endMs = moment().endOf("day").add(-specifications[1],"days").valueOf();                    
+            console.log(range, startMs, endMs)
+            events = await BackendApi.getAccountEventsBetween(accountId, startMs, endMs);                                
+        }else{
+            // "l_7"
+            console.log(range, specifications[1]);
+            let startMs = moment().startOf("day").add(-specifications[1],"days").valueOf();
+            console.log(range, startMs)
+            events = await BackendApi.getAccountEventsSince(accountId, startMs);                                
+        }
+        this.model.events[range] = events;
+        return events;
+    }
+
+    populatePerformers(events, range, accountId){
+        let targetEvents = accountId?events.filter((item)=>{return item.project == accountId}):events;
+
+        this.model.performance[range].performers = this._performance(targetEvents).sort((a,b)=>b.s-a.s);
+        this.model.performance[range].commiters = this._performance(targetEvents).sort((a,b)=>b.c-a.c);
+        this.model.performance[range].liners = this._performance(targetEvents).sort((a,b)=>b.l-a.l);
+    }
 
     static async getInstance(emitter, container){                
         const a = new AppDemo(emitter, container)
-        let last15DaysMs = moment().startOf("day").add(-14,"days").valueOf();
-        const events15days = await BackendApi.getAccountEventsSince("a_execon", last15DaysMs);                                
-        a.model.performance.topPerformers = a._performance(events15days).sort((a,b)=>b.s-a.s);
-        a.model.performance.topCommiters14d = a._performance(events15days).sort((a,b)=>b.c-a.c);
-        a.model.performance.topSLOC14d = a._performance(events15days).sort((a,b)=>b.l-a.l);
-
-        let todayMs = moment().startOf("day").valueOf();
-        const eventsToday = await BackendApi.getAccountEventsSince("a_execon", todayMs);                                
-        a.model.performance.topPerformersToday = a._performance(eventsToday).sort((a,b)=>b.s-a.s);
-        a.model.performance.topCommitersToday = a._performance(eventsToday).sort((a,b)=>b.c-a.c);
-        a.model.performance.topSLOCToday = a._performance(eventsToday).sort((a,b)=>b.l-a.l);
+        // account perspective
+        // let last15DaysMs = moment().startOf("day").add(-14,"days").valueOf();
+        // a.model.events.last14d = await BackendApi.getAccountEventsSince("a_execon", last15DaysMs);                                
+        // a.model.performance.topPerformers = a._performance(a.model.events.last14d).sort((a,b)=>b.s-a.s);
+        // a.model.performance.topCommiters14d = a._performance(a.model.events.last14d).sort((a,b)=>b.c-a.c);
+        // a.model.performance.topSLOC14d = a._performance(a.model.events.last14d).sort((a,b)=>b.l-a.l);
         
-        let days7Ms = moment().startOf("day").add(-7,"days").valueOf();
-        const eventsdays7 = await BackendApi.getAccountEventsSince("a_execon", days7Ms);                                
-        a.model.performance.topPerformers7d = a._performance(eventsdays7).sort((a,b)=>b.s-a.s);
-        a.model.performance.topCommiters7d = a._performance(eventsdays7).sort((a,b)=>b.c-a.c);
-        a.model.performance.topSLOC7d = a._performance(eventsdays7).sort((a,b)=>b.l-a.l);
+        let events = await a.populateEvents("a_execon","c_0");
+        a.populatePerformers(events, "c_0");
 
-        let days1Ms = moment().startOf("day").add(-1,"days").valueOf();
-        let days1MsEnd = moment().endOf("day").add(-1,"days").valueOf();
-        const eventsdays1 = await BackendApi.getAccountEventsBetween("a_execon", days1Ms, days1MsEnd);                                
-        // const eventsdays1 = await BackendApi.getAccountEventsSince("a_execon", days1Ms);                                
-        a.model.performance.topPerformers1d = a._performance(eventsdays1).sort((a,b)=>b.s-a.s);
-        a.model.performance.topCommiters1d = a._performance(eventsdays1).sort((a,b)=>b.c-a.c);
-        a.model.performance.topSLOC1d = a._performance(eventsdays1).sort((a,b)=>b.l-a.l);
+        events = await a.populateEvents("a_execon","c_1");
+        a.populatePerformers(events, "c_1");
+
+        events = await a.populateEvents("a_execon","l_7");
+        a.populatePerformers(events, "l_7");
+
+        events = await a.populateEvents("a_execon","l_14");
+        a.populatePerformers(events, "l_14");
+
+        // project perspective
         
+
+        await a._loadAccount("a_execon");
+
+
         return a;
     }
+
+    async _loadAccount(accountId){
+        this.model.account = await BackendApi.getAccount(accountId);
+        this.model.forms.f1.f1.e = this.model.account.projects.map((item)=>{return {k: item.id, v: item.name}});
+    }
+
+    
 
     _performance(events){
         const performers = [];

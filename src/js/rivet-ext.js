@@ -202,6 +202,19 @@
         return value[index || 0];
     }
 
+    rivets.formatters.propertyAt = function (value, propName) {
+        if (!(value && value instanceof Object))
+            return null;
+        return value[propName];
+    }
+
+    rivets.formatters.propertyAtWithSubProperty = function (value, propName, subPropName) {
+        if (!(value && value instanceof Object))
+            return null;
+        const main = value[propName];
+        return main[subPropName];
+    }
+
     rivets.formatters.filterEq = function (value, arg1, arg2) {
         if (!(value && value instanceof Array))
             return null;

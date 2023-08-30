@@ -2,7 +2,8 @@ class BackendApi {
     static BASE_URL = "http://localhost:7071"
     static API = {
         EVENTS: "/account/{{accountId}}/events/since/{{dateMs}}",
-        EVENTS_BETWEEN: "/account/{{accountId}}/events/since/{{dateMs}}/to/{{dateToMs}}"
+        EVENTS_BETWEEN: "/account/{{accountId}}/events/since/{{dateMs}}/to/{{dateToMs}}",
+        ACCOUNT: "/account/{{accountId}}"
     }
 
     static getX(){
@@ -32,5 +33,14 @@ class BackendApi {
         const eventsResponse = await response.json();
         const events = eventsResponse.items;
         return events;
+    }
+
+    static async getAccount(accountId){
+        const urlFunction = Handlebars.compile(`${BackendApi.BASE_URL}${BackendApi.API.ACCOUNT}`)
+        const url = urlFunction({accountId: accountId});
+        console.log(url);
+        const response = await fetch(url);
+        const jsonResponse = await response.json();
+        return jsonResponse.item;
     }
 }
