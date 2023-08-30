@@ -17,12 +17,15 @@ class AppDemo {
                 topPerformers: [],
                 topPerformersToday: [],
                 topPerformers7d: [],
+                topPerformers1d: [],
                 topCommitersToday: [],
                 topCommiters7d: [],
                 topCommiters14d: [],
+                topCommiters1d: [],
                 topSLOCToday: [],
                 topSLOC7d: [],
                 topSLOC14d: [],
+                topSLOC1d: [],
             },
             // id: id,
             // label: fileMetadata?.fileName||"Untitled",
@@ -57,6 +60,7 @@ class AppDemo {
     }
 
 
+
     static async getInstance(emitter, container){                
         const a = new AppDemo(emitter, container)
         let last15DaysMs = moment().startOf("day").add(-14,"days").valueOf();
@@ -76,6 +80,14 @@ class AppDemo {
         a.model.performance.topPerformers7d = a._performance(eventsdays7).sort((a,b)=>b.s-a.s);
         a.model.performance.topCommiters7d = a._performance(eventsdays7).sort((a,b)=>b.c-a.c);
         a.model.performance.topSLOC7d = a._performance(eventsdays7).sort((a,b)=>b.l-a.l);
+
+        let days1Ms = moment().startOf("day").add(-1,"days").valueOf();
+        let days1MsEnd = moment().endOf("day").add(-1,"days").valueOf();
+        const eventsdays1 = await BackendApi.getAccountEventsBetween("a_execon", days1Ms, days1MsEnd);                                
+        // const eventsdays1 = await BackendApi.getAccountEventsSince("a_execon", days1Ms);                                
+        a.model.performance.topPerformers1d = a._performance(eventsdays1).sort((a,b)=>b.s-a.s);
+        a.model.performance.topCommiters1d = a._performance(eventsdays1).sort((a,b)=>b.c-a.c);
+        a.model.performance.topSLOC1d = a._performance(eventsdays1).sort((a,b)=>b.l-a.l);
         
         return a;
     }
