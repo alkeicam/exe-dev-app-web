@@ -25,6 +25,13 @@ class AppDemo {
                 "l_7": {performers: [], commiters: [], liners: []},
                 "l_14": {performers: [], commiters: [], liners: []},
             },
+            projects: {
+                "c_0": {},
+                "c_1": {},
+                "l_7": {},
+                "l_14": {},
+            },
+            selectedProject: {},
             // id: id,
             // label: fileMetadata?.fileName||"Untitled",
             // dirty: fileMetadata?false:true,
@@ -61,11 +68,17 @@ class AppDemo {
     }
 
     _handleOnChangeProject(e, that){
-        const selectedProjectId = that.model.forms.f1.f1.v;        
+        const selectedProjectId = that.model.forms.f1.f1.v; 
+        that.model.selectedProject = that.model.account.projects.find((item)=>item.id == selectedProjectId);
         that.populatePerformers(that.model.events["c_0"], "c_0", selectedProjectId!=-1?selectedProjectId:undefined);
         that.populatePerformers(that.model.events["c_1"], "c_1", selectedProjectId!=-1?selectedProjectId:undefined);
         that.populatePerformers(that.model.events["l_7"], "l_7", selectedProjectId!=-1?selectedProjectId:undefined);
         that.populatePerformers(that.model.events["l_14"], "l_14", selectedProjectId!=-1?selectedProjectId:undefined);
+
+        that.populateProjects(that.model.events["c_0"], "c_0", selectedProjectId!=-1?selectedProjectId:undefined);
+        that.populateProjects(that.model.events["c_1"], "c_1", selectedProjectId!=-1?selectedProjectId:undefined);
+        that.populateProjects(that.model.events["l_7"], "l_7", selectedProjectId!=-1?selectedProjectId:undefined);
+        that.populateProjects(that.model.events["l_14"], "l_14", selectedProjectId!=-1?selectedProjectId:undefined);
     }
 
     async populateEvents(accountId, range){
@@ -98,8 +111,36 @@ class AppDemo {
         this.model.performance[range].liners = this._performance(targetEvents).sort((a,b)=>b.l-a.l);
     }
 
+    populateProjects(events, range, accountId){
+        let targetEvents = accountId?events.filter((item)=>{return item.project == accountId}):events;
+        this.model.projects[range] = this._projectPerformance(targetEvents);
+    }
+
+    _groupByDayInfo(rawEvents){
+            // day
+            const maxCt = rawEvents.reduce((accumulator, current)=>{
+                return Math.max(accumulator, current.ct);
+            },-1);
+    
+            const startOfToday = moment().startOf("day").valueOf();
+            const result = {
+                day: {
+                    ts: day,
+                    today: day>=startOfToday?true:false,
+                    daysAgo: day>=startOfToday?moment(maxCt).fromNow():moment(day).endOf("day").add(-8,"hours").fromNow(), // -8 hours for "a day ago"
+                    dayName: moment(day).format("dddd"),
+                    dayName: moment(day).format("YYYY-MM-DD"),
+                },            
+                events  : rawEvents
+            }
+    
+            return result;
+        
+    }
+
     static async getInstance(emitter, container){                
         const a = new AppDemo(emitter, container)
+        await a._loadAccount("a_execon");
         // account perspective
         // let last15DaysMs = moment().startOf("day").add(-14,"days").valueOf();
         // a.model.events.last14d = await BackendApi.getAccountEventsSince("a_execon", last15DaysMs);                                
@@ -118,11 +159,17 @@ class AppDemo {
 
         events = await a.populateEvents("a_execon","l_14");
         a.populatePerformers(events, "l_14");
+        console.log(events);
+
+        a.populateProjects(a.model.events["c_0"],"c_0")
+        a.populateProjects(a.model.events["c_1"], "c_1")
+        a.populateProjects(a.model.events["l_7"], "l_7")
+        a.populateProjects(a.model.events["l_14"], "l_14")
 
         // project perspective
         
 
-        await a._loadAccount("a_execon");
+        
 
 
         return a;
@@ -156,6 +203,24 @@ class AppDemo {
         
 
         return performers;
+    }
+
+    _projectPerformance(events){
+        const performance = {
+            s: 0,
+            c: 0,
+            l: 0
+        };
+
+        events.forEach((item)=>{            
+            performance.s += item.s;
+            performance.c += item.oper.toLowerCase()=="commit"?1:0
+            performance.l += item.decoded.changeSummary.inserts
+            performance.l += item.decoded.changeSummary.deletions
+        })
+        
+
+        return performance;
     }
 
 
