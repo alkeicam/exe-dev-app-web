@@ -15,6 +15,7 @@ class BackendApi {
         const response = await fetch("/.auth/me");
         const responseJson = await response.json();
         console.log(responseJson);
+        return responseJson
     }
 
     static async getAccountEventsSince(accountId, sinceMs){
