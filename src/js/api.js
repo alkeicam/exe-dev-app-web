@@ -32,7 +32,7 @@ class BackendApi {
                 body: JSON.stringify({login: login, pass: pass}),
             });
             const responseJson = await response.json();
-            localStorage.setItem("Auth:token", token);
+            localStorage.setItem("Auth:token", responseJson.token);
             return responseJson;
         }
     }
