@@ -1,10 +1,11 @@
 class BackendApi {
-    static BASE_URL = "https://devjam-lab.azurewebsites.net"
-    // static BASE_URL = "http://localhost:7071"
+    // static BASE_URL = "https://devjam-lab.azurewebsites.net"
+    static BASE_URL = "http://localhost:7071"
     static API = {
         EVENTS: "/account/{{accountId}}/events/since/{{dateMs}}",
         EVENTS_BETWEEN: "/account/{{accountId}}/events/since/{{dateMs}}/to/{{dateToMs}}",
-        ACCOUNT: "/account/{{accountId}}"
+        ACCOUNT: "/account/{{accountId}}",
+        AUTH_SIGNIN: "/auth/signin"
     }
 
     static getX(){
@@ -12,6 +13,40 @@ class BackendApi {
     }
 
     static async getUser(){        
+        const response = await fetch("/.auth/me");
+        const responseJson = await response.json();
+        console.log(responseJson);
+        return responseJson
+    }
+
+    static AUTH = {
+        async signin(login, pass){
+            const urlFunction = Handlebars.compile(`${BackendApi.BASE_URL}${BackendApi.API.AUTH_SIGNIN}`)
+            const url = urlFunction({});
+            console.log(url);
+            const response = await fetch(url,{
+                method: "POST", 
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({login: login, pass: pass}),
+            });
+            const responseJson = await response.json();
+            localStorage.setItem("Auth:token", token);
+            return responseJson;
+        }
+    }
+
+    static _authHeadersDecorator(headers){
+        const token = localStorage.getItem("Auth:token");
+        if(token){
+            headers['Authorization'] = `Bearer token`
+        }            
+    }
+
+    static async getUser(){        
+        
+
         const response = await fetch("/.auth/me");
         const responseJson = await response.json();
         console.log(responseJson);

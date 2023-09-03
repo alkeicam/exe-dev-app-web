@@ -10,6 +10,7 @@ class AppDemo {
         
         this.model = {
             user: undefined,
+            token: undefined,
             queryParams: {
                 i: undefined
             },
@@ -123,12 +124,15 @@ class AppDemo {
 
     static async getInstance(emitter, container){                
         const a = new AppDemo(emitter, container)
-        if(!window.location.origin.toLowerCase().startsWith("http://")){
-            a.model.user = await BackendApi.getUser();
-            if(!a.model.user)
-                window.location = "/.auth/login/aad"
-        }
+        // if(!window.location.origin.toLowerCase().startsWith("http://")){
+        //     a.model.user = await BackendApi.getUser();
+        //     if(!a.model.user)
+        //         window.location = "/.auth/login/aad"
+        // }
 
+        const {token, user} = await BackendApi.AUTH.signin("maciej.grula@execon.pl","123456")
+        a.model.user = user;
+        a.model.token = token
         
         await a._loadAccount("a_execon");
         // account perspective
