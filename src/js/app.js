@@ -9,6 +9,7 @@ class AppDemo {
         
         
         this.model = {
+            user: undefined,
             queryParams: {
                 i: undefined
             },
@@ -122,6 +123,13 @@ class AppDemo {
 
     static async getInstance(emitter, container){                
         const a = new AppDemo(emitter, container)
+        if(!window.location.origin.toLowerCase().startsWith("http://")){
+            a.model.user = await BackendApi.getUser();
+            if(!a.model.user)
+                window.location = "/.auth/login/aad"
+        }
+
+        
         await a._loadAccount("a_execon");
         // account perspective
         // let last15DaysMs = moment().startOf("day").add(-14,"days").valueOf();

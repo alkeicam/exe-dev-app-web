@@ -11,6 +11,12 @@ class BackendApi {
         console.log(BackendApi.BASE_URL);
     }
 
+    static async getUser(){        
+        const response = await fetch("/.auth/me");
+        const responseJson = await response.json();
+        console.log(responseJson);
+    }
+
     static async getAccountEventsSince(accountId, sinceMs){
         const urlFunction = Handlebars.compile(`${BackendApi.BASE_URL}${BackendApi.API.EVENTS}`)
         const url = urlFunction({accountId: accountId, dateMs: sinceMs});
