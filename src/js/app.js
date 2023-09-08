@@ -18,7 +18,8 @@ class AppDemo {
                 "c_0": [],
                 "c_1": [],
                 "l_7": [],
-                "l_14": []
+                "l_14": [],
+                "all_time": [],
             },
             account: undefined,
             performance: {
@@ -69,7 +70,7 @@ class AppDemo {
         return text.substring(0,18)+"..."+text.substr(text.length-28, text.length)
     }
 
-    _handleOnChangeProject(e, that){
+    async _handleOnChangeProject(e, that){
         const selectedProjectId = that.model.forms.f1.f1.v; 
         that.model.selectedProject = that.model.account.projects.find((item)=>item.id == selectedProjectId);
         that.populatePerformers(that.model.events["c_0"], "c_0", selectedProjectId!=-1?selectedProjectId:undefined);
@@ -81,6 +82,9 @@ class AppDemo {
         that.populateProjects(that.model.events["c_1"], "c_1", selectedProjectId!=-1?selectedProjectId:undefined);
         that.populateProjects(that.model.events["l_7"], "l_7", selectedProjectId!=-1?selectedProjectId:undefined);
         that.populateProjects(that.model.events["l_14"], "l_14", selectedProjectId!=-1?selectedProjectId:undefined);
+
+        const trends = await that.populateTrends(that.model.events.all_time, 7, selectedProjectId!=-1?selectedProjectId:undefined);
+        a.drawTrends(trends)
     }
 
     async populateEvents(accountId, range){
@@ -105,16 +109,16 @@ class AppDemo {
         return events;
     }
 
-    populatePerformers(events, range, accountId){
-        let targetEvents = accountId?events.filter((item)=>{return item.project == accountId}):events;
+    populatePerformers(events, range, projectId){
+        let targetEvents = projectId?events.filter((item)=>{return item.project == projectId}):events;
 
         this.model.performance[range].performers = this._performance(targetEvents).sort((a,b)=>b.s-a.s);
         this.model.performance[range].commiters = this._performance(targetEvents).sort((a,b)=>b.c-a.c);
         this.model.performance[range].liners = this._performance(targetEvents).sort((a,b)=>b.l-a.l);
     }
 
-    populateProjects(events, range, accountId){
-        let targetEvents = accountId?events.filter((item)=>{return item.project == accountId}):events;
+    populateProjects(events, range, projectId){
+        let targetEvents = projectId?events.filter((item)=>{return item.project == projectId}):events;
         this.model.projects[range] = this._projectPerformance(targetEvents);
     }
 
@@ -162,8 +166,10 @@ class AppDemo {
 
         // project perspective
         
-
-        const trends = await a.populateTrends("a_execon");
+        // get all events since 1.01.2022
+        events = await BackendApi.getAccountEventsSince("a_execon", 1640991600000); 
+        a.model.events.all_time = events;
+        const trends = await a.populateTrends(events, 7);
         a.drawTrends(trends)
 
         return a;
@@ -252,10 +258,9 @@ class AppDemo {
         return dayEvents;       
     }
 
-    async populateTrends(accountId){
-        // get all events since 1.01.2022
-        const events = await BackendApi.getAccountEventsSince(accountId, 1640991600000); 
-        const userTrends = this._userTrends(events, 2);
+    async populateTrends(events, window, projectId){
+        let targetEvents = projectId?events.filter((item)=>{return item.project == projectId}):events;
+        const userTrends = this._userTrends(targetEvents, window);
         console.log("User trends", userTrends);
         return userTrends;
     }
