@@ -180,8 +180,9 @@ class AppDemo {
         // project perspective
         
         events = await that.populateEvents("a_execon","all_time");        
-        that.model.busy = false;
+        
         await that.populateTrends(that.model.events["all_time"],"all_time", 7);        
+        that.model.busy = false;
         that.drawTrends(that.model.trends.all_time);
         
     }
@@ -270,6 +271,21 @@ class AppDemo {
         return this.model.trends[range];
     }
 
+    _cretePlotElement(groupId, id){
+
+        let plotElement = document.getElementById(id);
+        if(plotElement){
+            plotElement.remove();                        
+        }
+
+        plotElement = document.createElement('div'); 
+        plotElement.setAttribute("id", id);
+
+        document.getElementById(groupId).appendChild(plotElement);
+        
+        return plotElement
+    }
+
     async drawTrends(userTrends){
         const graphData1 = [];
         userTrends.users.forEach((user)=>{
@@ -288,8 +304,10 @@ class AppDemo {
             autosize: true,
             // width: 500,
           };
-          
-        Plotly.newPlot('graphUserCals', graphData1, layout,  {displayModeBar: false, responsive: true});
+        
+        let plotElement = this._cretePlotElement("individualGraphs","graphUserCals")
+        
+        Plotly.newPlot(plotElement, graphData1, layout,  {displayModeBar: false, responsive: true});
 
         const graphData2 = [];
         userTrends.users.forEach((user)=>{
@@ -307,7 +325,9 @@ class AppDemo {
             title:'Daily User Commits'
         };
           
-        Plotly.newPlot('graphUserCommits', graphData2, layout,  {displayModeBar: false});
+        plotElement = this._cretePlotElement("individualGraphs","graphUserCommits")
+
+        Plotly.newPlot(plotElement, graphData2, layout,  {displayModeBar: false});
 
         const graphData3 = [];
         userTrends.users.forEach((user)=>{

@@ -20,6 +20,7 @@
     <meta property="og:image" content="https://spectator-40e33.web.app/assets/img_51.png.jpg"> -->
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <link rel="stylesheet" href="css/style.css">
 
     <script src="js/rivet.js"></script>
     <script src="js/rivet-ext.js"></script>
@@ -360,14 +361,17 @@
         <div class="container" style="padding-top: 40vh; padding-bottom: 40vh;" rv-class-is-hidden="model.busy | eq false">
             <progress class="progress is-danger" max="100">30%</progress>
         </div>     
-        <div class="container">
+        <div class="container is-vis-hidden" rv-class-is-vis-hidden="model.busy">
             <section class="section mt-6" style="padding: 0.5rem 0.5rem;">
-                <h3 class="title is-3 is-hidden" rv-class-is-hidden="model.busy">Individual stats</h3>
-                <h3 class="title is-4 is-hidden" rv-class-is-hidden="model.busy">Performance</h3>
-                <div id="graphUserCals"></div>
-                <div id="graphUserCommits"></div>
-                <div id="graphUserLines"></div>
-                <h3 class="title is-4 is-hidden" rv-class-is-hidden="model.busy">Trends & Dynamics</h3>
+                <h3 class="title is-3 ">Individual stats</h3>
+                <h3 class="title is-4 ">Performance</h3>
+                <div id="individualGraphs">
+                    <!-- <div id="graphUserCals"></div>
+                    <div id="graphUserCommits"></div> -->
+                    <div id="graphUserLines"></div>
+                </div>
+                
+                <h3 class="title is-4">Trends & Dynamics</h3>
                 <div id="graphUserCalsMa"></div>
                 <div id="graphUserCommitsMa"></div>
                 <div id="graphUserLinesMa"></div>
