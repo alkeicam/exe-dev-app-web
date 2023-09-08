@@ -409,17 +409,20 @@ class AppDemo {
             const userCals = userStats.map((item)=>item.cals);
             const userCommits = userStats.map((item)=>item.commits);
             const userLines = userStats.map((item)=>item.lines);
+            const userEntropy = userStats.map((item)=>item.entropy);
 
             const userCalsMa = this.movingAverage(userCals, "SMA", window);
             const userCommitsMa = this.movingAverage(userCommits, "SMA", window);
             const userLinesMa = this.movingAverage(userLines, "SMA", window);
+            const userEntropyMa = this.movingAverage(userEntropy, "SMA", window);
 
             const dailyMas = []
             for(let i=0; i<userCalsMa.length; i++){
                 dailyMas.push({
                     cals: userCalsMa[i],
                     commits: userCommitsMa[i],
-                    lines: userLinesMa[i]
+                    lines: userLinesMa[i],
+                    entropy: userEntropyMa[i]
                 })
             }
 
@@ -544,14 +547,17 @@ class AppDemo {
                 dayName: moment(i).format("YYYY-MM-DD"),
             }
             const events = rawEvents.filter((item)=>item.ct>=i&&item.ct<moment(i).add(1,"days"));
-            const total = events.reduce((prev, curr)=>{
+            const total = events.reduce((prev, curr, currentIndex)=>{
                 return {
                     cals: prev.cals + curr.s,
                     commits: prev.commits + (curr.oper=="commit"?1:0),      
-                    lines: prev.lines + curr.decoded.changeSummary.inserts+curr.decoded.changeSummary.deletions
+                    lines: prev.lines + curr.decoded.changeSummary.inserts+curr.decoded.changeSummary.deletions,
+                    entropy: prev.entropy + (Number.isNaN(curr.e.e)?0:curr.e.e)
                 }
-            },{cals: 0, commits: 0, lines: 0});
+            },{cals: 0, commits: 0, lines: 0, entropy: 0});
             
+            total.entropy /=  events.length>0?events.length:1;
+
             result.push({
                 day: day,
                 value: total
