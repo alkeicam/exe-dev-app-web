@@ -11,6 +11,7 @@ class AppDemo {
         this.model = {
             user: undefined,
             token: undefined,
+            busy: true,
             queryParams: {
                 i: undefined
             },
@@ -33,6 +34,9 @@ class AppDemo {
                 "c_1": {},
                 "l_7": {},
                 "l_14": {},
+            },
+            trends: {
+                "all_time": {}
             },
             selectedProject: {},
             // id: id,
@@ -71,6 +75,7 @@ class AppDemo {
     }
 
     async _handleOnChangeProject(e, that){
+        that.model.busy = true;
         const selectedProjectId = that.model.forms.f1.f1.v; 
         that.model.selectedProject = that.model.account.projects.find((item)=>item.id == selectedProjectId);
         that.populatePerformers(that.model.events["c_0"], "c_0", selectedProjectId!=-1?selectedProjectId:undefined);
@@ -83,26 +88,31 @@ class AppDemo {
         that.populateProjects(that.model.events["l_7"], "l_7", selectedProjectId!=-1?selectedProjectId:undefined);
         that.populateProjects(that.model.events["l_14"], "l_14", selectedProjectId!=-1?selectedProjectId:undefined);
 
-        const trends = await that.populateTrends(that.model.events.all_time, 7, selectedProjectId!=-1?selectedProjectId:undefined);
-        a.drawTrends(trends)
+        const trends = await that.populateTrends(that.model.events.all_time,"all_time", 7, selectedProjectId!=-1?selectedProjectId:undefined);
+        that.drawTrends(trends)
+        that.model.busy = false;
     }
 
     async populateEvents(accountId, range){
         const specifications = range.split("_");
-        console.log(range, JSON.stringify(specifications));
+        // console.log(range, JSON.stringify(specifications));
         let events = []
         if(specifications[0]=="c"){
             // "c_0"
-            console.log(range, specifications[1]);
+            // console.log(range, specifications[1]);
             let startMs = moment().startOf("day").add(-specifications[1],"days").valueOf();
             let endMs = moment().endOf("day").add(-specifications[1],"days").valueOf();                    
-            console.log(range, startMs, endMs)
+            // console.log(range, startMs, endMs)
             events = await BackendApi.getAccountEventsBetween(accountId, startMs, endMs);                                
-        }else{
+        }else if(range.toLowerCase()=="all_time"){
+            // get all events since 1.01.2022
+            events = await BackendApi.getAccountEventsSince(accountId, 1640991600000); 
+        }
+        else{
             // "l_7"
-            console.log(range, specifications[1]);
+            // console.log(range, specifications[1]);
             let startMs = moment().startOf("day").add(-specifications[1],"days").valueOf();
-            console.log(range, startMs)
+            // console.log(range, startMs)
             events = await BackendApi.getAccountEventsSince(accountId, startMs);                                
         }
         this.model.events[range] = events;
@@ -126,52 +136,19 @@ class AppDemo {
 
     
 
-    static async getInstance(emitter, container){                
+    static async getInstance(emitter, container){                        
         const a = new AppDemo(emitter, container)
-        // if(!window.location.origin.toLowerCase().startsWith("http://")){
-        //     a.model.user = await BackendApi.getUser();
-        //     if(!a.model.user)
-        //         window.location = "/.auth/login/aad"
-        // }
-
+        
+        
         const {token, user} = await BackendApi.AUTH.signin("maciej.grula@execon.pl","123456")
         a.model.user = user;
         a.model.token = token
         
         await a._loadAccount("a_execon");
-        // account perspective
-        // let last15DaysMs = moment().startOf("day").add(-14,"days").valueOf();
-        // a.model.events.last14d = await BackendApi.getAccountEventsSince("a_execon", last15DaysMs);                                
-        // a.model.performance.topPerformers = a._performance(a.model.events.last14d).sort((a,b)=>b.s-a.s);
-        // a.model.performance.topCommiters14d = a._performance(a.model.events.last14d).sort((a,b)=>b.c-a.c);
-        // a.model.performance.topSLOC14d = a._performance(a.model.events.last14d).sort((a,b)=>b.l-a.l);
         
-        let events = await a.populateEvents("a_execon","c_0");
-        a.populatePerformers(events, "c_0");
-
-        events = await a.populateEvents("a_execon","c_1");
-        a.populatePerformers(events, "c_1");
-
-        events = await a.populateEvents("a_execon","l_7");
-        a.populatePerformers(events, "l_7");
-
-        events = await a.populateEvents("a_execon","l_14");
-        a.populatePerformers(events, "l_14");
-        console.log(events);
-
-        a.populateProjects(a.model.events["c_0"],"c_0")
-        a.populateProjects(a.model.events["c_1"], "c_1")
-        a.populateProjects(a.model.events["l_7"], "l_7")
-        a.populateProjects(a.model.events["l_14"], "l_14")
-
-        // project perspective
+        await a._handleRefreshEvents(undefined, a);
         
-        // get all events since 1.01.2022
-        events = await BackendApi.getAccountEventsSince("a_execon", 1640991600000); 
-        a.model.events.all_time = events;
-        const trends = await a.populateTrends(events, 7);
-        a.drawTrends(trends)
-
+        a.model.busy = false;
         return a;
     }
 
@@ -180,7 +157,35 @@ class AppDemo {
         this.model.forms.f1.f1.e = this.model.account.projects.map((item)=>{return {k: item.id, v: item.name}});
     }
 
-    
+    async _handleRefreshEvents(e, that){
+        that.model.busy = true;
+        let events = await that.populateEvents("a_execon","c_0");
+        that.populatePerformers(events, "c_0");
+
+        events = await that.populateEvents("a_execon","c_1");
+        that.populatePerformers(events, "c_1");
+
+        events = await that.populateEvents("a_execon","l_7");
+        that.populatePerformers(events, "l_7");
+
+        events = await that.populateEvents("a_execon","l_14");
+        that.populatePerformers(events, "l_14");
+        // console.log(events);
+
+        that.populateProjects(that.model.events["c_0"],"c_0")
+        that.populateProjects(that.model.events["c_1"], "c_1")
+        that.populateProjects(that.model.events["l_7"], "l_7")
+        that.populateProjects(that.model.events["l_14"], "l_14")
+
+        // project perspective
+        
+        events = await that.populateEvents("a_execon","all_time");        
+        that.model.busy = false;
+        await that.populateTrends(that.model.events["all_time"],"all_time", 7);        
+        that.drawTrends(that.model.trends.all_time);
+        
+    }
+        
 
     _performance(events){
         const performers = [];
@@ -258,11 +263,11 @@ class AppDemo {
         return dayEvents;       
     }
 
-    async populateTrends(events, window, projectId){
+    async populateTrends(events, range, window, projectId){
         let targetEvents = projectId?events.filter((item)=>{return item.project == projectId}):events;
-        const userTrends = this._userTrends(targetEvents, window);
-        console.log("User trends", userTrends);
-        return userTrends;
+        this.model.trends[range] = this._userTrends(targetEvents, window);
+        // console.log("User trends", this.model.events[range]);
+        return this.model.trends[range];
     }
 
     async drawTrends(userTrends){
@@ -279,10 +284,12 @@ class AppDemo {
         })
 
         var layout = {
-            title:'Daily User Calories'
+            title:'Daily User Calories',
+            autosize: true,
+            // width: 500,
           };
           
-        Plotly.newPlot('graphUserCals', graphData1, layout,  {displayModeBar: false});
+        Plotly.newPlot('graphUserCals', graphData1, layout,  {displayModeBar: false, responsive: true});
 
         const graphData2 = [];
         userTrends.users.forEach((user)=>{

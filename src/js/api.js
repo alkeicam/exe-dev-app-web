@@ -9,13 +9,13 @@ class BackendApi {
     }
 
     static getX(){
-        console.log(BackendApi.BASE_URL);
+        // console.log(BackendApi.BASE_URL);
     }
 
     static async getUser(){        
         const response = await fetch("/.auth/me");
         const responseJson = await response.json();
-        console.log(responseJson);
+        // console.log(responseJson);
         return responseJson
     }
 
@@ -23,7 +23,7 @@ class BackendApi {
         async signin(login, pass){
             const urlFunction = Handlebars.compile(`${BackendApi.BASE_URL}${BackendApi.API.AUTH_SIGNIN}`)
             const url = urlFunction({});
-            console.log(url);
+            // console.log(url);
             const response = await fetch(url,{
                 method: "POST", 
                 headers: {
@@ -56,7 +56,7 @@ class BackendApi {
     static async getAccountEventsSince(accountId, sinceMs){
         const urlFunction = Handlebars.compile(`${BackendApi.BASE_URL}${BackendApi.API.EVENTS}`)
         const url = urlFunction({accountId: accountId, dateMs: sinceMs});
-        console.log(url);
+        // console.log(url);
         const response = await fetch(url);
         const eventsResponse = await response.json();
         const events = eventsResponse.items;
@@ -71,7 +71,7 @@ class BackendApi {
 
         const urlFunction = Handlebars.compile(`${BackendApi.BASE_URL}${BackendApi.API.EVENTS_BETWEEN}`)
         const url = urlFunction({accountId: accountId, dateMs: sinceMs, dateToMs: dateToMs});
-        console.log(url);
+        // console.log(url);
         const response = await fetch(url);
         const eventsResponse = await response.json();
         const events = eventsResponse.items;
@@ -81,7 +81,7 @@ class BackendApi {
     static async getAccount(accountId){
         const urlFunction = Handlebars.compile(`${BackendApi.BASE_URL}${BackendApi.API.ACCOUNT}`)
         const url = urlFunction({accountId: accountId});
-        console.log(url);
+        // console.log(url);
         const response = await fetch(url);
         const jsonResponse = await response.json();
         return jsonResponse.item;
