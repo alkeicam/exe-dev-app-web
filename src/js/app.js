@@ -1,3 +1,43 @@
+/**
+ * Day info object
+ * @typedef {Object} DayInfo
+ * @property {number} ts - start of day timestamp
+ * @property {string} dayName - name of day in YYYY-MM-DD format
+ */
+
+/**
+ * Stats holder
+ * @typedef {Object} Effort
+ * @property {number} cals - number of calories burnt
+ * @property {number} commits - number of commits made
+ * @property {number} lines - number of lines affected
+ * @property {number} entropy - product entropy measure
+ */
+/**
+ * Stats for given day
+ * @typedef {Object} DailyStats
+ * @property {DayInfo} day - day information
+ * @property {Effort} value - day stats
+ */
+
+/**
+ * User Stats for given period
+ * @typedef {Object} UserDailyStats
+ * @property {string} user - user id (usually email)
+ * @property {DailyStats[]} daily - day by day stats
+ */
+
+
+/**
+ * Stats
+ * @typedef {Object} Stats
+ * @property {DayInfo[]} days - days included in stats (ascending, continous)
+ * @property {UserDailyStats[]} users - user raw performance
+ * @property {UserDailyStats[]} usersMa - user moving average performance
+ */
+
+
+
 class AppDemo {
     
     constructor(emitter, container) {
@@ -286,12 +326,12 @@ class AppDemo {
         return plotElement
     }
 
-    async drawTrends(userTrends){
+    async _drawStatsLinePlot(group, elementId, stats, kind, effortKey, title){
         const graphData1 = [];
-        userTrends.users.forEach((user)=>{
+        stats[kind].forEach((user)=>{
             const data = {
-                x: userTrends.days.map(item=>item.dayName),
-                y: user.daily.map(item=>item.cals),
+                x: stats.days.map(item=>item.dayName),
+                y: user.daily.map(item=>item.value[effortKey]),
                 mode: 'lines',
                 name: user.user
             }
@@ -300,83 +340,94 @@ class AppDemo {
         })
 
         var layout = {
-            title:'Daily User Calories',
+            title: title,
             autosize: true,
             // width: 500,
           };
         
-        let plotElement = this._cretePlotElement("individualGraphs","graphUserCals")
+        let plotElement = this._cretePlotElement(group, elementId)
         
         Plotly.newPlot(plotElement, graphData1, layout,  {displayModeBar: false, responsive: true});
-
-        const graphData2 = [];
-        userTrends.users.forEach((user)=>{
-            const data = {
-                x: userTrends.days.map(item=>item.dayName),
-                y: user.daily.map(item=>item.commits),
-                mode: 'lines',
-                name: user.user
-            }
-            graphData2.push(data);
-
-        })
-
-        var layout = {
-            title:'Daily User Commits'
-        };
-          
-        plotElement = this._cretePlotElement("individualGraphs","graphUserCommits")
-
-        Plotly.newPlot(plotElement, graphData2, layout,  {displayModeBar: false});
-
-        const graphData3 = [];
-        userTrends.users.forEach((user)=>{
-            const data = {
-                x: userTrends.days.map(item=>item.dayName),
-                y: user.daily.map(item=>item.lines),
-                mode: 'lines',
-                name: user.user
-            }
-            graphData3.push(data);
-
-        })
-
-        var layout = {
-            title:'Daily User Lines'
-        };
-          
-        Plotly.newPlot('graphUserLines', graphData3, layout,  {displayModeBar: false});
-
-        const graphData4 = [];
-        userTrends.usersMa.forEach((user)=>{
-            const data = {
-                x: userTrends.days.map(item=>item.dayName),
-                y: user.daily.map(item=>item.cals),
-                mode: 'lines',
-                name: user.user
-            }
-            graphData4.push(data);
-
-        })
-
-        var layout = {
-            title:'Effort trend'
-        };
-          
-        Plotly.newPlot('graphUserCalsMa', graphData4, layout,  {displayModeBar: false});
-
-        graphUserCalsMa
     }
 
-    _userTrends(events, window){
-        // day by day calories (per user and average)
-        // [
-        //     day:,
-            // users: [{user:, cal:, commits, lines, calMa, }]
-        //     quantiles: {cals: {25, 50, 75, 90}, commits: {}, lines: {}}, // over users
-        //     mas : {cals, commits, lines} //  days moving average daily cals over all users
-        // ]
+    /**
+     * 
+     * @param {Stats} userTrends 
+     */
+    async drawTrends(userTrends){
+        //
+        await this._drawStatsLinePlot("individualGraphs", "graphUserCals", userTrends, "users", "cals", "Daily User Calories");
+        await this._drawStatsLinePlot("individualGraphs", "graphUserCommits", userTrends, "users", "commits", "Daily User Commits");
+        await this._drawStatsLinePlot("individualGraphs", "graphUserLines", userTrends, "users", "commits", "Daily User Lines");
+        await this._drawStatsLinePlot("individualGraphs", "graphUserEntropy", userTrends, "users", "entropy", "Daily User Entropy");
 
+        // const graphData2 = [];
+        // userTrends.users.forEach((user)=>{
+        //     const data = {
+        //         x: userTrends.days.map(item=>item.dayName),
+        //         y: user.daily.map(item=>item.commits),
+        //         mode: 'lines',
+        //         name: user.user
+        //     }
+        //     graphData2.push(data);
+
+        // })
+
+        // var layout = {
+        //     title:'Daily User Commits'
+        // };
+          
+        // plotElement = this._cretePlotElement("individualGraphs","graphUserCommits")
+
+        // Plotly.newPlot(plotElement, graphData2, layout,  {displayModeBar: false});
+
+        // const graphData3 = [];
+        // userTrends.users.forEach((user)=>{
+        //     const data = {
+        //         x: userTrends.days.map(item=>item.dayName),
+        //         y: user.daily.map(item=>item.lines),
+        //         mode: 'lines',
+        //         name: user.user
+        //     }
+        //     graphData3.push(data);
+
+        // })
+
+        // var layout = {
+        //     title:'Daily User Lines'
+        // };
+          
+        // Plotly.newPlot('graphUserLines', graphData3, layout,  {displayModeBar: false});
+
+        // const graphData4 = [];
+        // userTrends.usersMa.forEach((user)=>{
+        //     const data = {
+        //         x: userTrends.days.map(item=>item.dayName),
+        //         y: user.daily.map(item=>item.cals),
+        //         mode: 'lines',
+        //         name: user.user
+        //     }
+        //     graphData4.push(data);
+
+        // })
+
+        // var layout = {
+        //     title:'Effort trend'
+        // };
+          
+        // Plotly.newPlot('graphUserCalsMa', graphData4, layout,  {displayModeBar: false});
+
+        await this._drawStatsLinePlot("maGraphs", "graphUserCalsMa", userTrends, "usersMa", "cals", "User Contribution");
+        await this._drawStatsLinePlot("maGraphs", "graphUserEntropyMa", userTrends, "usersMa", "entropy", "User Efficiency");
+    }
+
+    /**
+     * Calculates stats from provided events. Stats are calculated per user basis per day, raw and moving averages for effort are calculated
+     * @param {*} events target events
+     * @param {*} window window for moving average calculations
+     * @returns {Stats} stats for events provided, grouped by users and days, with moving average calculated using provided window
+     */
+    _userTrends(events, window){
         const result = {
             days: this.daysFromEvents(events),
             users: [], //[{user, daily: [{cals:,commits:,lines:}]}],            
@@ -400,29 +451,35 @@ class AppDemo {
         const usersMa = []
 
         Object.keys(allUsers).forEach((user)=>{
-            const userStats = this.byDays(events.filter((item)=>item.user == user)).map((item)=>item.value);
+            // const userStats = this.dailyEffort(events.filter((item)=>item.user == user)).map((item)=>item.value);
+            const userStats = this.dailyEffort(events.filter((item)=>item.user == user));
             users.push({
                 user: user,
                 daily: userStats
             })    
 
-            const userCals = userStats.map((item)=>item.cals);
-            const userCommits = userStats.map((item)=>item.commits);
-            const userLines = userStats.map((item)=>item.lines);
-            const userEntropy = userStats.map((item)=>item.entropy);
+            const userCals = userStats.map((item)=>item.value.cals);
+            const userCommits = userStats.map((item)=>item.value.commits);
+            const userLines = userStats.map((item)=>item.value.lines);
+            const userEntropy = userStats.map((item)=>item.value.entropy);
 
             const userCalsMa = this.movingAverage(userCals, "SMA", window);
             const userCommitsMa = this.movingAverage(userCommits, "SMA", window);
             const userLinesMa = this.movingAverage(userLines, "SMA", window);
             const userEntropyMa = this.movingAverage(userEntropy, "SMA", window);
 
+            const days = this.daysFromEvents(events.filter((item)=>item.user == user));
+
             const dailyMas = []
             for(let i=0; i<userCalsMa.length; i++){
                 dailyMas.push({
-                    cals: userCalsMa[i],
-                    commits: userCommitsMa[i],
-                    lines: userLinesMa[i],
-                    entropy: userEntropyMa[i]
+                    day: days[i],
+                    value: {
+                        cals: userCalsMa[i],
+                        commits: userCommitsMa[i],
+                        lines: userLinesMa[i],
+                        entropy: userEntropyMa[i]
+                    }
                 })
             }
 
@@ -436,62 +493,13 @@ class AppDemo {
         result.users = users;
         result.usersMa = usersMa;
         return result;
-
-        
-
-
-
-
-
-        // const eventsByDay = this._groupByDayInfo(events);
-
-        // eventsByDay.forEach((dayEvents)=>{            
-        //     // single day events
-
-        //     const dayData = {
-        //         day: dayEvents.day,
-        //         users: [],
-        //         quantiles: {},
-        //         mas: {}
-
-        //     }
-        //     // average for last n days for user
-        //     let userAvgs = (user, days, tillDay)=>{
-
-        //     }
-
-        //     const users = [];
-        //     for(let i=0; i<dayEvents.length; i++){
-        //         const event = dayEvents[i];
-        //     }   
-        //     dayEvents.events.forEach((event)=>{
-        //         let user = users.find((item)=>item.user == event.user);
-        //         if(!user){
-        //             user = {user: "", cals: 0, commits: 0, lines: 0, calsMa: 0, commitsMa: 0, linesMa: 0}
-        //             users.push(user);
-        //         }
-        //         user.cals += event.s;
-        //         user.commits += event.oper == "commit"?1:0;
-        //         user.lines += event.decoded.changeSummary.inserts+event.decoded.changeSummary.deletions;
-        //         // ma???
-        //     })
-        //     users.forEach()
-        //     // for each user calculate its ma for given day
-
-            
-
-        //     // let users = dayEvents.events.reduce((prev, curr, cidx, arr)=>{},{user: "", cals: 0, commits: 0, lines: 0, calsMa: 0, commitsMa: 0, linesMa: 0})
-        //     let quantile =  users.reduce((prev, curr, cidx, arr)=>{},{cals: {25: 0, 50: 0, 75:0, 90:0}, commits: {25: 0, 50: 0, 75:0, 90:0}, lines: {25: 0, 50: 0, 75:0, 90:0}})
-        //     let mas: // average over all events
-
-        //     //{day, events} = dayEvents;
-            
-        // })
-
-
-
     }
 
+    /**
+     * Calculates continous day array that covers all dates from events
+     * @param {*} rawEvents 
+     * @returns {DayInfo[]} sorted by day, ascending
+     */
     daysFromEvents(rawEvents){
         const result = []
         //sorted, ascending by date, missing dates are filled with given value
@@ -508,8 +516,7 @@ class AppDemo {
         for(let i=minMaxTs.minTs; i<=minMaxTs.maxTs; i = moment(i).add(1,"days").valueOf()){
             // fore every day between min and max
             const day = {
-                ts: i,
-                dayName: moment(i).format("dddd"),
+                ts: i,                
                 dayName: moment(i).format("YYYY-MM-DD"),
             }
             result.push(day);
@@ -517,16 +524,15 @@ class AppDemo {
         return result;
     }
 
-    byDays(rawEvents){
+
+    /**
+     * Calculates dayly effort from events provided. Date range is calculated from the most recent to most old event in the function argument.
+     * @param {*} rawEvents 
+     * @returns {DailyStats[]} stats from events for days, sorted by day ascending
+     */
+    dailyEffort(rawEvents){
         const result = [];
-        // {
-        //     day:
-        //     avg: {c
-        //         als:
-        //         commits:
-        //         lines:
-        //     }
-        // }
+        
 
         //sorted, ascending by date, missing dates are filled with given value
         const minMaxTs = rawEvents.reduce((prev, curr)=>{
@@ -542,8 +548,7 @@ class AppDemo {
         for(let i=minMaxTs.minTs; i<=minMaxTs.maxTs; i = moment(i).add(1,"days").valueOf()){
             // fore every day between min and max
             const day = {
-                ts: i,
-                dayName: moment(i).format("dddd"),
+                ts: i,                
                 dayName: moment(i).format("YYYY-MM-DD"),
             }
             const events = rawEvents.filter((item)=>item.ct>=i&&item.ct<moment(i).add(1,"days"));
@@ -574,38 +579,7 @@ class AppDemo {
         return myParam;
     }
 
-    // sort array ascending
-    // const asc = arr => arr.sort((a, b) => a - b);
 
-    // const quantile = (arr, q) => {
-    //     const sorted = asc(arr);
-    //     const pos = (sorted.length - 1) * q;
-    //     const base = Math.floor(pos);
-    //     const rest = pos - base;
-    //     if (sorted[base + 1] !== undefined) {
-    //         return sorted[base] + rest * (sorted[base + 1] - sorted[base]);
-    //     } else {
-    //         return sorted[base];
-    //     }
-    // };
-
-    // const calculateItemsSum = (data, start, stop) => {
-    //     let sum = 0;
-    //       for (let j = start; j < stop; ++j) {
-    //           sum += data[j];
-    //     }
-    //       return sum;
-    // };
-    
-    // const caculateMovingAverage = (data, window) => {
-    //     const steps = data.length - window;
-    //     const result = [ ];
-    //     for (let i = 0; i < steps; ++i) {
-    //         const sum = calculateItemsSum(data, i, i + window);
-    //         result.push(sum / window);
-    //     }
-    //       return result;
-    // };
     movingAverage(arr, type, size) {
         if(!arr || arr.length < 4) {
             return arr || [];
