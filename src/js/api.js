@@ -69,7 +69,7 @@ class BackendApi {
         const urlFunction = Handlebars.compile(`${BackendApi.BASE_URL}${BackendApi.API.EVENTS}`)
         const url = urlFunction({accountId: accountId, dateMs: sinceMs});
         // console.log(url);
-        const response = await fetch(url);
+        const response = await BackendApi._fetch(url);
         const eventsResponse = await response.json();
         const events = eventsResponse.items;
         return events;
@@ -84,7 +84,7 @@ class BackendApi {
         const urlFunction = Handlebars.compile(`${BackendApi.BASE_URL}${BackendApi.API.EVENTS_BETWEEN}`)
         const url = urlFunction({accountId: accountId, dateMs: sinceMs, dateToMs: dateToMs});
         // console.log(url);
-        const response = await fetch(url);
+        const response = await BackendApi._fetch(url);
         const eventsResponse = await response.json();
         const events = eventsResponse.items;
         return events;
