@@ -1,6 +1,6 @@
 class BackendApi {
-    static BASE_URL = "https://devjam-lab.azurewebsites.net"
-    // static BASE_URL = "http://localhost:7071"
+    // static BASE_URL = "https://devjam-lab.azurewebsites.net"
+    static BASE_URL = "http://localhost:7071"
     static API = {
         EVENTS: "/account/{{accountId}}/events/since/{{dateMs}}",
         EVENTS_BETWEEN: "/account/{{accountId}}/events/since/{{dateMs}}/to/{{dateToMs}}",
@@ -40,7 +40,7 @@ class BackendApi {
     static _authHeadersDecorator(headers){
         const token = localStorage.getItem("Auth:token");
         if(token){
-            headers['Authorization'] = `Bearer token`
+            headers['Authorization'] = `Bearer ${token}`
         }            
     }
 
@@ -51,6 +51,18 @@ class BackendApi {
         const responseJson = await response.json();
         console.log(responseJson);
         return responseJson
+    }
+
+    static async _fetch(url, options, body){
+        if(!options)
+            options = {}
+
+        if(!options.headers)
+            options.headers = {}
+ 
+        BackendApi._authHeadersDecorator(options.headers)
+        
+        return await fetch(url, options, body);
     }
 
     static async getAccountEventsSince(accountId, sinceMs){
@@ -82,7 +94,7 @@ class BackendApi {
         const urlFunction = Handlebars.compile(`${BackendApi.BASE_URL}${BackendApi.API.ACCOUNT}`)
         const url = urlFunction({accountId: accountId});
         // console.log(url);
-        const response = await fetch(url);
+        const response = await BackendApi._fetch(url);
         const jsonResponse = await response.json();
         return jsonResponse.item;
     }

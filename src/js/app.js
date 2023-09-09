@@ -269,6 +269,12 @@ class AppDemo {
         return performance;
     }
 
+    /**
+     * 
+     * @param {*} rawEvents 
+     * @returns 
+     * @deprecated not used
+     */
     _groupByDayInfo(rawEvents){
         const dayEvents = []
 
@@ -360,63 +366,7 @@ class AppDemo {
         await this._drawStatsLinePlot("individualGraphs", "graphUserCommits", userTrends, "users", "commits", "Daily User Commits");
         await this._drawStatsLinePlot("individualGraphs", "graphUserLines", userTrends, "users", "commits", "Daily User Lines");
         await this._drawStatsLinePlot("individualGraphs", "graphUserEntropy", userTrends, "users", "entropy", "Daily User Entropy");
-
-        // const graphData2 = [];
-        // userTrends.users.forEach((user)=>{
-        //     const data = {
-        //         x: userTrends.days.map(item=>item.dayName),
-        //         y: user.daily.map(item=>item.commits),
-        //         mode: 'lines',
-        //         name: user.user
-        //     }
-        //     graphData2.push(data);
-
-        // })
-
-        // var layout = {
-        //     title:'Daily User Commits'
-        // };
-          
-        // plotElement = this._cretePlotElement("individualGraphs","graphUserCommits")
-
-        // Plotly.newPlot(plotElement, graphData2, layout,  {displayModeBar: false});
-
-        // const graphData3 = [];
-        // userTrends.users.forEach((user)=>{
-        //     const data = {
-        //         x: userTrends.days.map(item=>item.dayName),
-        //         y: user.daily.map(item=>item.lines),
-        //         mode: 'lines',
-        //         name: user.user
-        //     }
-        //     graphData3.push(data);
-
-        // })
-
-        // var layout = {
-        //     title:'Daily User Lines'
-        // };
-          
-        // Plotly.newPlot('graphUserLines', graphData3, layout,  {displayModeBar: false});
-
-        // const graphData4 = [];
-        // userTrends.usersMa.forEach((user)=>{
-        //     const data = {
-        //         x: userTrends.days.map(item=>item.dayName),
-        //         y: user.daily.map(item=>item.cals),
-        //         mode: 'lines',
-        //         name: user.user
-        //     }
-        //     graphData4.push(data);
-
-        // })
-
-        // var layout = {
-        //     title:'Effort trend'
-        // };
-          
-        // Plotly.newPlot('graphUserCalsMa', graphData4, layout,  {displayModeBar: false});
-
+        
         await this._drawStatsLinePlot("maGraphs", "graphUserCalsMa", userTrends, "usersMa", "cals", "User Contribution");
         await this._drawStatsLinePlot("maGraphs", "graphUserEntropyMa", userTrends, "usersMa", "entropy", "User Efficiency");
     }
