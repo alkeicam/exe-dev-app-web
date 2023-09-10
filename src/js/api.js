@@ -1,6 +1,6 @@
 class BackendApi {
-    static BASE_URL = "https://devjam-lab.azurewebsites.net"
-    // static BASE_URL = "http://localhost:7071"
+    // static BASE_URL = "https://devjam-lab.azurewebsites.net"
+    static BASE_URL = "http://localhost:7071"
     static API = {
         EVENTS: "/account/{{accountId}}/events/since/{{dateMs}}",
         EVENTS_BETWEEN: "/account/{{accountId}}/events/since/{{dateMs}}/to/{{dateToMs}}",
@@ -33,7 +33,11 @@ class BackendApi {
             });
             const responseJson = await response.json();
             localStorage.setItem("Auth:token", responseJson.token);
+            localStorage.setItem("Auth:user", responseJson.user);
             return responseJson;
+        },
+        async me(){
+            return localStorage.getItem("Auth:user")
         }
     }
 

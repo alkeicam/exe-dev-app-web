@@ -34,7 +34,7 @@
 
 <body >
     <div id="app"> 
-        <div class="container is-hidden" rv-class-is-hidden="model.busy">
+        <div class="container is-hidden" rv-class-is-hidden="model.notBusy | eq false">
             <section class="section" style="padding: 0.5rem 0.5rem;">                    
                 <article class="message is-hidden" rv-class-is-hidden="model.process.step | neq 'ONBOARDING'">
                     <div class="box" style="padding-bottom: 30%;">
@@ -44,6 +44,7 @@
                             <div class="column is-offset-4 is-one-third">
                                 <p class="heading">Hello</p>
                                 <p class="title"><i class='fas fa-frog'></i>&nbsp;Welcome to Founder's Assistant</p>
+                                <p class="help has-text-danger" rv-class-is-hidden="model.error.code | eq 0"><strong><i class="fas fa-exclamation-triangle"></i> Invalid login attempt.</strong> {{model.error.message}}</a></p>
                                 <!-- <article class="message is-info">
                                     <div class="message-header">
                                     <p>Join us</p>                  
@@ -80,22 +81,27 @@
                                 </div>
                                 <div class="field is-grouped">
                                     <div class="control">
-                                    <button class="button is-link" rv-on-click="handleJoin">Join</button>
+                                    <button class="button is-link" rv-on-click="handleLogin">Sign in</button>
                                     </div>
                                     <!-- <div class="control">
                                     <button class="button is-link is-light">Cancel</button>
                                     </div> -->
                                 </div>
-                                <p class="help">If you are already invited you may <a href="index.html">return to main view</a></p>
+                                <p class="help">We are in early beta, access by invitations only. Contact us to claim account in the early access programme: <a href="mailto:maciej.grula@execon.pl">maciej.grula@execon.pl</a></p>
                             </div>
                             
                         </div>                          
                     </div>
                 </article>
-            </section>
-            
+            </section>            
         </div>  
-        
+        <div class="busyModal is-hidden" rv-class-is-hidden="model.notBusy">
+            <div class="modal-background"></div>
+            <div class="modal-content has-text-centered" style="padding-top: 45vh;">
+                <button class="button is-loading">Loading</button>
+            </div>
+            <!-- <button class="modal-close is-large" aria-label="close"></button> -->
+        </div>
         
     </div>
     
