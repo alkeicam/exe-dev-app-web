@@ -359,6 +359,10 @@ class AppDemo {
             title: title,
             autosize: true,
             // width: 500,
+            legend: {
+                x: 0,
+                y: -0.3
+            }
           };
         
         let plotElement = this._cretePlotElement(group, elementId)
