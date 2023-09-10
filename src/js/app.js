@@ -180,13 +180,23 @@ class AppDemo {
         const a = new AppDemo(emitter, container)
         
         
-        const {token, user} = await BackendApi.AUTH.signin("maciej.grula@execon.pl","123456")
+        const {token, user} = await BackendApi.AUTH.me();
+
+        if(!user || !token)
+            window.location = "hello.html";
+
+        
+
         a.model.user = user;
         a.model.token = token
         
-        await a._loadAccount("a_execon");
+        try{
+            await a._loadAccount("a_execon");        
+            await a._handleRefreshEvents(undefined, a);
+        }catch(error){
+            window.location = "hello.html?message=Session expired. Please log in again.";
+        }
         
-        await a._handleRefreshEvents(undefined, a);
         
         a.model.busy = false;
         return a;
