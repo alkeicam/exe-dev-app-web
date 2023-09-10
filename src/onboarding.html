@@ -1,0 +1,272 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    
+    <!-- <base href="app"> -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Onboarding - Founder's Assistant</title>
+    <meta name="description" content="Help startup founders track and measure developer's effort and engagment">
+    <meta name="author" content="grulka">
+
+    <!-- <meta property="og:title" content="Dev Workout">
+    <meta property="og:type" content="website">
+    <meta property="og:url"
+        content="https://spectator-40e33.web.app/?g=xAz4g5">
+    <meta property="og:description" content="Broadcast amateur sport event live and share with friends">
+    <meta property="og:image" content="https://spectator-40e33.web.app/assets/img_51.png.jpg"> -->
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <link rel="stylesheet" href="css/style.css">
+
+    <script src="js/rivet.js"></script>
+    <script src="js/rivet-ext.js"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>        
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="js/plotly-2.24.1.min.js" charset="utf-8"></script>
+
+    
+    
+</head>
+
+<body >
+    <div id="app">         
+        <div class="container is-hidden" rv-class-is-hidden="model.busy">
+            <nav class="navbar" role="navigation" aria-label="main navigation">
+              
+                <div id="navbarBasicExample" class="navbar-menu">
+                  <div class="navbar-start">
+                    <a class="navbar-item" href="index.html">
+                      Team Stats
+                    </a>
+                    <a class="navbar-item" href="onboarding.html">
+                        Onboarding
+                    </a>
+<!--               
+                    <a class="navbar-item">
+                      Documentation
+                    </a>
+              
+                    <div class="navbar-item has-dropdown is-hoverable">
+                      <a class="navbar-link">
+                        More
+                      </a>
+              
+                      <div class="navbar-dropdown">
+                        <a class="navbar-item">
+                          About
+                        </a>
+                        <a class="navbar-item">
+                          Jobs
+                        </a>
+                        <a class="navbar-item">
+                          Contact
+                        </a>
+                        <hr class="navbar-divider">
+                        <a class="navbar-item">
+                          Report an issue
+                        </a>
+                      </div>
+                    </div> -->
+                  </div>
+              
+                  <div class="navbar-end">
+                    <div class="navbar-item">
+                      <div class="buttons">
+                        <a class="button is-primary">
+                          <strong>Sign up</strong>
+                        </a>
+                        <a class="button is-light">
+                          Log in
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </nav>
+            <h3 class="title is-3">Onboarding <span class="is-size-7 is-hidden" rv-class-is-hidden="model.account | empty">@{{model.account.name}}</span></h3>
+
+            <div rv-each-project="model.projects" class="mb-6 pb-6">
+                <nav class="level">
+                    <div class="level-left">
+                        <div class="level-item">
+                            <h3 class="title is-4">{{project.name}} <span class="subtitle is-size-7">#{{project.id}}</span></h3>
+                        </div>                      
+                    </div>                            
+                    <div class="level-right">
+                        <div class="level-item">
+                            <div class="field">                          
+                              <div class="control">
+                                <button class="button" rv-on-click="_handleRefreshEvents">
+                                    <span class="icon is-small">
+                                        <i class="fas fa-user-plus"></i>
+                                    </span>
+                                    <span class="mx-2">Invite participant</span>
+                                  </button>
+                              </div>
+                            </div>    
+                          </div>                      
+                    </div>                            
+                </nav>
+                <section class="section" style="padding: 0.5rem 0.5rem;">
+                    <table class="table is-striped is-fullwidth">
+                        <thead>
+                          <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Invitation code</th>                            
+                          </tr>
+                        </thead>
+                        <tbody>
+                            <tr rv-each-participant="project.participants">
+                              <th>{{participant.name}}</th>
+                              <td>{{participant.email}}</td>
+                              <td>{{participant.role}}</td>
+                              <td>{{participant.invitation.status.name}}</td>
+                              <td>{{participant.invitation.code}}</td>                              
+                            </tr>                            
+                        </tbody>
+                    </table>
+                </section>
+            </div>
+            
+
+            <nav class="level mt-6 pt-6">
+                <div class="level-left">
+                    <div class="level-item">
+                        <div class="field">                          
+                          <div class="control">
+                            <button class="button" rv-on-click="_handleAddProjectModal">
+                                <span class="icon is-small">
+                                    <i class="fas fa-plus-square"></i>
+                                </span>
+                                <span class="mx-2">Add another project</span>
+                              </button>
+                          </div>
+                        </div>    
+                      </div>                      
+                </div>                            
+            </nav>                        
+        </div>  
+        <div class="container" style="padding-top: 40vh; padding-bottom: 40vh;" rv-class-is-hidden="model.busy | eq false">
+            <progress class="progress is-danger" max="100">30%</progress>
+        </div>  
+        <div class="modal " rv-class-is-active="model.modals.m1.active">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                  <p class="modal-card-title">New project</p>
+                  <button class="delete" aria-label="close"></button>
+                </header>
+                <section class="modal-card-body">
+                    <div class="field">
+                        <label class="label">Name</label>
+                        <div class="control has-icons-left has-icons-right">
+                            <input class="input" type="text" placeholder="" rv-value="model.forms.f1.v" rv-class-is-danger="model.forms.f1.e.code | neq 0" data-field-id="f1" rv-on-input="handleInput">
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-paper-plane"></i>
+                            </span>
+                            <span class="icon is-small is-right is-hidden" rv-class-is-hidden="model.forms.f1.e.code | eq 0">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </span>
+                        </div>
+                        <p class="help is-danger is-hidden" rv-class-is-hidden="model.forms.f1.e.code | eq 0">{{model.forms.f1.e.message}}</p>
+                    </div>  
+                </section>
+                <footer class="modal-card-foot">
+                  <button class="button is-success" rv-on-click="_handleAddProject">Save</button>
+                  <button class="button" rv-on-click="_handleCancelAddProject">Cancel</button>
+                </footer>
+            </div>
+            
+            <button class="modal-close is-large" aria-label="close"></button>
+        </div>                   
+    </div>
+    
+        
+    <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    <footer class="footer" style="margin-top: 10vh;">
+        <div class="content has-text-centered">
+            <p>
+                Made with <span style="color: #e25555;">&#9829;</span> in PL<br>
+                &copy;
+                <span id="copyright">
+                    <script>document.getElementById('copyright').appendChild(document.createTextNode(new Date().getFullYear()))</script>
+                </span>
+                Dev Workout powered by Execon
+            </p>
+        </div>
+    </footer>   
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.8/handlebars.min.js" integrity="sha512-E1dSFxg+wsfJ4HKjutk/WaCzK7S2wv1POn1RRPGh8ZK+ag9l244Vqxji3r6wgz9YBf6+vhQEYJZpSjqWFPg9gg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="js/api.js"></script>
+    <script src="js/onboardingController.js"></script>
+    <!-- <script src="js/onboardingModalController.js"></script>
+    <script src="js/preferencesModalController.js"></script> -->
+    <script>
+
+        
+
+
+        class EventEmitter {
+            constructor() {
+                this.listeners = {};
+            }
+
+            static getInstance() {
+                return new EventEmitter();
+            }
+
+            on(event, callback) {
+                if (!this.listeners.hasOwnProperty(event)) {
+                    this.listeners[event] = [];
+                }
+
+                this.listeners[event].push(callback);
+
+                return this;
+            }
+
+            emit(event, ...data) {
+                if (!this.listeners.hasOwnProperty(event)) {
+                    return null;
+                }
+
+                for (let i = 0; i < this.listeners[event].length; i++) {
+                    const callback = this.listeners[event][i];
+
+                    callback.call(this, ...data);
+                }
+            }
+        }
+        const emitter = EventEmitter.getInstance();
+        const mapCanvas = document.getElementById("map");
+
+        const emitter2 = EventEmitter.getInstance();
+        const mapCanvas2 = document.getElementById("map2");
+
+        rivets.templateDelimiters = ["{{", "}}"]
+
+        OnboardingController.getInstance(emitter).then((app)=>{            
+            rivets.bind(document.getElementById('app'), app);            
+        })
+        // OnboardingModalController.getInstance(emitter).then((controller)=>{
+        //     rivets.bind(document.getElementById('onboardingModal'),controller);
+        // })
+
+        // PreferencesModalController.getInstance(emitter).then((controller)=>{
+        //     rivets.bind(document.getElementById('preferencesModal'),controller);
+        // })
+        // console.log(window.location.href);
+
+        window.appEmiter = emitter;
+    </script>
+</body>
+
+</html>

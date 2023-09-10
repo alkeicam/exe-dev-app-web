@@ -5,7 +5,8 @@ class BackendApi {
         EVENTS: "/account/{{accountId}}/events/since/{{dateMs}}",
         EVENTS_BETWEEN: "/account/{{accountId}}/events/since/{{dateMs}}/to/{{dateToMs}}",
         ACCOUNT: "/account/{{accountId}}",
-        AUTH_SIGNIN: "/auth/signin"
+        AUTH_SIGNIN: "/auth/signin",
+        PROJECTS_CREATE: "/account/{{accountId}}/projects"
     }
 
     static getX(){
@@ -33,15 +34,34 @@ class BackendApi {
             });
             const responseJson = await response.json();
             localStorage.setItem("Auth:token", responseJson.token);
-            localStorage.setItem("Auth:user", responseJson.user);
+            localStorage.setItem("Auth:user", JSON.stringify(responseJson.user));
             return responseJson;
         },
         async me(){
             return {
                 token: localStorage.getItem("Auth:token"),
-                user: localStorage.getItem("Auth:user")
+                user: JSON.parse(localStorage.getItem("Auth:user"))
             }
         }
+    }
+
+    static PROJECTS = {
+        async create(accountId, name){
+            const urlFunction = Handlebars.compile(`${BackendApi.BASE_URL}${BackendApi.API.PROJECTS_CREATE}`)
+            const url = urlFunction({
+                accountId: accountId
+            });
+            // console.log(url);
+            const response = await BackendApi._fetch(url,{
+                method: "POST", 
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({name: name}),
+            });
+            const responseJson = await response.json();            
+            return responseJson;
+        },
     }
 
     static _authHeadersDecorator(headers){
@@ -105,4 +125,5 @@ class BackendApi {
         const jsonResponse = await response.json();
         return jsonResponse.item;
     }
+
 }
