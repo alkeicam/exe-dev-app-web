@@ -1,0 +1,183 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    
+    <!-- <base href="app"> -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Founder's Assistant</title>
+    <meta name="description" content="Help startup founders track and measure developer's effort and engagment">
+    <meta name="author" content="grulka">
+
+    <!-- <meta property="og:title" content="Dev Workout">
+    <meta property="og:type" content="website">
+    <meta property="og:url"
+        content="https://spectator-40e33.web.app/?g=xAz4g5">
+    <meta property="og:description" content="Broadcast amateur sport event live and share with friends">
+    <meta property="og:image" content="https://spectator-40e33.web.app/assets/img_51.png.jpg"> -->
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <link rel="stylesheet" href="css/style.css">
+
+    <script src="js/rivet.js"></script>
+    <script src="js/rivet-ext.js"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>        
+    
+    
+
+    
+    
+</head>
+
+<body >
+    <div id="app"> 
+        <div class="container is-hidden" rv-class-is-hidden="model.busy">
+            <section class="section" style="padding: 0.5rem 0.5rem;">                    
+                <article class="message is-hidden" rv-class-is-hidden="model.process.step | neq 'ONBOARDING'">
+                    <div class="box" style="padding-bottom: 30%;">
+                        
+                        
+                        <div class="columns">
+                            <div class="column is-offset-4 is-one-third">
+                                <p class="heading">Hello</p>
+                                <p class="title"><i class='fas fa-frog'></i>&nbsp;Welcome to Founder's Assistant</p>
+                                <!-- <article class="message is-info">
+                                    <div class="message-header">
+                                    <p>Join us</p>                  
+                                    </div>
+                                    <div class="message-body">
+                                    You can join us only by invitation. Find a Startup that uses Dev Workout and you will be given an invitation details.
+                                    </div>
+                                </article> -->
+                                <div class="field">
+                                    <label class="label">Email</label>
+                                    <div class="control has-icons-left has-icons-right">
+                                        <input class="input" type="text" placeholder="" rv-value="model.forms.f1.v" rv-class-is-danger="model.forms.f1.e.code | neq 0" data-field-id="f1" rv-on-input="handleInput">
+                                        <span class="icon is-small is-left">
+                                            <i class="fas fa-paper-plane"></i>
+                                        </span>
+                                        <span class="icon is-small is-right is-hidden" rv-class-is-hidden="model.forms.f1.e.code | eq 0">
+                                            <i class="fas fa-exclamation-triangle"></i>
+                                        </span>
+                                    </div>
+                                    <p class="help is-danger is-hidden" rv-class-is-hidden="model.forms.f1.e.code | eq 0">{{model.forms.f1.e.message}}</p>
+                                </div>
+                                <div class="field">
+                                    <label class="label">Password</label>
+                                    <div class="control has-icons-left has-icons-right">
+                                        <input class="input" type="password" placeholder="" rv-value="model.forms.f2.v" rv-class-is-danger="model.forms.f2.e.code | neq 0" data-field-id="f2" rv-on-input="handleInput">
+                                        <span class="icon is-small is-left">
+                                            <i class="fas fa-key"></i>
+                                        </span>
+                                        <span class="icon is-small is-right is-hidden" rv-class-is-hidden="model.forms.f2.e.code | eq 0">
+                                            <i class="fas fa-exclamation-triangle"></i>
+                                        </span>
+                                    </div>
+                                    <p class="help is-danger is-hidden" rv-class-is-hidden="model.forms.f2.e.code | eq 0">{{model.forms.f2.e.message}}</p>
+                                </div>
+                                <div class="field is-grouped">
+                                    <div class="control">
+                                    <button class="button is-link" rv-on-click="handleJoin">Join</button>
+                                    </div>
+                                    <!-- <div class="control">
+                                    <button class="button is-link is-light">Cancel</button>
+                                    </div> -->
+                                </div>
+                                <p class="help">If you are already invited you may <a href="index.html">return to main view</a></p>
+                            </div>
+                            
+                        </div>                          
+                    </div>
+                </article>
+            </section>
+            
+        </div>  
+        
+        
+    </div>
+    
+        
+    <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    <footer class="footer">
+        <div class="content has-text-centered">
+            <p>
+                Made with <span style="color: #e25555;">&#9829;</span> in PL<br>
+                &copy;
+                <span id="copyright">
+                    <script>document.getElementById('copyright').appendChild(document.createTextNode(new Date().getFullYear()))</script>
+                </span>
+                Dev Workout powered by Execon
+            </p>
+        </div>
+    </footer>   
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.8/handlebars.min.js" integrity="sha512-E1dSFxg+wsfJ4HKjutk/WaCzK7S2wv1POn1RRPGh8ZK+ag9l244Vqxji3r6wgz9YBf6+vhQEYJZpSjqWFPg9gg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="js/api.js"></script>
+    <script src="js/helloController.js"></script>
+    <!-- <script src="js/onboardingModalController.js"></script>
+    <script src="js/preferencesModalController.js"></script> -->
+    <script>
+
+        
+
+
+        class EventEmitter {
+            constructor() {
+                this.listeners = {};
+            }
+
+            static getInstance() {
+                return new EventEmitter();
+            }
+
+            on(event, callback) {
+                if (!this.listeners.hasOwnProperty(event)) {
+                    this.listeners[event] = [];
+                }
+
+                this.listeners[event].push(callback);
+
+                return this;
+            }
+
+            emit(event, ...data) {
+                if (!this.listeners.hasOwnProperty(event)) {
+                    return null;
+                }
+
+                for (let i = 0; i < this.listeners[event].length; i++) {
+                    const callback = this.listeners[event][i];
+
+                    callback.call(this, ...data);
+                }
+            }
+        }
+        const emitter = EventEmitter.getInstance();
+        const mapCanvas = document.getElementById("map");
+
+        const emitter2 = EventEmitter.getInstance();
+        const mapCanvas2 = document.getElementById("map2");
+
+        rivets.templateDelimiters = ["{{", "}}"]
+
+        HelloController.getInstance(emitter).then((app)=>{            
+            rivets.bind(document.getElementById('app'), app);            
+        })
+        // OnboardingModalController.getInstance(emitter).then((controller)=>{
+        //     rivets.bind(document.getElementById('onboardingModal'),controller);
+        // })
+
+        // PreferencesModalController.getInstance(emitter).then((controller)=>{
+        //     rivets.bind(document.getElementById('preferencesModal'),controller);
+        // })
+        // console.log(window.location.href);
+
+        window.appEmiter = emitter;
+    </script>
+</body>
+
+</html>
