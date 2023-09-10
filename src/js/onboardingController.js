@@ -11,6 +11,7 @@ class OnboardingController {
             account: {
                 projects: []
             },
+            invitations: [],
             projects: [
                 {
                     name: "1st project",
@@ -131,9 +132,11 @@ class OnboardingController {
         a.model.token = token
         
         try{
-            await a._loadAccount(a.model.user.authority[0].accountId);                    
+            await a._loadAccount(a.model.user.authority[0].accountId);   
+            await a._loadInvitations(a.model.user.authority[0].accountId);
         }catch(error){
-            window.location = "hello.html?message=Session expired. Please log in again.";
+            console.error(error);
+            // window.location = "hello.html?message=Session expired. Please log in again.";
         }
         a.model.busy = false;
         
@@ -142,6 +145,26 @@ class OnboardingController {
 
     async _loadAccount(accountId){
         this.model.account = await BackendApi.getAccount(accountId);        
+    }
+
+    async _loadInvitations(accountId){
+        const that = this;
+        this.model.invitations = await BackendApi.ACCOUNTS.getAccountInvitations(accountId);  
+        this.model.account.projects.map((project)=>{
+            project.participants.map((participant)=>{
+                participant.invitation = {};
+                const matchingInvitation = that.model.invitations.find((item)=>item.account.project.id == project.id && item.account.invitee.email == participant.email);
+
+                participant.invitation.status = {
+                    name: matchingInvitation?matchingInvitation.used?"On board":"Invited":"On board",
+                    code: matchingInvitation?matchingInvitation.used?1:0:1
+                };
+                participant.invitation.code = matchingInvitation?.id || "--- Manual Join ---"
+
+                return participant;
+            })      
+            return project;      
+        })               
     }
 
     async handleLogin(e, that){

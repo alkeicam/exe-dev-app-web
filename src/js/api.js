@@ -1,9 +1,10 @@
 class BackendApi {
-    static BASE_URL = "https://devjam-lab.azurewebsites.net"
-    // static BASE_URL = "http://localhost:7071"
+    // static BASE_URL = "https://devjam-lab.azurewebsites.net"
+    static BASE_URL = "http://localhost:7071"
     static API = {
         EVENTS: "/account/{{accountId}}/events/since/{{dateMs}}",
         EVENTS_BETWEEN: "/account/{{accountId}}/events/since/{{dateMs}}/to/{{dateToMs}}",
+        ACCOUNT_INVITATIONS: "/account/{{accountId}}/invitations",
         ACCOUNT: "/account/{{accountId}}",
         AUTH_SIGNIN: "/auth/signin",
         PROJECTS_CREATE: "/account/{{accountId}}/projects"
@@ -62,6 +63,17 @@ class BackendApi {
             const responseJson = await response.json();            
             return responseJson;
         },
+    }
+
+    static ACCOUNTS = {
+        async getAccountInvitations(accountId){        
+            const urlFunction = Handlebars.compile(`${BackendApi.BASE_URL}${BackendApi.API.ACCOUNT_INVITATIONS}`)
+            const url = urlFunction({accountId: accountId});
+            // console.log(url);
+            const response = await BackendApi._fetch(url);
+            const jsonResponse = await response.json();
+            return jsonResponse.items;        
+        }
     }
 
     static _authHeadersDecorator(headers){
@@ -125,5 +137,7 @@ class BackendApi {
         const jsonResponse = await response.json();
         return jsonResponse.item;
     }
+
+    
 
 }
