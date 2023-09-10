@@ -8,6 +8,9 @@ class OnboardingController {
         
         
         this.model = {
+            account: {
+                projects: []
+            },
             projects: [
                 {
                     name: "1st project",
@@ -116,8 +119,29 @@ class OnboardingController {
 
     static async getInstance(emitter){
         const a = new OnboardingController(emitter)
+        a.model.busy = true;
+        const {token, user} = await BackendApi.AUTH.me();
+
+        if(!user || !token)
+            window.location = "hello.html";
+
+        
+
+        a.model.user = user;
+        a.model.token = token
+        
+        try{
+            await a._loadAccount(a.model.user.authority[0].accountId);                    
+        }catch(error){
+            window.location = "hello.html?message=Session expired. Please log in again.";
+        }
+        a.model.busy = false;
         
         return a;
+    }
+
+    async _loadAccount(accountId){
+        this.model.account = await BackendApi.getAccount(accountId);        
     }
 
     async handleLogin(e, that){
