@@ -37,47 +37,33 @@
         <div class="container is-hidden" rv-class-is-hidden="model.busy">
             <h3 class="title is-3">Team Stats <span class="is-size-7 is-hidden" rv-class-is-hidden="model.account | empty">@{{model.account.name}}</span></h3>
             <nav class="level">
-              
-              <div class="level-item">
-                <div class="field">
-                  <label class="label">Filter by project:</label>
-                  <div class="control">
-                    <div class="select" rv-on-change="model.handlers._handleOnChangeProject">
-                      <select rv-value="model.forms.f1.f1.v">
-                        <option value="-1">All</option>
-                        <option rv-each-item="model.forms.f1.f1.e" rv-value="item.k">{{item.v}}</option>                        
-                      </select>
-                    </div>
-                  </div>
-                </div>    
-              </div>
-              <div class="level-item">
-                <div class="field">
-                  <label class="label">&nbsp;</label>
-                  <div class="control">
-                    <button class="button" rv-on-click="_handleRefreshEvents">
-                        <span class="icon is-small">
-                            <i class="fas fa-sync"></i>
-                        </span>
-                      </button>
-                  </div>
-                </div>    
-              </div>
-              <p class="level-item has-text-centered">
-                <span>&nbsp;</span>
-              </p>
-              <p class="level-item has-text-centered">
-                <span>&nbsp;</span>
-              </p>
-              <p class="level-item has-text-centered">
-                <span>&nbsp;</span>
-              </p>
-              <p class="level-item has-text-centered">
-                <span>&nbsp;</span>
-              </p>
-              <p class="level-item has-text-centered">
-                <span>&nbsp;</span>
-              </p>
+                <div class="level-left">
+                    <div class="level-item">
+                        <div class="field">
+                          <label class="label">Filter by project:</label>
+                          <div class="control">
+                            <div class="select" rv-on-change="model.handlers._handleOnChangeProject">
+                              <select rv-value="model.forms.f1.f1.v">
+                                <option value="-1">All</option>
+                                <option rv-each-item="model.forms.f1.f1.e" rv-value="item.k">{{item.v}}</option>                        
+                              </select>
+                            </div>
+                          </div>
+                        </div>    
+                      </div>
+                      <div class="level-item">
+                        <div class="field">
+                          <label class="label">&nbsp;</label>
+                          <div class="control">
+                            <button class="button" rv-on-click="_handleRefreshEvents">
+                                <span class="icon is-small">
+                                    <i class="fas fa-sync"></i>
+                                </span>
+                              </button>
+                          </div>
+                        </div>    
+                      </div>
+                </div>                            
             </nav>
 
             
