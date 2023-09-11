@@ -390,6 +390,7 @@ class AppDemo {
         var layout = {
             title: title,
             autosize: true,
+            showlegend: true,
             // width: 500,
             legend: {
                 x: 0,
