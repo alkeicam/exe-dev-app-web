@@ -61,6 +61,8 @@ class AppDemo {
                 "l_7": [],
                 "l_14": [],
                 "all_time": [],
+                "most_recent": {},
+                "most_recent_increment": {}
             },
             account: undefined,
             performance: {
@@ -236,7 +238,9 @@ class AppDemo {
 
         // project perspective
         
-        events = await that.populateEvents("a_execon","all_time");        
+        events = await that.populateEvents("a_execon","all_time");   
+        that.model.events.most_recent = events.filter((item)=>item.oper == "commit").sort((a,b)=>b.ct-a.ct)[0];     
+        that.model.events.most_recent_increment = events.filter((item)=>item.oper == "push").sort((a,b)=>b.ct-a.ct)[0];     
         
         await that.populateTrends(that.model.events["all_time"],"all_time", 7);        
         that.model.busy = false;

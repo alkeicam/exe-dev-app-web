@@ -158,6 +158,22 @@
                       </div>                                               
                     </div>
                   </div>
+                  <div class="level-item has-text-centered">
+                    <div class="box">
+                      <div>
+                        <p class="is-size-3"><i class="fas fa-box-open"></i></p>
+                        <p class="title">{{model.events.most_recent.ct | timeAgoMoment}} <span class="is-size-7">last code change</span></p>
+                      </div>                                               
+                    </div>
+                  </div>
+                  <div class="level-item has-text-centered">
+                    <div class="box">
+                      <div>
+                        <p class="is-size-3"><i class="fas fa-shipping-fast"></i></p>
+                        <p class="title">{{model.events.most_recent_increment.ct | timeAgoMoment}} <span class="is-size-7">last increment</span></p>
+                      </div>                                               
+                    </div>
+                  </div>
               </nav>
             </section>
             
