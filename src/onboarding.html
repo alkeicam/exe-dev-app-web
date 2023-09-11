@@ -36,8 +36,18 @@
     <div id="app">         
         <div class="container is-hidden" rv-class-is-hidden="model.busy">
             <nav class="navbar" role="navigation" aria-label="main navigation">
-              
-                <div id="navbarBasicExample" class="navbar-menu">
+                <div class="navbar-brand">
+                    <!-- <a class="navbar-item" href="https://bulma.io">
+                      <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28">
+                    </a> -->
+                
+                    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample" rv-on-click="_handleToggleMobileMenu" rv-class-is-active="model.menu.active">
+                      <span aria-hidden="true"></span>
+                      <span aria-hidden="true"></span>
+                      <span aria-hidden="true"></span>
+                    </a>
+                </div>
+                <div id="navbarBasicExample" class="navbar-menu" rv-class-is-active="model.menu.active">
                   <div class="navbar-start">
                     <a class="navbar-item" href="index.html">
                       Team Stats

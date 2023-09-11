@@ -103,6 +103,9 @@ class AppDemo {
                         e: [{k: "p1", v:"Projekt #1"}]
                     }
                 }                
+            },
+            menu:{
+                active: false
             }
 
         }
@@ -200,6 +203,10 @@ class AppDemo {
         
         a.model.busy = false;
         return a;
+    }
+
+    async _handleToggleMobileMenu(e, that){
+        that.model.menu.active = !that.model.menu.active;
     }
 
     async _loadAccount(accountId){

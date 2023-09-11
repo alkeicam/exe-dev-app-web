@@ -108,6 +108,9 @@ class OnboardingController {
             error:{
                 code: 0,
                 message: "OK"
+            },
+            menu:{
+                active: false
             }
         }
     }
@@ -145,6 +148,10 @@ class OnboardingController {
 
     async _loadAccount(accountId){
         this.model.account = await BackendApi.getAccount(accountId);        
+    }
+
+    async _handleToggleMobileMenu(e, that){
+        that.model.menu.active = !that.model.menu.active;
     }
 
     async _loadInvitations(accountId){
