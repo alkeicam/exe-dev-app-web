@@ -136,7 +136,7 @@ class OnboardingController {
             await a._loadInvitations(a.model.user.authority[0].accountId);
         }catch(error){
             console.error(error);
-            // window.location = "hello.html?message=Session expired. Please log in again.";
+            window.location = "hello.html?message=Session expired. Please log in again.";
         }
         a.model.busy = false;
         
