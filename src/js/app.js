@@ -55,6 +55,9 @@ class AppDemo {
             queryParams: {
                 i: undefined
             },
+            team: {
+                present: []
+            },
             events: {
                 "c_0": [],
                 "c_1": [],
@@ -220,6 +223,8 @@ class AppDemo {
         that.model.busy = true;
         let events = await that.populateEvents("a_execon","c_0");
         that.populatePerformers(events, "c_0");
+
+        that.model.team.present = events.map((item)=>item.user).filter((value, index, array) => array.indexOf(value) === index);
 
         events = await that.populateEvents("a_execon","c_1");
         that.populatePerformers(events, "c_1");
