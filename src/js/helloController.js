@@ -59,8 +59,7 @@ class HelloController {
             that.model.notBusy = false;
             if(!that._validateField("f1")||!that._validateField("f2"))
                 return;            
-            const {token, user} = await BackendApi.AUTH.signin(that.model.forms.f1.v, that.model.forms.f2.v)
-            that.model.notBusy = true;
+            const {token, user} = await BackendApi.AUTH.signin(that.model.forms.f1.v, that.model.forms.f2.v)            
             window.location = "index.html";
         }catch(error){
             that.model.notBusy = true;    

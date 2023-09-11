@@ -301,9 +301,9 @@ class OnboardingController {
 
         await that._loadAccount(that.model.user.authority[0].accountId);   
         await that._loadInvitations(that.model.user.authority[0].accountId);
-
-        that.model.busy = false;
+        
         that.model.modals.m2.active = false;
+        that.model.busy = false;
     }
 
     async _handleCancelAddInvitation(e, that){
