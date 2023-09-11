@@ -5,6 +5,7 @@ class BackendApi {
         EVENTS: "/account/{{accountId}}/events/since/{{dateMs}}",
         EVENTS_BETWEEN: "/account/{{accountId}}/events/since/{{dateMs}}/to/{{dateToMs}}",
         ACCOUNT_INVITATIONS: "/account/{{accountId}}/invitations",
+        ACCOUNT_PROJECT_INVITATION: "/account/{{accountId}}/projects/{{projectId}}/invitations",
         ACCOUNT: "/account/{{accountId}}",
         AUTH_SIGNIN: "/auth/signin",
         PROJECTS_CREATE: "/account/{{accountId}}/projects"
@@ -63,6 +64,25 @@ class BackendApi {
             const responseJson = await response.json();            
             return responseJson;
         },
+        INVITATIONS: {
+            async create(accountId, projectId, name, email, role){
+                const urlFunction = Handlebars.compile(`${BackendApi.BASE_URL}${BackendApi.API.ACCOUNT_PROJECT_INVITATION}`)
+                const url = urlFunction({
+                    accountId: accountId,
+                    projectId: projectId
+                });
+                // console.log(url);
+                const response = await BackendApi._fetch(url,{
+                    method: "POST", 
+                    headers: {
+                    "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({name: name, email: email, role: role}),
+                });
+                const responseJson = await response.json();            
+                return responseJson;
+            }
+        }
     }
 
     static ACCOUNTS = {

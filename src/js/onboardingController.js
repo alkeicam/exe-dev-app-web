@@ -79,6 +79,7 @@ class OnboardingController {
             },            
             handlers: {
                 // handleHide: this.handleHide.bind(this),
+                _handleInviteParticipant: this._handleInviteParticipant.bind(this)
             },
             process:{
                 step: "ONBOARDING" // PREPARE // WORKOUT                
@@ -98,11 +99,38 @@ class OnboardingController {
                         code: 0,
                         message: "OK"
                     }
+                },
+                f3: {
+                    v: "",
+                    e: {
+                        code: 0,
+                        message: "OK"
+                    }
+                },
+                f4: {
+                    v: -1,
+                    e: {
+                        code: 0,
+                        message: "OK"
+                    },
+                    d: [
+                        {id:"Developer", value:"Developer"},
+                        {id:"FrontendDeveloper", value:"Frontend Developer"},
+                        {id:"BackendDeveloper", value:"Backend Developer"},
+                        {id:"MobileDeveloper", value:"Mobile Developer"},
+                        {id:"FullstackDeveloper", value:"Fullstack Developer"},
+                        {id:"TechLead", value:"Tech Lead"}                       
+                    ]
                 }
             },
             modals: {
                 m1: {
                     active: false
+                },
+                m2: {
+                    active: false,
+                    f1: "",
+                    f2: ""
                 }
             },
             error:{
@@ -153,6 +181,8 @@ class OnboardingController {
     async _handleToggleMobileMenu(e, that){
         that.model.menu.active = !that.model.menu.active;
     }
+
+    
 
     async _loadInvitations(accountId){
         const that = this;
@@ -206,12 +236,32 @@ class OnboardingController {
 
                 break;
             case "f2":
-                if(this.model.forms[field].v && this.model.forms[field].v.length>=1){
+                if(this.model.forms[field].v && this.model.forms[field].v.length>=3){
                     this.model.forms[field].e.code=0
                     this.model.forms[field].e.message="OK"
                 }else{
                     this.model.forms[field].e.code=1
-                    this.model.forms[field].e.message="Please provide password"
+                    this.model.forms[field].e.message="Please provide valid name (at least 3 chars)"
+                    result = false;
+                }
+                break;
+            case "f3":
+                if(this.model.forms[field].v.match(/(?:[a-z0-9+!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/gi)){
+                    this.model.forms[field].e.code=0
+                    this.model.forms[field].e.message="OK"
+                }else{
+                    this.model.forms[field].e.code=1
+                    this.model.forms[field].e.message="Please provide valid email"
+                    result = false;
+                }
+                break;
+            case "f4":
+                if(this.model.forms[field].v != -1){
+                    this.model.forms[field].e.code=0
+                    this.model.forms[field].e.message="OK"
+                }else{
+                    this.model.forms[field].e.code=1
+                    this.model.forms[field].e.message="Please select role"
                     result = false;
                 }
                 break;
@@ -226,6 +276,38 @@ class OnboardingController {
         
         
  
+    }
+
+    async _handleInviteParticipant(e, that){
+        that.model.modals.m2.active = true;
+        that.model.modals.m2.f1 = e.target.dataset.accountId;
+        that.model.modals.m2.f2 = e.target.dataset.projectId;
+    }
+
+    async _handleAddInvitation(e, that){
+        that.model.busy = true;
+        const valid1 = await that._validateField("f2");
+        const valid2 = await that._validateField("f3");
+        const valid3 = await that._validateField("f4");
+
+        if(!valid1||!valid2||!valid3)
+            return;
+
+        const me = await BackendApi.AUTH.me();
+
+        // me.user.authority[0].accountId, that.model.forms.f1.v
+
+        const invitation = await BackendApi.PROJECTS.INVITATIONS.create(that.model.modals.m2.f1, that.model.modals.m2.f2, that.model.forms.f2.v, that.model.forms.f3.v, that.model.forms.f4.v); 
+
+        await that._loadAccount(a.model.user.authority[0].accountId);   
+        await that._loadInvitations(a.model.user.authority[0].accountId);
+
+        that.model.busy = false;
+        that.model.modals.m2.active = false;
+    }
+
+    async _handleCancelAddInvitation(e, that){
+        that.model.modals.m2.active = false;
     }
 
     async _handleAddProjectModal(e, that){

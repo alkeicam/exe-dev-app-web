@@ -110,11 +110,11 @@
                         <div class="level-item">
                             <div class="field">                          
                               <div class="control">
-                                <button class="button" rv-on-click="_handleRefreshEvents">
+                                <button class="button" rv-on-click="model.handlers._handleInviteParticipant">
                                     <span class="icon is-small">
                                         <i class="fas fa-user-plus"></i>
                                     </span>
-                                    <span class="mx-2">Invite participant</span>
+                                    <span class="mx-2" rv-data-project-id="project.id" rv-data-account-id="model.account.id">Invite participant</span>
                                   </button>
                               </div>
                             </div>    
@@ -195,7 +195,60 @@
             </div>
             
             <button class="modal-close is-large" aria-label="close"></button>
-        </div>                   
+        </div>  
+        <div class="modal " rv-class-is-active="model.modals.m2.active">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                  <p class="modal-card-title">Invite participant</p>
+                  <button class="delete" aria-label="close"></button>
+                </header>
+                <section class="modal-card-body">
+                    <div class="field">
+                        <label class="label">Name</label>
+                        <div class="control has-icons-left has-icons-right">
+                            <input class="input" type="text" placeholder="John Doe" rv-value="model.forms.f2.v" rv-class-is-danger="model.forms.f2.e.code | neq 0" data-field-id="f2" rv-on-input="handleInput">
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-paper-plane"></i>
+                            </span>
+                            <span class="icon is-small is-right is-hidden" rv-class-is-hidden="model.forms.f2.e.code | eq 0">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </span>
+                        </div>
+                        <p class="help is-danger is-hidden" rv-class-is-hidden="model.forms.f2.e.code | eq 0">{{model.forms.f2.e.message}}</p>
+                    </div>  
+                    <div class="field">
+                        <label class="label">Email</label>
+                        <div class="control has-icons-left has-icons-right">
+                            <input class="input" type="text" placeholder="" rv-value="model.forms.f3.v" rv-class-is-danger="model.forms.f3.e.code | neq 0" data-field-id="f3" rv-on-input="handleInput">
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-paper-plane"></i>
+                            </span>
+                            <span class="icon is-small is-right is-hidden" rv-class-is-hidden="model.forms.f3.e.code | eq 0">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </span>
+                        </div>
+                        <p class="help is-danger is-hidden" rv-class-is-hidden="model.forms.f3.e.code | eq 0">{{model.forms.f3.e.message}}</p>
+                    </div> 
+                    <div class="field">
+                        <label class="label">Role</label>
+                        <div class="select">
+                            <select rv-value="model.forms.f4.v">
+                              <option value="-1">Choose role</option>
+                              <option rv-each-role="model.forms.f4.d" rv-value="role.id">{{role.value}}</option>
+                            </select>
+                        </div>
+                        <p class="help is-danger is-hidden" rv-class-is-hidden="model.forms.f4.e.code | eq 0">{{model.forms.f4.e.message}}</p>
+                    </div> 
+                </section>
+                <footer class="modal-card-foot">
+                  <button class="button is-success" rv-on-click="_handleAddInvitation">Save</button>
+                  <button class="button" rv-on-click="_handleCancelAddInvitation">Cancel</button>
+                </footer>
+            </div>
+            
+            <button class="modal-close is-large" aria-label="close"></button>
+        </div>                  
     </div>
     
         
