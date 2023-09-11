@@ -33,7 +33,10 @@
     rivets.formatters.timeAgoMoment = function (value) {
         let result = 'moment lib not detected';
         if(moment){
-            result = moment.utc(value).fromNow();
+            if(value)
+                result = moment.utc(value).fromNow();
+            else 
+                result = "Long time ago"
         }
         return result;        
     }

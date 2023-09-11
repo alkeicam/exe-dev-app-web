@@ -157,35 +157,47 @@
                         <p class="title">{{model.projects.c_0.c | numberRoundDecimal 2}} <span class="is-size-7">Lines</span></p>
                       </div>                                               
                     </div>
-                  </div>
-                  <div class="level-item has-text-centered">
-                    <div class="box">
-                      <div>
-                        <p class="is-size-3"><i class="fas fa-box-open"></i></p>
-                        <p class="title">{{model.events.most_recent.ct | timeAgoMoment}} <span class="is-size-7">last code change</span></p>
-                      </div>                                               
-                    </div>
-                  </div>
-                  <div class="level-item has-text-centered">
-                    <div class="box">
-                      <div>
-                        <p class="is-size-3"><i class="fas fa-shipping-fast"></i></p>
-                        <p class="title">{{model.events.most_recent_increment.ct | timeAgoMoment}} <span class="is-size-7">last increment</span></p>
-                      </div>                                               
-                    </div>
-                  </div>
-                  <div class="level-item has-text-centered">
-                    <div class="box">
-                      <div>
-                        <p class="is-size-3"><i class="fas fa-user-friends"></i></p>
-                        <p class="is-size-7" rv-each-participant="model.team.present">{{participant}}</p>
-                        <p class="title"><span class="is-size-7">today present</span></p>
-                      </div>                                               
-                    </div>
-                  </div>
+                  </div>                  
               </nav>
             </section>
-            
+            <section class="section" style="padding: 0.5rem 0.5rem;">
+                <h3 class="title is-4">Activity Log<span class="is-size-7 is-hidden" rv-class-is-hidden="model.forms.f1.f1.v | eq -1">@{{model.selectedProject.name}}</span></h3>
+                
+                <nav class="level">                                    
+                    <div class="level-item has-text-centered">
+                      <div class="box">
+                        <div>
+                          <p class="is-size-3"><i class="fas fa-laptop-code"></i></p>
+                          <p class="title">{{model.events.most_recent.ct | timeAgoMoment}} </p>
+                          <p><span class="is-size-7">last code change</span></p>
+                        </div>                                               
+                      </div>
+                    </div>
+                    <div class="level-item has-text-centered">
+                      <div class="box">
+                        <div>
+                          <p class="is-size-3"><i class="fas fa-shipping-fast"></i></p>
+                          <p class="title">{{model.events.most_recent_increment.ct | timeAgoMoment}} </p>
+                          <p><span class="is-size-7">last increment</span></p>
+                        </div>                                               
+                      </div>
+                    </div>
+                    <div class="level-item has-text-centered">
+                      <div class="box">
+                        <div>
+                            <p class="is-size-3"><i class="fas fa-user-friends"></i></p>
+                            <p class="is-size-7" rv-each-participant="model.team.present">{{participant}}</p>
+                            <p class="title is-hidden" rv-class-is-hidden="model.team.present | sizeGte 1 ">Ups...</p>
+                            <p class="title">
+                                <span class="is-size-7 is-hidden" rv-class-is-hidden="model.team.present | sizeLt 1 ">participated today</span>                                                                
+                            </p>
+                            <p class="is-size-7 is-hidden" rv-class-is-hidden="model.team.present | sizeGte 1 ">No participants today :(</p>
+                                                        
+                        </div>                                               
+                      </div>
+                    </div>
+                </nav>
+              </section>
             
             <section class="section" style="padding: 0.5rem 0.5rem;">
                 <h3 class="title is-4">Top Performers <span class="is-size-7 is-hidden" rv-class-is-hidden="model.forms.f1.f1.v | eq -1">@{{model.selectedProject.name}}</span></h3>

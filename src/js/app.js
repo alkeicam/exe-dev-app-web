@@ -124,20 +124,29 @@ class AppDemo {
 
     async _handleOnChangeProject(e, that){
         that.model.busy = true;
-        const selectedProjectId = that.model.forms.f1.f1.v; 
-        that.model.selectedProject = that.model.account.projects.find((item)=>item.id == selectedProjectId);
-        that.populatePerformers(that.model.events["c_0"], "c_0", selectedProjectId!=-1?selectedProjectId:undefined);
-        that.populatePerformers(that.model.events["c_1"], "c_1", selectedProjectId!=-1?selectedProjectId:undefined);
-        that.populatePerformers(that.model.events["l_7"], "l_7", selectedProjectId!=-1?selectedProjectId:undefined);
-        that.populatePerformers(that.model.events["l_14"], "l_14", selectedProjectId!=-1?selectedProjectId:undefined);
+        try{
+            const selectedProjectId = that.model.forms.f1.f1.v; 
+            that.model.selectedProject = that.model.account.projects.find((item)=>item.id == selectedProjectId);
+            that.populatePerformers(that.model.events["c_0"], "c_0", selectedProjectId!=-1?selectedProjectId:undefined);
+            that.populatePerformers(that.model.events["c_1"], "c_1", selectedProjectId!=-1?selectedProjectId:undefined);
+            that.populatePerformers(that.model.events["l_7"], "l_7", selectedProjectId!=-1?selectedProjectId:undefined);
+            that.populatePerformers(that.model.events["l_14"], "l_14", selectedProjectId!=-1?selectedProjectId:undefined);
 
-        that.populateProjects(that.model.events["c_0"], "c_0", selectedProjectId!=-1?selectedProjectId:undefined);
-        that.populateProjects(that.model.events["c_1"], "c_1", selectedProjectId!=-1?selectedProjectId:undefined);
-        that.populateProjects(that.model.events["l_7"], "l_7", selectedProjectId!=-1?selectedProjectId:undefined);
-        that.populateProjects(that.model.events["l_14"], "l_14", selectedProjectId!=-1?selectedProjectId:undefined);
+            that.populateProjects(that.model.events["c_0"], "c_0", selectedProjectId!=-1?selectedProjectId:undefined);
+            that.populateProjects(that.model.events["c_1"], "c_1", selectedProjectId!=-1?selectedProjectId:undefined);
+            that.populateProjects(that.model.events["l_7"], "l_7", selectedProjectId!=-1?selectedProjectId:undefined);
+            that.populateProjects(that.model.events["l_14"], "l_14", selectedProjectId!=-1?selectedProjectId:undefined);
 
-        const trends = await that.populateTrends(that.model.events.all_time,"all_time", 7, selectedProjectId!=-1?selectedProjectId:undefined);
-        that.drawTrends(trends)
+            const trends = await that.populateTrends(that.model.events.all_time,"all_time", 7, selectedProjectId!=-1?selectedProjectId:undefined);
+            that.drawTrends(trends)
+
+            await that._populateLastIncrementAndTeam(selectedProjectId!=-1?selectedProjectId:undefined);
+        }
+        catch(error){
+            window.location = "hello.html"
+        }
+        
+
         that.model.busy = false;
     }
 
@@ -223,9 +232,7 @@ class AppDemo {
         that.model.busy = true;
         let events = await that.populateEvents("a_execon","c_0");
         that.populatePerformers(events, "c_0");
-
-        that.model.team.present = events.map((item)=>item.user).filter((value, index, array) => array.indexOf(value) === index);
-
+        
         events = await that.populateEvents("a_execon","c_1");
         that.populatePerformers(events, "c_1");
 
@@ -244,13 +251,22 @@ class AppDemo {
         // project perspective
         
         events = await that.populateEvents("a_execon","all_time");   
-        that.model.events.most_recent = events.filter((item)=>item.oper == "commit").sort((a,b)=>b.ct-a.ct)[0];     
-        that.model.events.most_recent_increment = events.filter((item)=>item.oper == "push").sort((a,b)=>b.ct-a.ct)[0];     
         
-        await that.populateTrends(that.model.events["all_time"],"all_time", 7);        
+        await that._populateLastIncrementAndTeam();
+        
+        await that.populateTrends(that.model.events["all_time"],"all_time", 7);    
+        
+        that.model.forms.f1.f1.v = -1
+        
         that.model.busy = false;
         that.drawTrends(that.model.trends.all_time);
         
+    }
+
+    async _populateLastIncrementAndTeam(projectId){
+        this.model.team.present = this.model.events.c_0.filter((item)=>!projectId||item.project==projectId).map((item)=>item.user).filter((value, index, array) => array.indexOf(value) === index);
+        this.model.events.most_recent = this.model.events.all_time.filter((item)=>!projectId||item.project==projectId).filter((item)=>item.oper == "commit").sort((a,b)=>b.ct-a.ct)[0];     
+        this.model.events.most_recent_increment = this.model.events.all_time.filter((item)=>!projectId||item.project==projectId).filter((item)=>item.oper == "push").sort((a,b)=>b.ct-a.ct)[0];     
     }
         
 
