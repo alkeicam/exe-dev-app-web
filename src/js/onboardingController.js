@@ -299,8 +299,8 @@ class OnboardingController {
 
         const invitation = await BackendApi.PROJECTS.INVITATIONS.create(that.model.modals.m2.f1, that.model.modals.m2.f2, that.model.forms.f2.v, that.model.forms.f3.v, that.model.forms.f4.v); 
 
-        await that._loadAccount(a.model.user.authority[0].accountId);   
-        await that._loadInvitations(a.model.user.authority[0].accountId);
+        await that._loadAccount(that.model.user.authority[0].accountId);   
+        await that._loadInvitations(that.model.user.authority[0].accountId);
 
         that.model.busy = false;
         that.model.modals.m2.active = false;
