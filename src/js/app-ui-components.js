@@ -36,8 +36,18 @@
     }
     // class SomeController{}
     
-    
 
+    /**
+     * Renders card component that displays top performers from stats.
+     * Folling attributes are required on this tag
+     * heading, when, metric, records, prop-a, prop-b
+     * @param {string} heading text for heading
+     * @param {string} when time description
+     * @param {string} metric metric description
+     * @param {string} prop-a name of the main property
+     * @param {string} prop-b name of the metric property
+     * @param {string} records property holding records for which top performenrs using metric will be displayed
+     */
     rivets.components['app-top-listing'] = {
         template: function() {
             const template = `
