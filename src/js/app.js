@@ -414,8 +414,8 @@ class AppDemo {
         await this._drawStatsLinePlot("individualGraphs", "graphUserLines", userTrends, "users", "commits", "Daily User Lines");
         await this._drawStatsLinePlot("individualGraphs", "graphUserEntropy", userTrends, "users", "entropy", "Daily User Entropy");
         
-        await this._drawStatsLinePlot("maGraphs", "graphUserCalsMa", userTrends, "usersMa", "cals", "User Contribution");
-        await this._drawStatsLinePlot("maGraphs", "graphUserEntropyMa", userTrends, "usersMa", "entropy", "User Efficiency");
+        // await this._drawStatsLinePlot("maGraphs", "graphUserCalsMa", userTrends, "usersMa", "cals", "User Contribution");
+        // await this._drawStatsLinePlot("maGraphs", "graphUserEntropyMa", userTrends, "usersMa", "entropy", "User Efficiency");
     }
 
     /**
