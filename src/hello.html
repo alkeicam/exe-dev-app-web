@@ -24,6 +24,7 @@
 
     <script src="js/rivet.js"></script>
     <script src="js/rivet-ext.js"></script>
+    <script src="js/ui-components.js"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>        
     
     
@@ -36,62 +37,20 @@
     <div id="app"> 
         <div class="container is-hidden" rv-class-is-hidden="model.notBusy | eq false">
             <section class="section" style="padding: 0.5rem 0.5rem;">                    
-                <article class="message is-hidden" rv-class-is-hidden="model.process.step | neq 'ONBOARDING'">
-                    <div class="box" style="padding-bottom: 30%; margin-top: 10vh;">
-                        
-                        
-                        <div class="columns">
-                            <div class="column is-offset-4 is-one-third">
-                                <p class="heading">Hello</p>
-                                <p class="title"><i class='fas fa-frog'></i>&nbsp;Welcome to Founder's Assistant</p>
-                                <p class="help has-text-danger" rv-class-is-hidden="model.error.code | eq 0"><strong><i class="fas fa-exclamation-triangle"></i> Invalid login attempt.</strong> {{model.error.message}}</a></p>
-                                <!-- <article class="message is-info">
-                                    <div class="message-header">
-                                    <p>Join us</p>                  
-                                    </div>
-                                    <div class="message-body">
-                                    You can join us only by invitation. Find a Startup that uses Dev Workout and you will be given an invitation details.
-                                    </div>
-                                </article> -->
-                                <div class="field">
-                                    <label class="label">Email</label>
-                                    <div class="control has-icons-left has-icons-right">
-                                        <input class="input" type="text" placeholder="" rv-value="model.forms.f1.v" rv-class-is-danger="model.forms.f1.e.code | neq 0" data-field-id="f1" rv-on-input="handleInput">
-                                        <span class="icon is-small is-left">
-                                            <i class="fas fa-paper-plane"></i>
-                                        </span>
-                                        <span class="icon is-small is-right is-hidden" rv-class-is-hidden="model.forms.f1.e.code | eq 0">
-                                            <i class="fas fa-exclamation-triangle"></i>
-                                        </span>
-                                    </div>
-                                    <p class="help is-danger is-hidden" rv-class-is-hidden="model.forms.f1.e.code | eq 0">{{model.forms.f1.e.message}}</p>
-                                </div>
-                                <div class="field">
-                                    <label class="label">Password</label>
-                                    <div class="control has-icons-left has-icons-right">
-                                        <input class="input" type="password" placeholder="" rv-value="model.forms.f2.v" rv-class-is-danger="model.forms.f2.e.code | neq 0" data-field-id="f2" rv-on-input="handleInput">
-                                        <span class="icon is-small is-left">
-                                            <i class="fas fa-key"></i>
-                                        </span>
-                                        <span class="icon is-small is-right is-hidden" rv-class-is-hidden="model.forms.f2.e.code | eq 0">
-                                            <i class="fas fa-exclamation-triangle"></i>
-                                        </span>
-                                    </div>
-                                    <p class="help is-danger is-hidden" rv-class-is-hidden="model.forms.f2.e.code | eq 0">{{model.forms.f2.e.message}}</p>
-                                </div>
-                                <div class="field is-grouped">
-                                    <div class="control">
-                                    <button class="button is-link" rv-on-click="handleLogin">Sign in</button>
-                                    </div>
-                                    <!-- <div class="control">
-                                    <button class="button is-link is-light">Cancel</button>
-                                    </div> -->
-                                </div>
-                                <p class="help">We are in early beta, access by invitations only. Contact us to claim account in the early access programme: <a href="mailto:maciej.grula@execon.pl">maciej.grula@execon.pl</a></p>
-                            </div>
-                            
-                        </div>                          
-                    </div>
+                <article class="message is-hidden" rv-class-is-hidden="model.process.step | neq 'ONBOARDING'">                    
+                    <!-- heading, title, titleIconClasses, failedMsg, errorMsg, loginLabel, passLabel, signCtaLabel, cancelCtaLabel, helpMsg, successURL                       -->
+                    <g-sign-in-email-pass 
+                        heading="Hello" 
+                        title="Welcome to Founder's Assistant" 
+                        title-icon-classes="fas fa-frog"
+                        failed-msg="Invalid login attempt"
+                        login-label="Email"
+                        pass-label="Password"
+                        sign-cta-label="Sign in"
+                        cancel-cta-label="Cancel"
+                        success-url="index.html"
+                        help-msg='We are in early beta, access by invitations only. Contact us to claim account in the early access programme: <a href="mailto:maciej.grula@execon.pl">maciej.grula@execon.pl</a>'>
+                    </g-sign-in-email-pass>
                 </article>
             </section>            
         </div>  
@@ -124,6 +83,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.8/handlebars.min.js" integrity="sha512-E1dSFxg+wsfJ4HKjutk/WaCzK7S2wv1POn1RRPGh8ZK+ag9l244Vqxji3r6wgz9YBf6+vhQEYJZpSjqWFPg9gg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="js/api.js"></script>
     <script src="js/helloController.js"></script>
+    
     <!-- <script src="js/onboardingModalController.js"></script>
     <script src="js/preferencesModalController.js"></script> -->
     <script>

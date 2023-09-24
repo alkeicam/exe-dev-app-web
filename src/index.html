@@ -24,6 +24,8 @@
 
     <script src="js/rivet.js"></script>
     <script src="js/rivet-ext.js"></script>
+    <script src="js/ui-components.js"></script>
+    <script src="js/app-ui-components.js"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>        
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="js/plotly-2.24.1.min.js" charset="utf-8"></script>
@@ -384,7 +386,7 @@
                     </div>      
                     <div class="level-item has-text-centered">
                         <div class="box">
-                        <p class="heading">Top Changes</p>
+                            <p class="heading">Top Changes</p>
                             <table class="table">
                                 <thead>
                                 <tr>
@@ -421,6 +423,15 @@
                         </div>
                     </div>          
                     <div class="level-item has-text-centered">
+                        <app-top-listing
+                            heading="Top Changes",
+                            when="Last 14 days",
+                            metric="#Lines",
+                            records="model.performance.l_14.liners",
+                            prop-a="user",
+                            prop-b="l"
+                        >                            
+                        </app-top-listing>
                         <div class="box">
                         <p class="heading">Top Changes</p>
                             <table class="table">
