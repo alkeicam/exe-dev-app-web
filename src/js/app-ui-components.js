@@ -1,5 +1,39 @@
 (function(){
 
+    /**
+     * Renders stats plot using value provided in rv-plot-stats attribute.
+     * @param {*} el must provide followind data-* attributes: data-kind data-effort-key data-title
+     * @param {*} value observable stats object that will be plotted
+     */
+    rivets.binders["plot-stats"] = function(el, value) {
+        const stats = value
+        const dataset = el.dataset;
+
+        const graphData = [];
+
+        stats[dataset.kind].forEach((user)=>{
+            const data = {
+                x: stats.days.map(item=>item.dayName),
+                y: user.daily.map(item=>item.value[dataset.effortKey]),
+                mode: 'lines',
+                name: user.user
+            }
+            graphData.push(data);
+        })
+
+        var layout = {
+            title: dataset.title,
+            autosize: true,
+            showlegend: true,
+            // width: 500,
+            legend: {
+                x: 0,
+                y: -0.3
+            }
+        };        
+
+        Plotly.newPlot(el, graphData, layout,  {displayModeBar: false, responsive: true});
+    }
 
     // class SomeController{}
     
@@ -60,9 +94,6 @@
             }                    
             return controller;
         }
-    }
-    
-       
-    
-    
+    }        
+               
 })();
