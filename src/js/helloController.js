@@ -49,6 +49,12 @@ class HelloController {
 
     static async getInstance(emitter){
         const a = new HelloController(emitter)
+        a.emitter.on("ui:busy",()=>{
+            a.model.notBusy = false
+        })
+        a.emitter.on("ui:notBusy",()=>{
+            a.model.notBusy = true
+        })
         
         return a;
     }

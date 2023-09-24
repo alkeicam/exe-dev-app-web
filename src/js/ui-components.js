@@ -323,7 +323,7 @@
               return template;
           },
         static: ['heading','title','titleIconClasses','failedMsg', 'loginLabel', 'passLabel', 'signCtaLabel', 'cancelCtaLabel', 'helpMsg', 'successUrl'],
-        // dynamic bound: 'errorMsg'
+        // dynamic bound: 'errorMsg','emitter'
         initialize: function(el, data) {
             
             const controller = {
