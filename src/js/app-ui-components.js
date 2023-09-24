@@ -34,7 +34,6 @@
 
         Plotly.newPlot(el, graphData, layout,  {displayModeBar: false, responsive: true});
     }
-
     // class SomeController{}
     
     rivets.components['app-top-listing'] = {
