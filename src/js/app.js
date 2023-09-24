@@ -408,11 +408,13 @@ class AppDemo {
      * @param {Stats} userTrends 
      */
     async drawTrends(userTrends){
+        // moved to html rv-plot-stats divs
+
         //
-        await this._drawStatsLinePlot("individualGraphs", "graphUserCals", userTrends, "users", "cals", "Daily User Calories");
-        await this._drawStatsLinePlot("individualGraphs", "graphUserCommits", userTrends, "users", "commits", "Daily User Commits");
-        await this._drawStatsLinePlot("individualGraphs", "graphUserLines", userTrends, "users", "commits", "Daily User Lines");
-        await this._drawStatsLinePlot("individualGraphs", "graphUserEntropy", userTrends, "users", "entropy", "Daily User Entropy");
+        // await this._drawStatsLinePlot("individualGraphs", "graphUserCals", userTrends, "users", "cals", "Daily User Calories");
+        // await this._drawStatsLinePlot("individualGraphs", "graphUserCommits", userTrends, "users", "commits", "Daily User Commits");
+        // await this._drawStatsLinePlot("individualGraphs", "graphUserLines", userTrends, "users", "commits", "Daily User Lines");
+        // await this._drawStatsLinePlot("individualGraphs", "graphUserEntropy", userTrends, "users", "entropy", "Daily User Entropy");
         
         // await this._drawStatsLinePlot("maGraphs", "graphUserCalsMa", userTrends, "usersMa", "cals", "User Contribution");
         // await this._drawStatsLinePlot("maGraphs", "graphUserEntropyMa", userTrends, "usersMa", "entropy", "User Efficiency");

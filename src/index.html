@@ -348,11 +348,12 @@
             <section class="section mt-6" style="padding: 0.5rem 0.5rem;">
                 <h3 class="title is-3 ">Individual stats</h3>
                 <h3 class="title is-4 ">Performance</h3>
-                <div id="individualGraphs">
-                    <!-- <div id="graphUserCals"></div>
-                    <div id="graphUserCommits"></div> -->
-                    <!-- <div id="graphUserLines"></div> -->
-                </div>
+                <div data-kind="users" data-effort-key="cals" data-title="Daily User Calories" rv-plot-stats="model.trends.all_time"></div>
+                <div data-kind="users" data-effort-key="commits" data-title="Daily User Commits" rv-plot-stats="model.trends.all_time"></div>
+                <div data-kind="users" data-effort-key="lines" data-title="Daily User Lines" rv-plot-stats="model.trends.all_time"></div>
+                <div data-kind="users" data-effort-key="entropy" data-title="Daily User Entropy" rv-plot-stats="model.trends.all_time"></div>
+                
+                <!--  -->
                 
                 <!-- <h3 class="title is-4">Trends & Dynamics</h3>
                 <div id="maGraphs">
