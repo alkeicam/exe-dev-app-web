@@ -37,6 +37,7 @@
     // class SomeController{}
     
     
+
     rivets.components['app-top-listing'] = {
         template: function() {
             const template = `
