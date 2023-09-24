@@ -206,221 +206,125 @@
                 
                 <nav class="level">                
                     <div class="level-item has-text-centered">
-                        <div class="box">
-                          
-                        <p class="heading">Top Performers</p>
-                            <table class="table">
-                                <thead>
-                                <tr>
-                                    <th><abbr title="Position">Today</abbr></th>
-                                    <th><abbr title="Played">Cal</abbr></th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr rv-each-user="model.performance.c_0.performers">
-                                    <th class="is-size-7">{{user.user}}</th>
-                                    <td class="is-size-7">{{user.s | numberRoundDecimal 2}}</td>
-                                </tr>                      
-                                </tbody>
-                            </table>                
-                        </div>
+                        <app-top-listing
+                            heading="Top Performers",
+                            when="Today",
+                            metric="Cal",
+                            records="model.performance.c_0.performers",
+                            prop-a="user",
+                            prop-b="s"
+                            prop-round="2">                            
+                        </app-top-listing>                        
                     </div>
                     <div class="level-item has-text-centered">
-                        <div class="box">
-                        <p class="heading">Top Performers</p>
-                            <table class="table">
-                                <thead>
-                                <tr>
-                                    <th><abbr title="Position">Yesterday</abbr></th>
-                                    <th><abbr title="Played">Cal</abbr></th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr rv-each-user="model.performance.c_1.performers">
-                                    <th class="is-size-7">{{user.user}}</th>
-                                    <td class="is-size-7">{{user.s | numberRoundDecimal 2}}</td>
-                                </tr>                      
-                                </tbody>
-                            </table>                
-                        </div>
+                        <app-top-listing
+                            heading="Top Performers",
+                            when="Yesterday",
+                            metric="Cal",
+                            records="model.performance.c_1.performers",
+                            prop-a="user",
+                            prop-b="s"
+                            prop-round="2">                            
+                        </app-top-listing>                        
                     </div>
                     <div class="level-item has-text-centered">
-                        <div class="box">
-                        <p class="heading">Top Performers</p>
-                            <table class="table">
-                                <thead>
-                                <tr>
-                                    <th><abbr title="Position">Last 7 days</abbr></th>
-                                    <th><abbr title="Played">Cal</abbr></th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr rv-each-user="model.performance.l_7.performers">
-                                    <th class="is-size-7">{{user.user}}</th>
-                                    <td class="is-size-7">{{user.s | numberRoundDecimal 2}}</td>
-                                </tr>                      
-                                </tbody>
-                            </table>                
-                        </div>
+                        <app-top-listing
+                            heading="Top Performers",
+                            when="Last 7 days",
+                            metric="Cal",
+                            records="model.performance.l_7.performers",
+                            prop-a="user",
+                            prop-b="s"
+                            prop-round="2">                            
+                        </app-top-listing>                        
                     </div>
                     <div class="level-item has-text-centered">
-                        <div class="box">
-                        <p class="heading">Top Performers</p>
-                            <table class="table">
-                                <thead>
-                                <tr>
-                                    <th><abbr title="Position">Last 14 days</abbr></th>
-                                    <th><abbr title="Played">Cal</abbr></th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr rv-each-user="model.performance.l_14.performers">
-                                    <th class="is-size-7">{{user.user}}</th>
-                                    <td class="is-size-7">{{user.s | numberRoundDecimal 2}}</td>
-                                </tr>                      
-                                </tbody>
-                            </table>                
-                        </div>
+                        <app-top-listing
+                            heading="Top Performers",
+                            when="Last 14 days",
+                            metric="Cal",
+                            records="model.performance.l_14.performers",
+                            prop-a="user",
+                            prop-b="s"
+                            prop-round="2">                            
+                        </app-top-listing>                         
                     </div>
                     
                 </nav> 
                 <h3 class="title is-4">Top Commiters <span class="is-size-7 is-hidden" rv-class-is-hidden="model.forms.f1.f1.v | eq -1">@{{model.selectedProject.name}}</span></h3>
                 <nav class="level">                
                     <div class="level-item has-text-centered">
-                        <div class="box">
-                        <p class="heading">Top Commiters</p>
-                            <table class="table">
-                                <thead>
-                                <tr>
-                                    <th><abbr title="Position">Today</abbr></th>
-                                    <th><abbr title="Played">#Commits</abbr></th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr rv-each-user="model.performance.c_0.commiters">
-                                    <th class="is-size-7">{{user.user}}</th>
-                                    <td class="is-size-7">{{user.c}}</td>
-                                </tr>                      
-                                </tbody>
-                            </table>                
-                        </div>
+                        <app-top-listing
+                            heading="Top Commiters",
+                            when="Today",
+                            metric="#Commits",
+                            records="model.performance.c_0.commiters",
+                            prop-a="user",
+                            prop-b="c">                            
+                        </app-top-listing>                        
                     </div>  
                     <div class="level-item has-text-centered">
-                        <div class="box">
-                        <p class="heading">Top Commiters</p>
-                            <table class="table">
-                                <thead>
-                                <tr>
-                                    <th><abbr title="Position">Yesterday</abbr></th>
-                                    <th><abbr title="Played">#Commits</abbr></th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr rv-each-user="model.performance.c_1.commiters">
-                                    <th class="is-size-7">{{user.user}}</th>
-                                    <td class="is-size-7">{{user.c}}</td>
-                                </tr>                      
-                                </tbody>
-                            </table>                
-                        </div>
+                        <app-top-listing
+                            heading="Top Commiters",
+                            when="Yesterday",
+                            metric="#Commits",
+                            records="model.performance.c_1.commiters",
+                            prop-a="user",
+                            prop-b="c">                            
+                        </app-top-listing>                         
                     </div>                                                      
                     <div class="level-item has-text-centered">
-                        <div class="box">
-                        <p class="heading">Top Commiters</p>
-                            <table class="table">
-                                <thead>
-                                <tr>
-                                    <th><abbr title="Position">Last 7 days</abbr></th>
-                                    <th><abbr title="Played">#Commits</abbr></th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr rv-each-user="model.performance.l_7.commiters">
-                                    <th class="is-size-7">{{user.user}}</th>
-                                    <td class="is-size-7">{{user.c}}</td>
-                                </tr>                      
-                                </tbody>
-                            </table>                
-                        </div>
+                        <app-top-listing
+                            heading="Top Commiters",
+                            when="Last 7 days",
+                            metric="#Commits",
+                            records="model.performance.l_7.commiters",
+                            prop-a="user",
+                            prop-b="c">                            
+                        </app-top-listing>                        
                     </div> 
                     <div class="level-item has-text-centered">
-                        <div class="box">
-                        <p class="heading">Top Commiters</p>
-                            <table class="table">
-                                <thead>
-                                <tr>
-                                    <th><abbr title="Position">Last 14 days</abbr></th>
-                                    <th><abbr title="Played">#Commits</abbr></th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr rv-each-user="model.performance.l_14.commiters">
-                                    <th class="is-size-7">{{user.user}}</th>
-                                    <td class="is-size-7">{{user.c}}</td>
-                                </tr>                      
-                                </tbody>
-                            </table>                
-                        </div>
+                        <app-top-listing
+                            heading="Top Commiters",
+                            when="Last 14 days",
+                            metric="#Commits",
+                            records="model.performance.l_14.commiters",
+                            prop-a="user",
+                            prop-b="c">                            
+                        </app-top-listing>                        
                     </div>                            
                 </nav>    
                 <h3 class="title is-4">Top Liners <span class="is-size-7 is-hidden" rv-class-is-hidden="model.forms.f1.f1.v | eq -1">@{{model.selectedProject.name}}</span></h3>
                 <nav class="level">        
                     <div class="level-item has-text-centered">
-                        <div class="box">
-                        <p class="heading">Top Changes</p>
-                            <table class="table">
-                                <thead>
-                                <tr>
-                                    <th><abbr title="Position">Today</abbr></th>
-                                    <th><abbr title="Played">#Lines</abbr></th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr rv-each-user="model.performance.c_0.liners">
-                                    <th class="is-size-7">{{user.user}}</th>
-                                    <td class="is-size-7">{{user.l}}</td>
-                                </tr>                      
-                                </tbody>
-                            </table>                
-                        </div>
+                        <app-top-listing
+                            heading="Top Changes",
+                            when="Today",
+                            metric="#Lines",
+                            records="model.performance.c_0.liners",
+                            prop-a="user",
+                            prop-b="l">                            
+                        </app-top-listing>                          
                     </div>      
                     <div class="level-item has-text-centered">
-                        <div class="box">
-                            <p class="heading">Top Changes</p>
-                            <table class="table">
-                                <thead>
-                                <tr>
-                                    <th><abbr title="Position">Yesterday</abbr></th>
-                                    <th><abbr title="Played">#Lines</abbr></th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr rv-each-user="model.performance.c_1.liners">
-                                    <th class="is-size-7">{{user.user}}</th>
-                                    <td class="is-size-7">{{user.l}}</td>
-                                </tr>                      
-                                </tbody>
-                            </table>                
-                        </div>
+                        <app-top-listing
+                            heading="Top Changes",
+                            when="Yesterday",
+                            metric="#Lines",
+                            records="model.performance.c_1.liners",
+                            prop-a="user",
+                            prop-b="l">                            
+                        </app-top-listing>                                                
                     </div>     
                     <div class="level-item has-text-centered">
-                        <div class="box">
-                        <p class="heading">Top Changes</p>
-                            <table class="table">
-                                <thead>
-                                <tr>
-                                    <th><abbr title="Position">Last 7 days</abbr></th>
-                                    <th><abbr title="Played">#Lines</abbr></th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr rv-each-user="model.performance.l_7.liners">
-                                    <th class="is-size-7">{{user.user}}</th>
-                                    <td class="is-size-7">{{user.l}}</td>
-                                </tr>                      
-                                </tbody>
-                            </table>                
-                        </div>
+                        <app-top-listing
+                            heading="Top Changes",
+                            when="Last 7 days",
+                            metric="#Lines",
+                            records="model.performance.l_7.liners",
+                            prop-a="user",
+                            prop-b="l">                            
+                        </app-top-listing>                                                
                     </div>          
                     <div class="level-item has-text-centered">
                         <app-top-listing
@@ -429,26 +333,8 @@
                             metric="#Lines",
                             records="model.performance.l_14.liners",
                             prop-a="user",
-                            prop-b="l"
-                        >                            
-                        </app-top-listing>
-                        <div class="box">
-                        <p class="heading">Top Changes</p>
-                            <table class="table">
-                                <thead>
-                                <tr>
-                                    <th><abbr title="Position">Last 14 days</abbr></th>
-                                    <th><abbr title="Played">#Lines</abbr></th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr rv-each-user="model.performance.l_14.liners">
-                                    <th class="is-size-7">{{user.user}}</th>
-                                    <td class="is-size-7">{{user.l}}</td>
-                                </tr>                      
-                                </tbody>
-                            </table>                
-                        </div>
+                            prop-b="l">                            
+                        </app-top-listing>                        
                     </div>          
                     
                 </nav>          

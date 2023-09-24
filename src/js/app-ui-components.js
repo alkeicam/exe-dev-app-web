@@ -18,7 +18,9 @@
                 <tbody>
                 <tr rv-each-item="model.entity.records">
                     <th class="is-size-7">{{item | propertyAt model.entity.propA}}</th>
-                    <td class="is-size-7">{{item | propertyAt model.entity.propB}}</td>
+
+                    <td class="is-size-7 is-hidden" rv-class-is-hidden="model.entity.round | gte 1">{{item | propertyAt model.entity.propB | numberRoundDecimal 2}}</td>
+                    <td class="is-size-7 is-hidden" rv-class-is-hidden="model.entity.round | empty">{{item | propertyAt model.entity.propB}}</td>
                 </tr>                      
                 </tbody>
             </table>                
@@ -26,7 +28,7 @@
       `
               return template;
           },
-        static: ['heading','when','metric', 'propA', 'propB'],
+        static: ['heading','when','metric', 'propA', 'propB', 'round'],
         // dynamic bound: 'errorMsg'
         initialize: function(el, data) {
             

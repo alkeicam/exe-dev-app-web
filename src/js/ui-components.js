@@ -353,8 +353,7 @@
                 },
                 async handleLogin(e, that){
                     try{
-                        that.emitter?.emit("ui:busy");
-                        that.model.notBusy = false;
+                        that.emitter?.emit("ui:busy");                        
                         if(!that._validateField("f1")||!that._validateField("f2"))
                             return;            
                         const {token, user} = await BackendApi.AUTH.signin(that.model.forms.f1.v, that.model.forms.f2.v)            
