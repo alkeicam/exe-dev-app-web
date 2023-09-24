@@ -163,8 +163,7 @@ class OnboardingController {
         a.model.token = token
         
         try{
-            await a._loadAccount(a.model.user.authority[0].accountId);   
-            await a._loadInvitations(a.model.user.authority[0].accountId);
+            await a._reload(a.model.user.authority[0].accountId);               
         }catch(error){
             console.error(error);
             window.location = "hello.html?message=Session expired. Please log in again.";
@@ -182,6 +181,10 @@ class OnboardingController {
         that.model.menu.active = !that.model.menu.active;
     }
 
+    async _reload(accountId){
+        await this._loadAccount(accountId);
+        await this._loadInvitations(accountId);
+    }
     
 
     async _loadInvitations(accountId){
@@ -321,12 +324,22 @@ class OnboardingController {
         if(!valid)
             return
         
-        const me = await BackendApi.AUTH.me();
+        that.model.modals.m1.active = false            
+        that.model.busy = true;
 
-        await BackendApi.PROJECTS.create(me.user.authority[0].accountId, that.model.forms.f1.v);        
+        try{
+            const me = await BackendApi.AUTH.me();
 
-        that.model.modals.m1.active = false
-        console.log("Add")
+            await BackendApi.PROJECTS.create(me.user.authority[0].accountId, that.model.forms.f1.v);        
+    
+            
+            console.log("Add")
+    
+            await that._reload(that.model.user.authority[0].accountId);
+        }catch(error){
+            that.model.busy = false    
+        }        
+        that.model.busy = false
     }
 
     async _handleCancelAddProject(e, that){
