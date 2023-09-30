@@ -106,5 +106,53 @@
             return controller;
         }
     }        
-               
+        
+    rivets.components['user-stats'] = {
+        template: function() {
+            const template = `
+        <div class="box">                                                
+            <div>
+              <p class="is-size-3"><i rv-class="model.entity.iconClass"></i></p>
+              <!--<p class="title is-hidden" rv-class-is-hidden="model.entity.metric | empty">{{model.entity.metric | propertyAt model.entity.metricProp | numberRoundDecimal 2}} <span class="is-size-7">{{model.entity.metricLabel}}</span></p>-->
+              <p class="title is-hidden" rv-class-is-hidden="model.entity.timeAgoEvent | empty">{{model.entity.timeAgoEvent.ct | timeAgoMoment}} </p>
+              <p><span class="is-size-7">{{model.entity.label}}</span></p>
+            </div>                                               
+        </div>
+      `
+              return template;
+          },
+        static: ['iconClass', 'metricLabel', 'label', 'metricProp'],
+        // dynamic bound: 'errorMsg'
+        initialize: function(el, data) {
+            
+            const controller = {
+                emitter: data.emitter,            
+                model: {
+                    entity: data, // timeAgoEvent, metric
+                    forms:{
+                        f1: {
+                            v: "",
+                            e: {
+                                code: 0,
+                                message: "OK"
+                            }
+                        },
+                        f2: {
+                            v: "",
+                            e: {
+                                code: 0,
+                                message: "OK"
+                            }
+                        }
+                    },
+                    error:{
+                        code: 0,
+                        message: "OK"
+                    }
+                },                                               
+            }                    
+            return controller;
+        }
+    }   
+
 })();

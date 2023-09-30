@@ -151,15 +151,14 @@
                         <p class="title">{{model.projects.c_0.c | numberRoundDecimal 2}} <span class="is-size-7">Commits</span></p>
                       </div>                                               
                     </div>
+                  </div>                    
+                  <div class="level-item has-text-centered">
+                    <user-stats icon-class="fas fa-code-branch" metric="model.projects.c_0" metric-label="Commits" metric-prop="c"></user-stats>
                   </div>
                   <div class="level-item has-text-centered">
-                    <div class="box">
-                      <div>
-                        <p class="is-size-3"><i class="fas fa-file-code"></i></p>
-                        <p class="title">{{model.projects.c_0.c | numberRoundDecimal 2}} <span class="is-size-7">Lines</span></p>
-                      </div>                                               
-                    </div>
-                  </div>                  
+                    <user-stats icon-class="fas fa-file-code" metric="model.projects.c_0" metric-label="Lines" metric-prop="l"></user-stats>
+                  </div>
+                  
               </nav>
             </section>
             <section class="section" style="padding: 0.5rem 0.5rem;">
@@ -384,6 +383,7 @@
         </div>
     </footer>   
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.8/handlebars.min.js" integrity="sha512-E1dSFxg+wsfJ4HKjutk/WaCzK7S2wv1POn1RRPGh8ZK+ag9l244Vqxji3r6wgz9YBf6+vhQEYJZpSjqWFPg9gg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="js/event-processor.js"></script>
     <script src="js/api.js"></script>
     <script src="js/app.js"></script>
     <!-- <script src="js/onboardingModalController.js"></script>
