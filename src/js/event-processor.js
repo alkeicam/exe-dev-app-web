@@ -12,6 +12,8 @@ class EventProcessor{
             usersMa: [] //[{user, daily: [{cals:,commits:,lines:}]}],
         }
 
+        const minMaxTs = this.windowTsFromEvents(events)
+
 
 
         // get all users
@@ -30,7 +32,7 @@ class EventProcessor{
 
         Object.keys(allUsers).forEach((user)=>{
             // const userStats = this.dailyEffort(events.filter((item)=>item.user == user)).map((item)=>item.value);
-            const userStats = this.dailyEffort(events.filter((item)=>item.user == user));
+            const userStats = this.dailyEffort(events.filter((item)=>item.user == user), minMaxTs.minTs, minMaxTs.maxTs);
             users.push({
                 user: user,
                 daily: userStats
@@ -102,16 +104,12 @@ class EventProcessor{
         return result;
     }
 
-
     /**
-     * Calculates dayly effort from events provided. Date range is calculated from the most recent to most old event in the function argument.
-     * @param {*} rawEvents 
-     * @returns {DailyStats[]} stats from events for days, sorted by day ascending
+     * Calculates time window (minTs, maxTs) from a given set of events
+     * @param {*} rawEvents target events
+     * @returns {minTs, maxTs} window begin and end time, truncated to day start
      */
-    dailyEffort(rawEvents){
-        const result = [];
-        
-
+    windowTsFromEvents(rawEvents){
         //sorted, ascending by date, missing dates are filled with given value
         const minMaxTs = rawEvents.reduce((prev, curr)=>{
             return {
@@ -121,9 +119,34 @@ class EventProcessor{
         },{minTs: Number.MAX_SAFE_INTEGER, maxTs: -1});
 
         minMaxTs.minTs = moment(minMaxTs.minTs).startOf("day").valueOf();
-        minMaxTs.maxTs = moment(minMaxTs.maxTs).startOf("day").valueOf();
+        minMaxTs.maxTs = moment(minMaxTs.maxTs).startOf("day").add(1, "day").valueOf();
 
-        for(let i=minMaxTs.minTs; i<=minMaxTs.maxTs; i = moment(i).add(1,"days").valueOf()){
+        return minMaxTs;
+    }
+
+
+    /**
+     * Calculates dayly effort from events provided. Date range is calculated from the most recent to most old event in the function argument.
+     * @param {*} rawEvents 
+     * @returns {DailyStats[]} stats from events for days, sorted by day ascending
+     */
+    dailyEffort(rawEvents, minTs, maxTs){
+        const result = [];
+        
+
+        //sorted, ascending by date, missing dates are filled with given value
+        // const minMaxTs = rawEvents.reduce((prev, curr)=>{
+        //     return {
+        //         minTs: Math.min(prev.minTs, curr.ct),
+        //         maxTs: Math.max(prev.maxTs, curr.ct)
+        //     }
+        // },{minTs: Number.MAX_SAFE_INTEGER, maxTs: -1});
+
+        // minMaxTs.minTs = moment(minMaxTs.minTs).startOf("day").valueOf();
+        // minMaxTs.maxTs = moment(minMaxTs.maxTs).startOf("day").valueOf();
+        // const minMaxTs = this.windowTsFromEvents(rawEvents)
+
+        for(let i=minTs; i<=maxTs; i = moment(i).add(1,"days").valueOf()){
             // fore every day between min and max
             const day = {
                 ts: i,                

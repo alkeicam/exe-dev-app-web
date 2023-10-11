@@ -354,7 +354,8 @@ class AppDemo {
 
     async populateTrends(events, range, window, projectId){
         let targetEvents = projectId?events.filter((item)=>{return item.project == projectId}):events;
-        this.model.trends[range] = this._userTrends(targetEvents, window);
+        const processor = new EventProcessor();
+        this.model.trends[range] = processor.userTrends(targetEvents, window);
         // console.log("User trends", this.model.events[range]);
         return this.model.trends[range];
     }
