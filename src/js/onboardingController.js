@@ -119,9 +119,19 @@ class OnboardingController {
                         {id:"BackendDeveloper", value:"Backend Developer"},
                         {id:"MobileDeveloper", value:"Mobile Developer"},
                         {id:"FullstackDeveloper", value:"Fullstack Developer"},
-                        {id:"TechLead", value:"Tech Lead"}                       
+                        {id:"TechLead", value:"Tech Lead"},
+                        {id:"Manager", value:"Manager"},                       
+                        {id:"Director", value:"Director"},                       
                     ]
-                }
+                },
+                f5: {
+                    v: Math.random().toString(36).substring(2, 12),
+                    e: {
+                        code: 0,
+                        message: "OK"
+                    },
+                    h:true
+                },
             },
             modals: {
                 m1: {
@@ -276,6 +286,18 @@ class OnboardingController {
         const field = e.target.dataset.fieldId;
         
         await that._validateField(field)
+
+        if(field == "f4" && that.model.forms[field].v != -1){
+            if(["MANAGER","DIRECTOR"].includes(that.model.forms[field].v.toUpperCase())){
+                that.model.forms["f5"].h = false
+                that.model.forms["f5"].v = Math.random().toString(36).substring(2, 12)
+            }                
+            else{
+                that.model.forms["f5"].h = true
+                that.model.forms["f5"].v = Math.random().toString(36).substring(2, 12)
+            }
+                
+        }
         
         
  
@@ -285,6 +307,11 @@ class OnboardingController {
         that.model.modals.m2.active = true;
         that.model.modals.m2.f1 = e.target.dataset.accountId;
         that.model.modals.m2.f2 = e.target.dataset.projectId;
+        that.model.forms.f2.v = "";
+        that.model.forms.f3.v = "";
+        that.model.forms.f4.v = -1;    
+        that.model.forms["f5"].h = true;    
+        that.model.forms["f5"].v = Math.random().toString(36).substring(2, 12);
     }
 
     async _handleAddInvitation(e, that){
@@ -296,16 +323,26 @@ class OnboardingController {
         if(!valid1||!valid2||!valid3)
             return;
 
-        const me = await BackendApi.AUTH.me();
+        // const me = await BackendApi.AUTH.me();
+        that.model.modals.m2.active = false;        
 
         // me.user.authority[0].accountId, that.model.forms.f1.v
+        
 
-        const invitation = await BackendApi.PROJECTS.INVITATIONS.create(that.model.modals.m2.f1, that.model.modals.m2.f2, that.model.forms.f2.v, that.model.forms.f3.v, that.model.forms.f4.v); 
+        if(["MANAGER","DIRECTOR"].includes(that.model.forms.f4.v.toUpperCase())){
+            // check - if Manager or Director call admin user create
+            const user = await BackendApi.PROJECTS.MANAGEMENT.invite(that.model.modals.m2.f1, that.model.modals.m2.f2, that.model.forms.f2.v, that.model.forms.f3.v, that.model.forms.f4.v, that.model.forms.f5.v); 
+        }else{
+            // project memeber invitation create
+            const invitation = await BackendApi.PROJECTS.INVITATIONS.create(that.model.modals.m2.f1, that.model.modals.m2.f2, that.model.forms.f2.v, that.model.forms.f3.v, that.model.forms.f4.v); 
+        }
+        
 
         await that._loadAccount(that.model.user.authority[0].accountId);   
         await that._loadInvitations(that.model.user.authority[0].accountId);
         
-        that.model.modals.m2.active = false;
+        
+        
         that.model.busy = false;
     }
 

@@ -219,6 +219,11 @@ class AppDemo {
         return a;
     }
 
+    async _handleSignOut(e, that){
+        await BackendApi.AUTH.signOut();
+        window.location = "hello.html?message=Signed out. Please log in again.";
+    }
+
     async _handleToggleMobileMenu(e, that){
         that.model.menu.active = !that.model.menu.active;
     }

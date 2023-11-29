@@ -1,11 +1,12 @@
 class BackendApi {
-    static BASE_URL = "https://devjam-lab.azurewebsites.net"
-    // static BASE_URL = "http://localhost:7071"
+    // static BASE_URL = "https://devjam-lab.azurewebsites.net"
+    static BASE_URL = "http://localhost:7071"
     static API = {
         EVENTS: "/account/{{accountId}}/events/since/{{dateMs}}",
         EVENTS_BETWEEN: "/account/{{accountId}}/events/since/{{dateMs}}/to/{{dateToMs}}",
         ACCOUNT_INVITATIONS: "/account/{{accountId}}/invitations",
         ACCOUNT_PROJECT_INVITATION: "/account/{{accountId}}/projects/{{projectId}}/invitations",
+        ACCOUNT_PROJECT_MGMT_INVITE: "/account/{{accountId}}/projects/{{projectId}}/mgmt/invitations",
         ACCOUNT: "/account/{{accountId}}",
         AUTH_SIGNIN: "/auth/signin",
         PROJECTS_CREATE: "/account/{{accountId}}/projects"
@@ -44,6 +45,10 @@ class BackendApi {
                 token: localStorage.getItem("Auth:token"),
                 user: JSON.parse(localStorage.getItem("Auth:user"))
             }
+        },
+        async signOut(){
+            localStorage.setItem("Auth:token", "");
+            localStorage.setItem("Auth:user",JSON.stringify({}));
         }
     }
 
@@ -78,6 +83,25 @@ class BackendApi {
                     "Content-Type": "application/json",
                     },
                     body: JSON.stringify({name: name, email: email, role: role}),
+                });
+                const responseJson = await response.json();            
+                return responseJson;
+            }
+        },
+        MANAGEMENT: {
+            async invite(accountId, projectId, name, email, role, password){
+                const urlFunction = Handlebars.compile(`${BackendApi.BASE_URL}${BackendApi.API.ACCOUNT_PROJECT_MGMT_INVITE}`)
+                const url = urlFunction({
+                    accountId: accountId,
+                    projectId: projectId
+                });
+                // console.log(url);
+                const response = await BackendApi._fetch(url,{
+                    method: "POST", 
+                    headers: {
+                    "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({name: name, email: email, role: role, password: password}),
                 });
                 const responseJson = await response.json();            
                 return responseJson;
