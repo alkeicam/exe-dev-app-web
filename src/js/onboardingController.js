@@ -8,6 +8,8 @@ class OnboardingController {
         
         
         this.model = {
+            isManager: false,
+            isOwner: false,
             account: {
                 projects: []
             },
@@ -160,17 +162,28 @@ class OnboardingController {
     }
 
     static async getInstance(emitter){
+        const accountId =  "a_execon";
         const a = new OnboardingController(emitter)
         a.model.busy = true;
-        const {token, user} = await BackendApi.AUTH.me();
+        const {token, user, } = await BackendApi.AUTH.me();
 
         if(!user || !token)
             window.location = "hello.html";
 
+        const accountAuthority = user.authority.find(item=>item.accountId == accountId);
+        a.model.isManager = false;
+        a.model.isOwner = false;
+        if(accountAuthority){
+            a.model.isManager = accountAuthority.projects.flatMap(item=>item.roles).some(item=>["MANAGER", "DIRECTOR", "OWNER"].includes(item.toUpperCase()))?true:false;
+            a.model.isOwner = accountAuthority.roles.some(item=>["OWNER", "ADMIN"].includes(item.toUpperCase()))?true:false;
+        }
+        console.log(`Is manager ${a.model.isManager}`)
+        
         
 
         a.model.user = user;
         a.model.token = token
+        
         
         try{
             await a._reload(a.model.user.authority[0].accountId);               
@@ -185,6 +198,11 @@ class OnboardingController {
 
     async _loadAccount(accountId){
         this.model.account = await BackendApi.getAccount(accountId);        
+    }
+
+    async _handleSignOut(e, that){
+        await BackendApi.AUTH.signOut();
+        window.location = "hello.html?message=Signed out. Please log in again.";
     }
 
     async _handleToggleMobileMenu(e, that){

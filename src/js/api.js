@@ -43,7 +43,9 @@ class BackendApi {
         async me(){
             return {
                 token: localStorage.getItem("Auth:token"),
-                user: JSON.parse(localStorage.getItem("Auth:user"))
+                user: JSON.parse(localStorage.getItem("Auth:user")),
+                // // temp
+                // accountRole: JSON.parse(localStorage.getItem("Auth:user"))?JSON.parse(localStorage.getItem("Auth:user")).authority[0].roles[0]:""
             }
         },
         async signOut(){

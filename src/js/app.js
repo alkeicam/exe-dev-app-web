@@ -51,6 +51,7 @@ class AppDemo {
         this.model = {
             user: undefined,
             token: undefined,
+            isManager: false,
             busy: true,
             queryParams: {
                 i: undefined
@@ -195,10 +196,15 @@ class AppDemo {
 
     static async getInstance(emitter, container){                        
         const a = new AppDemo(emitter, container)
-        
+        const accountId =  "a_execon";
         
         const {token, user} = await BackendApi.AUTH.me();
-
+        const accountAuthority = user.authority.find(item=>item.accountId == accountId);
+        a.model.isManager = false;
+        if(accountAuthority){
+            a.model.isManager = accountAuthority.projects.flatMap(item=>item.roles).some(item=>["MANAGER", "DIRECTOR", "OWNER"].includes(item.toUpperCase()))?true:false;
+        }
+        console.log(`Is manager ${a.model.isManager}`)
         if(!user || !token)
             window.location = "hello.html";
 
@@ -207,8 +213,9 @@ class AppDemo {
         a.model.user = user;
         a.model.token = token
         
+        
         try{
-            await a._loadAccount("a_execon");        
+            await a._loadAccount(accountId);        
             await a._handleRefreshEvents(undefined, a);
         }catch(error){
             window.location = "hello.html?message=Session expired. Please log in again.";

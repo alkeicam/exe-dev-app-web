@@ -52,7 +52,7 @@
                     <a class="navbar-item" href="index.html">
                       Team Overview
                     </a>
-                    <a class="navbar-item" href="onboarding.html">
+                    <a class="navbar-item is-hidden" href="onboarding.html" rv-class-is-hidden="model.isManager | eq false">
                         Onboarding
                     </a>
 <!--               
@@ -84,15 +84,18 @@
                   </div>
               
                   <div class="navbar-end">
+                    <a class="navbar-item">
+                      {{model.user.id}}
+                    </a>
                     <div class="navbar-item">
-                      <!-- <div class="buttons">
-                        <a class="button is-primary">
-                          <strong>Sign up</strong>
+                      <div class="buttons">
+                        <a class="button is-primary" rv-on-click="_handleSignOut">
+                          <strong>Sign out</strong>
                         </a>
-                        <a class="button is-light">
+                        <!-- <a class="button is-light">
                           Log in
-                        </a>
-                      </div> -->
+                        </a> -->
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -151,7 +154,7 @@
                     <div class="level-item">
                         <div class="field">                          
                           <div class="control">
-                            <button class="button" rv-on-click="_handleAddProjectModal">
+                            <button class="button is-hidden" rv-on-click="_handleAddProjectModal" rv-class-is-hidden="model.isOwner | eq false">
                                 <span class="icon is-small">
                                     <i class="fas fa-plus-square"></i>
                                 </span>
