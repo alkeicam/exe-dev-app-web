@@ -180,8 +180,6 @@ class OnboardingController {
         a.model.token = token
     
         const accountAuthority = user.authority.find(item=>item.accountId == accountId);
-        a.model.isManager = false;
-        a.model.isOwner = false;
         if(accountAuthority){
             a.model.isManager = accountAuthority.projects.flatMap(item=>item.roles).some(item=>["MANAGER", "DIRECTOR", "OWNER"].includes(item.toUpperCase()))?true:false;
             a.model.isOwner = accountAuthority.roles.some(item=>["OWNER", "ADMIN"].includes(item.toUpperCase()))?true:false;
