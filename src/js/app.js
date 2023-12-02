@@ -60,6 +60,10 @@ class AppDemo {
             token: undefined,
             isManager: false,
             busy: true,
+            accounts: [
+                // { Account}
+            ],// for account switcher
+            currentAccount: undefined,// currently selected account
             queryParams: {
                 i: undefined
             },
@@ -100,7 +104,10 @@ class AppDemo {
             // fileMetadata: fileMetadata||{}
             
             handlers: {
-                _handleOnChangeProject: this._handleOnChangeProject.bind(this)
+                _handleOnChangeProject: this._handleOnChangeProject.bind(this),
+                _handleSwitchAccount: this._handleSwitchAccount.bind(this),
+                _selectAccount: this._selectAccount.bind(this),
+                _handleRefreshEvents: this._handleRefreshEvents.bind(this)
             },
             process:{
                 step: "PREPARE" // PREPARE // WORKOUT                
@@ -203,7 +210,7 @@ class AppDemo {
 
     static async getInstance(emitter, container){                        
         const a = new AppDemo(emitter, container)
-        const accountId =  "a_execon";
+        // const accountId =  "a_execon";
         
         a.model.isManager = false;
         a.model.isOwner = false;
@@ -216,17 +223,26 @@ class AppDemo {
         a.model.user = user;
         a.model.token = token
 
-        const accountAuthority = user.authority.find(item=>item.accountId == accountId);        
-        if(accountAuthority){
-            a.model.isManager = accountAuthority.projects.flatMap(item=>item.roles).some(item=>["MANAGER", "DIRECTOR", "OWNER"].includes(item.toUpperCase()))?true:false;
-            a.model.isOwner = accountAuthority.roles.some(item=>["OWNER", "ADMIN"].includes(item.toUpperCase()))?true:false;
-        }        
-        
         try{
-            await a._loadAccount(accountId);        
+
+            await a._prepareAccounts(a.model.user);
+
+            
+
+            const accountAuthority = user.authority.find(item=>item.accountId == a.model.account.id);        
+            if(accountAuthority){
+                a.model.isManager = accountAuthority.projects.flatMap(item=>item.roles).some(item=>["MANAGER", "DIRECTOR", "OWNER"].includes(item.toUpperCase()))?true:false;
+                a.model.isOwner = accountAuthority.roles.some(item=>["OWNER", "ADMIN"].includes(item.toUpperCase()))?true:false;
+            }        
+        
+        
+            // await a._loadAccount(accountId);   
+            let preferredAccount = State.PREFERENCES.account();     
+
+            await a._selectAccount(preferredAccount.id||a.model.account.id);
             await a._handleRefreshEvents(undefined, a);
         }catch(error){
-            window.location = "hello.html?message=Session expired. Please log in again.";
+            // window.location = "hello.html?message=Session expired. Please log in again.";
         }
         
         
@@ -243,23 +259,51 @@ class AppDemo {
         that.model.menu.active = !that.model.menu.active;
     }
 
-    async _loadAccount(accountId){
-        this.model.account = await BackendApi.getAccount(accountId);
+    async _selectAccount(accountId){
+        // this.model.account = await BackendApi.getAccount(accountId);
+        this.model.account = this.model.accounts.find(item=>item.id == accountId);
+        // store preferences
+        State.PREFERENCES.account(this.model.account);
         this.model.forms.f1.f1.e = this.model.account.projects.map((item)=>{return {k: item.id, v: item.name}});
+    }
+
+    async _prepareAccounts(user){
+        const accountIds = user.authority.map(item=>item.accountId);
+
+        this.model.accounts.length = 0;
+
+        for(let i=0; i<accountIds.length; i++){
+            const account = await BackendApi.getAccount(accountIds[i]);
+            this.model.accounts.push(account);
+        }
+        this.model.account = this.model.accounts[0];                
+    }
+
+    async _handleSwitchAccount(e, that){
+        that.model.busy = true;
+        const account = that.item;
+        const accountId = account.id;
+
+        // await that.model.handlers._selectAccount(accountId);
+        await this._selectAccount(accountId);
+        window.location = "index.html";
+        that.model.busy = false;
+
     }
 
     async _handleRefreshEvents(e, that){
         that.model.busy = true;
-        let events = await that.populateEvents("a_execon","c_0");
+        const accountId = that.model.account.id;
+        let events = await that.populateEvents(accountId,"c_0");
         that.populatePerformers(events, "c_0");
         
-        events = await that.populateEvents("a_execon","c_1");
+        events = await that.populateEvents(accountId,"c_1");
         that.populatePerformers(events, "c_1");
 
-        events = await that.populateEvents("a_execon","l_7");
+        events = await that.populateEvents(accountId,"l_7");
         that.populatePerformers(events, "l_7");
 
-        events = await that.populateEvents("a_execon","l_14");
+        events = await that.populateEvents(accountId,"l_14");
         that.populatePerformers(events, "l_14");
         // console.log(events);
 
@@ -270,7 +314,7 @@ class AppDemo {
 
         // project perspective
         
-        events = await that.populateEvents("a_execon","all_time");   
+        events = await that.populateEvents(accountId,"all_time");   
         
         await that._populateLastIncrementAndTeam();
         

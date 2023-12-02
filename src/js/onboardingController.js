@@ -162,8 +162,11 @@ class OnboardingController {
     }
 
     static async getInstance(emitter){
-        const accountId =  "a_execon";
         const a = new OnboardingController(emitter)
+
+        let preferredAccount = State.PREFERENCES.account();
+        const accountId =  a.getQueryParam("accountId")||preferredAccount.id;
+        
         a.model.busy = true;
         a.model.isManager = false;
         a.model.isOwner = false;
@@ -185,7 +188,8 @@ class OnboardingController {
         }
 
         try{
-            await a._reload(a.model.user.authority[0].accountId);               
+             
+            await a._reload(accountId);               
         }catch(error){
             console.error(error);
             window.location = "hello.html?message=Session expired. Please log in again.";
