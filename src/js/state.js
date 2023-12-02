@@ -9,6 +9,9 @@ class State {
                 const itemString = localStorage.getItem(`${State.STATE_PREFIX}:account`)
                 return JSON.parse(itemString)
             }            
+        },
+        accountReset(){
+            localStorage.removeItem(`${State.STATE_PREFIX}:account`);
         }
     }
 }
