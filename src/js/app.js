@@ -237,7 +237,7 @@ class AppDemo {
         
         
             // await a._loadAccount(accountId);   
-            let preferredAccount = State.PREFERENCES.account();     
+            let preferredAccount = State.PREFERENCES.account()||{};     
 
             await a._selectAccount(preferredAccount.id||a.model.account.id);
             await a._handleRefreshEvents(undefined, a);

@@ -164,7 +164,7 @@ class OnboardingController {
     static async getInstance(emitter){
         const a = new OnboardingController(emitter)
 
-        let preferredAccount = State.PREFERENCES.account();
+        let preferredAccount = State.PREFERENCES.account()||{};
         const accountId =  a.getQueryParam("accountId")||preferredAccount.id;
         
         a.model.busy = true;
