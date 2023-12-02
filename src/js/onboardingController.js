@@ -202,6 +202,7 @@ class OnboardingController {
     }
 
     async _handleSignOut(e, that){
+        State.PREFERENCES.accountReset();
         await BackendApi.AUTH.signOut();
         window.location = "hello.html?message=Signed out. Please log in again.";
     }
