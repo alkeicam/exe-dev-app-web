@@ -76,6 +76,35 @@ class EventProcessor{
     }
 
     /**
+     * Calculates continous single day hours array that covers today events
+     * @param {*} rawEvents 
+     * @returns {HourInfo[]} sorted by hour, ascending
+     */
+    hoursFromEvents(rawEvents){
+        const result = []
+        //sorted, ascending by hours, missing hours are filled with given value
+        const minMaxTs = rawEvents.filter(item=>item.ct>=moment().startOf("day").valueOf()&&item.ct<moment().endOf("day").valueOf()).reduce((prev, curr)=>{
+            return {
+                minTs: Math.min(prev.minTs, curr.ct),
+                maxTs: Math.max(prev.maxTs, curr.ct)
+            }
+        },{minTs: Number.MAX_SAFE_INTEGER, maxTs: -1});
+
+        minMaxTs.minTs = moment(minMaxTs.minTs).startOf("day").valueOf();
+        minMaxTs.maxTs = moment(minMaxTs.minTs).endOf("day").valueOf();
+
+        for(let i=minMaxTs.minTs; i<=minMaxTs.maxTs; i = moment(i).add(1,"hours").valueOf()){
+            // fore every hour between min and max
+            const interval = {
+                ts: i,                
+                name: moment(i).format("HH-mm")
+            }
+            result.push(interval);
+        }
+        return result;
+    }
+
+    /**
      * Calculates continous day array that covers all dates from events
      * @param {*} rawEvents 
      * @returns {DayInfo[]} sorted by day, ascending

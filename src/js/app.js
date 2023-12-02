@@ -6,6 +6,13 @@
  */
 
 /**
+ * Hour info object
+ * @typedef {Object} HourInfo
+ * @property {number} ts - start of hour
+ * @property {string} name - name of hour in HH24:MM format
+ */
+
+/**
  * Stats holder
  * @typedef {Object} Effort
  * @property {number} cals - number of calories burnt
@@ -198,21 +205,22 @@ class AppDemo {
         const a = new AppDemo(emitter, container)
         const accountId =  "a_execon";
         
-        const {token, user} = await BackendApi.AUTH.me();
-        const accountAuthority = user.authority.find(item=>item.accountId == accountId);
         a.model.isManager = false;
-        if(accountAuthority){
-            a.model.isManager = accountAuthority.projects.flatMap(item=>item.roles).some(item=>["MANAGER", "DIRECTOR", "OWNER"].includes(item.toUpperCase()))?true:false;
-        }
-        console.log(`Is manager ${a.model.isManager}`)
+        a.model.isOwner = false;
+
+        const {token, user} = await BackendApi.AUTH.me();
+
         if(!user || !token)
             window.location = "hello.html";
 
-        
-
         a.model.user = user;
         a.model.token = token
-        
+
+        const accountAuthority = user.authority.find(item=>item.accountId == accountId);        
+        if(accountAuthority){
+            a.model.isManager = accountAuthority.projects.flatMap(item=>item.roles).some(item=>["MANAGER", "DIRECTOR", "OWNER"].includes(item.toUpperCase()))?true:false;
+            a.model.isOwner = accountAuthority.roles.some(item=>["OWNER", "ADMIN"].includes(item.toUpperCase()))?true:false;
+        }        
         
         try{
             await a._loadAccount(accountId);        

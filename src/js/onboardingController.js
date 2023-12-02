@@ -165,11 +165,17 @@ class OnboardingController {
         const accountId =  "a_execon";
         const a = new OnboardingController(emitter)
         a.model.busy = true;
+        a.model.isManager = false;
+        a.model.isOwner = false;
+
         const {token, user, } = await BackendApi.AUTH.me();
 
         if(!user || !token)
             window.location = "hello.html";
 
+        a.model.user = user;
+        a.model.token = token
+    
         const accountAuthority = user.authority.find(item=>item.accountId == accountId);
         a.model.isManager = false;
         a.model.isOwner = false;
@@ -177,14 +183,7 @@ class OnboardingController {
             a.model.isManager = accountAuthority.projects.flatMap(item=>item.roles).some(item=>["MANAGER", "DIRECTOR", "OWNER"].includes(item.toUpperCase()))?true:false;
             a.model.isOwner = accountAuthority.roles.some(item=>["OWNER", "ADMIN"].includes(item.toUpperCase()))?true:false;
         }
-        console.log(`Is manager ${a.model.isManager}`)
-        
-        
-
-        a.model.user = user;
-        a.model.token = token
-        
-        
+                
         try{
             await a._reload(a.model.user.authority[0].accountId);               
         }catch(error){
