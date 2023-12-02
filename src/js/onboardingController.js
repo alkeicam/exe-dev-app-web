@@ -20,8 +20,8 @@ class OnboardingController {
                     id: 'proj1_id',
                     participants: [
                         {
-                            "email": "maciej.grula@execon.pl",
-                            "name": "Maciej Grula",
+                            "email": "xx@domain.com",
+                            "name": "X Y",
                             "role": "Developer",
                             "invitation": {
                                 status: {
@@ -32,8 +32,8 @@ class OnboardingController {
                             }
                         },
                         {
-                            "email": "jan.kowalski@execon.pl",
-                            "name": "Jan Kowalski",
+                            "email": "zy@domain.com",
+                            "name": "Z Y",
                             "role": "Developer",
                             "invitation": {
                                 status: {
@@ -50,8 +50,8 @@ class OnboardingController {
                     id: "proj2",
                     participants: [
                         {
-                            "email": "maciej.grula@execon.pl",
-                            "name": "Maciej Grula",
+                            "email": "ddd@ddd.com",
+                            "name": "DDD EEE",
                             "role": "Developer",
                             "invitation": {
                                 status: {
@@ -62,8 +62,8 @@ class OnboardingController {
                             }
                         },
                         {
-                            "email": "jan.kowalski@execon.pl",
-                            "name": "Jan Kowalski",
+                            "email": "EEEE@eee.com",
+                            "name": "EEE FFFFF",
                             "role": "Developer",
                             "invitation": {
                                 status: {
@@ -183,7 +183,7 @@ class OnboardingController {
             a.model.isManager = accountAuthority.projects.flatMap(item=>item.roles).some(item=>["MANAGER", "DIRECTOR", "OWNER"].includes(item.toUpperCase()))?true:false;
             a.model.isOwner = accountAuthority.roles.some(item=>["OWNER", "ADMIN"].includes(item.toUpperCase()))?true:false;
         }
-                
+
         try{
             await a._reload(a.model.user.authority[0].accountId);               
         }catch(error){
