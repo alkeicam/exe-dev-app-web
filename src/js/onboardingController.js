@@ -357,8 +357,8 @@ class OnboardingController {
         }
         
 
-        await that._loadAccount(that.model.user.authority[0].accountId);   
-        await that._loadInvitations(that.model.user.authority[0].accountId);
+        await that._loadAccount(that.model.account.id);   
+        await that._loadInvitations(that.model.account.id);
         
         
         
@@ -386,12 +386,12 @@ class OnboardingController {
         try{
             const me = await BackendApi.AUTH.me();
 
-            await BackendApi.PROJECTS.create(me.user.authority[0].accountId, that.model.forms.f1.v);        
+            await BackendApi.PROJECTS.create(that.model.account.id, that.model.forms.f1.v);        
     
             
             console.log("Add")
     
-            await that._reload(that.model.user.authority[0].accountId);
+            await that._reload(that.model.account.id);
         }catch(error){
             that.model.busy = false    
         }        
