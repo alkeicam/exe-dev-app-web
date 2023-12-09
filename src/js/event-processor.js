@@ -10,7 +10,7 @@ class EventProcessor{
      * @param {number} maxTs when provided this is an end date, overwrites end date calculated from the latest event in set
      * @returns {UserIntervalStats[]} stats for events provided, grouped by users and intervals, with moving average calculated using provided window
      */
-    userTrends2(events, interval, window, minTs, maxTs){
+    userTrends(events, interval, window, minTs, maxTs){
 
         const intervals = this.intervalsFromEvents(events, interval, minTs, maxTs);
 
@@ -51,6 +51,8 @@ class EventProcessor{
                 efforts: userStats
             })    
 
+            console.log(`User stats ${user} ${userStats[0].interval.nameLong} ${userStats[userStats.length-1].interval.nameLong}`)
+
             const userCals = userStats.map((item)=>item.value.cals);
             const userCommits = userStats.map((item)=>item.value.commits);
             const userLines = userStats.map((item)=>item.value.lines);
@@ -90,10 +92,10 @@ class EventProcessor{
 
 
     /**
-     * Calculates time window (minTs, maxTs) from a given set of events
+     * Calculates time window (minTs, maxTs) from a given set of events rounded to interval including all events
      * @param {*} rawEvents target events
      * @param {string} interval "day" or "hour"
-     * @returns {minTs, maxTs} window begin and end time, truncated to day start
+     * @returns {minTs, maxTs} window begin and end time, truncated to interval start and end
      */
     windowTsFromEvents(rawEvents, interval){
         //sorted, ascending by date, missing dates are filled with given value

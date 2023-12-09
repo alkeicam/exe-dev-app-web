@@ -454,8 +454,13 @@ class AppDemo {
         // this.model.trends[range] = processor.userTrends(targetEvents, window);
         // this.model.trends[range] = processor.userTrends2(targetEvents, "day", window, 1680326539000)
         // this.model.trends[range] = processor.userTrends2(targetEvents, "day", window, 1680326539000, 1701326573000)
-        // this.model.trends[range] = processor.userTrends2(targetEvents, "hour", window, 1695506400000, 1695592800000)
-        this.model.trends[range] = processor.userTrends2(targetEvents, "day", window)
+        
+        
+        this.model.trends[range] = processor.userTrends(targetEvents, "day", window)
+        
+        
+        // this.model.trends[range] = processor.userTrends(targetEvents, "day", window)
+        
         // this.model.trends[range] = processor.userTrends2(targetEvents, "hour", window)
         // console.log("User trends", this.model.events[range]);
         return this.model.trends[range];
