@@ -78,11 +78,12 @@ class EventProcessor{
 
     /**
      * 
-     * @param {*} events 
-     * @param {*} window 
-     * @param {*} minTs 
-     * @param {*} maxTs 
-     * @returns {UserIntervalStats[]}
+     * @param {*} events
+     * @param {string} interval "day" or "hour"
+     * @param {number} window moving average length
+     * @param {number} minTs when provided this is a start date, overwrites start date calculated from the earliest event in set
+     * @param {number} maxTs when provided this is an end date, overwrites end date calculated from the latest event in set
+     * @returns {UserIntervalStats[]} stats for events provided, grouped by users and intervals, with moving average calculated using provided window
      */
     userTrends2(events, interval, window, minTs, maxTs){
 
