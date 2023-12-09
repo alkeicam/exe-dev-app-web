@@ -251,16 +251,18 @@ class EventProcessor{
                 maxTs: Math.max(prev.maxTs, curr.ct)
             }
         },{minTs: Number.MAX_SAFE_INTEGER, maxTs: -1});
+        
+
+        let begin = moment(minMaxTs.minTs).startOf(interval).valueOf()
+        let end = moment(minMaxTs.maxTs).endOf(interval).valueOf()
+
         // if min, max provided then override values from events
         if(minTs)
-            minMaxTs.minTs = minTs
+            begin = minTs
         if(maxTs)
-            minMaxTs.maxTs = maxTs
+            end = maxTs
 
-        const begin = moment(minMaxTs.minTs).startOf(interval).valueOf()
-        const end = moment(minMaxTs.maxTs).endOf(interval).valueOf()
-
-        for(let i=begin; i<end; i = moment(i).add(1,interval.charAt(0)).valueOf()){
+        for(let i=begin; i<=end; i = moment(i).add(1,interval.charAt(0)).valueOf()){
             const stepBegin = moment(i).startOf(interval).valueOf()            
           
             const intervalSpecs = {
@@ -284,10 +286,15 @@ class EventProcessor{
      */
     effort(rawEvents, minTs, maxTs, interval){
         const result = [];        
-        const begin = moment(minTs).startOf(interval).valueOf()
-        const end = moment(maxTs).endOf(interval).valueOf()
+        // const begin = moment(minTs).startOf(interval).valueOf()
+        // const end = moment(maxTs).endOf(interval).valueOf()
+        const begin = minTs
+        const end = maxTs
 
-        for(let i=begin; i<end; i = moment(i).add(1,interval.charAt(0)).valueOf()){
+        console.log(`Effort between ${moment(begin).format("YYYY-MM-DD HH:mm")} - ${moment(end).format("YYYY-MM-DD HH:mm")}`)
+
+        for(let i=begin; i<moment(end).add(1,interval.charAt(0)).valueOf(); i = moment(i).add(1,interval.charAt(0)).valueOf()){
+            console.log(`Passing ${moment(i).format("YYYY-MM-DD HH:mm")}`)
             const intervalStats = this.intervalEffort(rawEvents, i, interval);
             result.push(intervalStats)
         }
@@ -311,7 +318,8 @@ class EventProcessor{
             name: interval == "day"?moment(stepBegin).format("YYYY-MM-DD"):moment(stepBegin).format("HH:mm"),
             nameLong: moment(stepBegin).format("YYYY-MM-DD HH:mm"),
         }
-        const events = rawEvents.filter((item)=>item.ct>=stepBegin&&item.ct<stepEnd);
+        console.log(`Internal Effort between ${moment(stepBegin).format("YYYY-MM-DD HH:mm")} - ${moment(stepEnd).format("YYYY-MM-DD HH:mm")}`)
+        const events = rawEvents.filter((item)=>item.ct>=stepBegin&&item.ct<=stepEnd);
         const total = events.reduce((prev, curr, currentIndex)=>{
             return {
                 cals: prev.cals + curr.s,
