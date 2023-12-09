@@ -1,80 +1,5 @@
 class EventProcessor{
-    /**
-     * Calculates stats from provided events. Stats are calculated per user basis per day, raw and moving averages for effort are calculated
-     * @param {*} events target events
-     * @param {*} window window for moving average calculations
-     * @param {*} interval one of "day" or "hour", when day then events should span multiple days, when hour events should span multiple hours in a single day
-     * @returns {Stats} stats for events provided, grouped by users and days, with moving average calculated using provided window
-     */
-    userTrends(events, window){
-        const result = {
-            days: this.daysFromEvents(events),
-            users: [], //[{user, daily: [{cals:,commits:,lines:}]}],            
-            usersMa: [] //[{user, daily: [{cals:,commits:,lines:}]}],
-        }
 
-        const minMaxTs = this.windowTsFromEvents(events)
-
-
-
-        // get all users
-        const allUsers = events.reduce((prev, curr)=>{
-            prev[curr.user] = {
-                user: curr.user,
-                cals: 0,
-                commits: 0,
-                lines: 0
-            }
-            return prev;
-        },{})        
-
-        const users = [];
-        const usersMa = []
-
-        Object.keys(allUsers).forEach((user)=>{
-            // const userStats = this.dailyEffort(events.filter((item)=>item.user == user)).map((item)=>item.value);
-            const userStats = this.dailyEffort(events.filter((item)=>item.user == user), minMaxTs.minTs, minMaxTs.maxTs);
-            users.push({
-                user: user,
-                daily: userStats
-            })    
-
-            const userCals = userStats.map((item)=>item.value.cals);
-            const userCommits = userStats.map((item)=>item.value.commits);
-            const userLines = userStats.map((item)=>item.value.lines);
-            const userEntropy = userStats.map((item)=>item.value.entropy);
-
-            const userCalsMa = this.movingAverage(userCals, "SMA", window);
-            const userCommitsMa = this.movingAverage(userCommits, "SMA", window);
-            const userLinesMa = this.movingAverage(userLines, "SMA", window);
-            const userEntropyMa = this.movingAverage(userEntropy, "SMA", window);
-
-            const days = this.daysFromEvents(events.filter((item)=>item.user == user));
-
-            const dailyMas = []
-            for(let i=0; i<userCalsMa.length; i++){
-                dailyMas.push({
-                    day: days[i],
-                    value: {
-                        cals: userCalsMa[i],
-                        commits: userCommitsMa[i],
-                        lines: userLinesMa[i],
-                        entropy: userEntropyMa[i]
-                    }
-                })
-            }
-
-            usersMa.push({
-                user: user,
-                daily: dailyMas
-            })
-            
-        })
-
-        result.users = users;
-        result.usersMa = usersMa;
-        return result;
-    }
 
     /**
      * 
@@ -162,67 +87,12 @@ class EventProcessor{
         result.usersMa = usersMa;
         return result;
     }
-    /**
-     * Calculates continous single day hours array that covers today events
-     * @param {*} rawEvents 
-     * @returns {HourInfo[]} sorted by hour, ascending
-     */
-    hoursFromEvents(rawEvents){
-        const result = []
-        //sorted, ascending by hours, missing hours are filled with given value
-        const minMaxTs = rawEvents.filter(item=>item.ct>=moment().startOf("day").valueOf()&&item.ct<moment().endOf("day").valueOf()).reduce((prev, curr)=>{
-            return {
-                minTs: Math.min(prev.minTs, curr.ct),
-                maxTs: Math.max(prev.maxTs, curr.ct)
-            }
-        },{minTs: Number.MAX_SAFE_INTEGER, maxTs: -1});
 
-        minMaxTs.minTs = moment(minMaxTs.minTs).startOf("day").valueOf();
-        minMaxTs.maxTs = moment(minMaxTs.minTs).endOf("day").valueOf();
-
-        for(let i=minMaxTs.minTs; i<=minMaxTs.maxTs; i = moment(i).add(1,"hours").valueOf()){
-            // fore every hour between min and max
-            const interval = {
-                ts: i,                
-                name: moment(i).format("HH-mm")
-            }
-            result.push(interval);
-        }
-        return result;
-    }
-
-    /**
-     * Calculates continous day array that covers all dates from events
-     * @param {*} rawEvents 
-     * @returns {DayInfo[]} sorted by day, ascending
-     */
-    daysFromEvents(rawEvents){
-        const result = []
-        //sorted, ascending by date, missing dates are filled with given value
-        const minMaxTs = rawEvents.reduce((prev, curr)=>{
-            return {
-                minTs: Math.min(prev.minTs, curr.ct),
-                maxTs: Math.max(prev.maxTs, curr.ct)
-            }
-        },{minTs: Number.MAX_SAFE_INTEGER, maxTs: -1});
-
-        minMaxTs.minTs = moment(minMaxTs.minTs).startOf("day").valueOf();
-        minMaxTs.maxTs = moment(minMaxTs.maxTs).startOf("day").valueOf();
-
-        for(let i=minMaxTs.minTs; i<=minMaxTs.maxTs; i = moment(i).add(1,"days").valueOf()){
-            // fore every day between min and max
-            const day = {
-                ts: i,                
-                dayName: moment(i).format("YYYY-MM-DD"),
-            }
-            result.push(day);
-        }
-        return result;
-    }
 
     /**
      * Calculates time window (minTs, maxTs) from a given set of events
      * @param {*} rawEvents target events
+     * @param {string} interval "day" or "hour"
      * @returns {minTs, maxTs} window begin and end time, truncated to day start
      */
     windowTsFromEvents(rawEvents, interval){
@@ -240,6 +110,14 @@ class EventProcessor{
         return minMaxTs;
     }
 
+    /**
+     * Builds continous interval info array for given events or between min and max when provided
+     * @param {*} rawEvents 
+     * @param {*} interval 
+     * @param {*} minTs 
+     * @param {*} maxTs 
+     * @returns {IntervalInfo[]} array of interval infos
+     */
     intervalsFromEvents(rawEvents, interval, minTs, maxTs){
         const result = [];        
         
@@ -335,55 +213,6 @@ class EventProcessor{
             interval: intervalSpecs,
             value: total
         }
-    }
-
-
-    /**
-     * Calculates dayly effort from events provided. Date range is calculated from the most recent to most old event in the function argument.
-     * @param {*} rawEvents 
-     * @returns {DailyStats[]} stats from events for days, sorted by day ascending
-     */
-    dailyEffort(rawEvents, minTs, maxTs){
-        const result = [];
-        
-
-        //sorted, ascending by date, missing dates are filled with given value
-        // const minMaxTs = rawEvents.reduce((prev, curr)=>{
-        //     return {
-        //         minTs: Math.min(prev.minTs, curr.ct),
-        //         maxTs: Math.max(prev.maxTs, curr.ct)
-        //     }
-        // },{minTs: Number.MAX_SAFE_INTEGER, maxTs: -1});
-
-        // minMaxTs.minTs = moment(minMaxTs.minTs).startOf("day").valueOf();
-        // minMaxTs.maxTs = moment(minMaxTs.maxTs).startOf("day").valueOf();
-        // const minMaxTs = this.windowTsFromEvents(rawEvents)
-
-        for(let i=minTs; i<=maxTs; i = moment(i).add(1,"days").valueOf()){
-            // fore every day between min and max
-            const day = {
-                ts: i,                
-                dayName: moment(i).format("YYYY-MM-DD"),
-            }
-            const events = rawEvents.filter((item)=>item.ct>=i&&item.ct<moment(i).add(1,"days"));
-            const total = events.reduce((prev, curr, currentIndex)=>{
-                return {
-                    cals: prev.cals + curr.s,
-                    commits: prev.commits + (curr.oper=="commit"?1:0),      
-                    lines: prev.lines + curr.decoded.changeSummary.inserts+curr.decoded.changeSummary.deletions,
-                    entropy: prev.entropy + (Number.isNaN(curr.e.e)?0:curr.e.e)
-                }
-            },{cals: 0, commits: 0, lines: 0, entropy: 0});
-            
-            total.entropy /=  events.length>0?events.length:1;
-
-            result.push({
-                day: day,
-                value: total
-            })
-    
-        }
-        return result;
     }
     
     movingAverage(arr, type, size) {
