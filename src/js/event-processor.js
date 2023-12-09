@@ -3,6 +3,7 @@ class EventProcessor{
      * Calculates stats from provided events. Stats are calculated per user basis per day, raw and moving averages for effort are calculated
      * @param {*} events target events
      * @param {*} window window for moving average calculations
+     * @param {*} interval one of "day" or "hour", when day then events should span multiple days, when hour events should span multiple hours in a single day
      * @returns {Stats} stats for events provided, grouped by users and days, with moving average calculated using provided window
      */
     userTrends(events, window){
@@ -76,6 +77,91 @@ class EventProcessor{
     }
 
     /**
+     * 
+     * @param {*} events 
+     * @param {*} window 
+     * @param {*} minTs 
+     * @param {*} maxTs 
+     * @returns {UserIntervalStats[]}
+     */
+    userTrends2(events, interval, window, minTs, maxTs){
+
+        const intervals = this.intervalsFromEvents(events, interval, minTs, maxTs);
+
+        const result = {
+            intervals: intervals,
+            users: [], //[{user, daily: [{cals:,commits:,lines:}]}],            
+            usersMa: [] //[{user, daily: [{cals:,commits:,lines:}]}],
+        }
+
+        const minMaxTs = this.windowTsFromEvents(events)
+        if(minTs)
+            minMaxTs.minTs = minTs
+        if(maxTs)
+            minMaxTs.maxTs = maxTs
+
+
+
+        // get all users
+        const allUsers = events.reduce((prev, curr)=>{
+            prev[curr.user] = {
+                user: curr.user,
+                cals: 0,
+                commits: 0,
+                lines: 0
+            }
+            return prev;
+        },{})        
+
+        const users = [];
+        const usersMa = []
+
+        Object.keys(allUsers).forEach((user)=>{
+            // const userStats = this.dailyEffort(events.filter((item)=>item.user == user)).map((item)=>item.value);
+            // const userStats = this.dailyEffort(events.filter((item)=>item.user == user), minMaxTs.minTs, minMaxTs.maxTs);
+            const userStats = this.effort(events.filter((item)=>item.user == user), minMaxTs.minTs, minMaxTs.maxTs, interval);
+            users.push({
+                user: user,
+                efforts: userStats
+            })    
+
+            const userCals = userStats.map((item)=>item.value.cals);
+            const userCommits = userStats.map((item)=>item.value.commits);
+            const userLines = userStats.map((item)=>item.value.lines);
+            const userEntropy = userStats.map((item)=>item.value.entropy);
+
+            const userCalsMa = this.movingAverage(userCals, "SMA", window);
+            const userCommitsMa = this.movingAverage(userCommits, "SMA", window);
+            const userLinesMa = this.movingAverage(userLines, "SMA", window);
+            const userEntropyMa = this.movingAverage(userEntropy, "SMA", window);
+
+            
+
+            const dailyMas = []
+            for(let i=0; i<userCalsMa.length; i++){
+                dailyMas.push({
+                    day: intervals[i],
+                    value: {
+                        cals: userCalsMa[i],
+                        commits: userCommitsMa[i],
+                        lines: userLinesMa[i],
+                        entropy: userEntropyMa[i]
+                    }
+                })
+            }
+
+            usersMa.push({
+                user: user,
+                efforts: dailyMas
+            })
+            
+        })
+
+        result.users = users;
+        result.usersMa = usersMa;
+        return result;
+    }
+    /**
      * Calculates continous single day hours array that covers today events
      * @param {*} rawEvents 
      * @returns {HourInfo[]} sorted by hour, ascending
@@ -138,7 +224,7 @@ class EventProcessor{
      * @param {*} rawEvents target events
      * @returns {minTs, maxTs} window begin and end time, truncated to day start
      */
-    windowTsFromEvents(rawEvents){
+    windowTsFromEvents(rawEvents, interval){
         //sorted, ascending by date, missing dates are filled with given value
         const minMaxTs = rawEvents.reduce((prev, curr)=>{
             return {
@@ -147,10 +233,99 @@ class EventProcessor{
             }
         },{minTs: Number.MAX_SAFE_INTEGER, maxTs: -1});
 
-        minMaxTs.minTs = moment(minMaxTs.minTs).startOf("day").valueOf();
-        minMaxTs.maxTs = moment(minMaxTs.maxTs).startOf("day").add(1, "day").valueOf();
+        minMaxTs.minTs = moment(minMaxTs.minTs).startOf(interval).valueOf();
+        minMaxTs.maxTs = moment(minMaxTs.maxTs).endOf(interval).valueOf();
 
         return minMaxTs;
+    }
+
+    intervalsFromEvents(rawEvents, interval, minTs, maxTs){
+        const result = [];        
+        
+        //sorted, ascending by date, missing dates are filled with given value
+        // first from event time period
+        const minMaxTs = rawEvents.reduce((prev, curr)=>{
+            return {
+                minTs: Math.min(prev.minTs, curr.ct),
+                maxTs: Math.max(prev.maxTs, curr.ct)
+            }
+        },{minTs: Number.MAX_SAFE_INTEGER, maxTs: -1});
+        // if min, max provided then override values from events
+        if(minTs)
+            minMaxTs.minTs = minTs
+        if(maxTs)
+            minMaxTs.maxTs = maxTs
+
+        const begin = moment(minMaxTs.minTs).startOf(interval).valueOf()
+        const end = moment(minMaxTs.maxTs).endOf(interval).valueOf()
+
+        for(let i=begin; i<end; i = moment(i).add(1,interval.charAt(0)).valueOf()){
+            const stepBegin = moment(i).startOf(interval).valueOf()            
+          
+            const intervalSpecs = {
+                ts: stepBegin,                
+                name: interval == "day"?moment(stepBegin).format("YYYY-MM-DD"):moment(stepBegin).format("HH:mm"),
+                nameLong: moment(stepBegin).format("YYYY-MM-DD HH:mm"),
+            }
+            result.push(intervalSpecs)
+        }
+        return result;
+    }
+
+    /**
+     * Calculates interval effort from events provided. 
+     * There is continous and order time range, when no events are at given time then zeros are returned.
+     * @param {*} rawEvents 
+     * @param {*} minTs start timestamp, events registered earlier are discarded
+     * @param {*} maxTs end timestamp, events registered later are discarded 
+     * @param {*} interval one of "day", "hour"
+     * @returns {IntervalStats[]} stats from events for interval, sorted by interval ascending
+     */
+    effort(rawEvents, minTs, maxTs, interval){
+        const result = [];        
+        const begin = moment(minTs).startOf(interval).valueOf()
+        const end = moment(maxTs).endOf(interval).valueOf()
+
+        for(let i=begin; i<end; i = moment(i).add(1,interval.charAt(0)).valueOf()){
+            const intervalStats = this.intervalEffort(rawEvents, i, interval);
+            result.push(intervalStats)
+        }
+        return result;
+    }
+
+    /**
+     * Takes provided moment, calculates single interval including provided moment and calculates stats from
+     * events registered during the interval
+     * @param {*} rawEvents events
+     * @param {*} i moment in time for which interval and stats will be calculated
+     * @param {*} interval "day" or "hour"
+     * @returns {IntervalStats} single interval stats
+     */
+    intervalEffort(rawEvents, i, interval){
+        const stepBegin = moment(i).startOf(interval).valueOf()
+        const stepEnd = moment(i).endOf(interval).valueOf()
+        // fore every interval between min and max
+        const intervalSpecs = {
+            ts: stepBegin,                
+            name: interval == "day"?moment(stepBegin).format("YYYY-MM-DD"):moment(stepBegin).format("HH:mm"),
+            nameLong: moment(stepBegin).format("YYYY-MM-DD HH:mm"),
+        }
+        const events = rawEvents.filter((item)=>item.ct>=stepBegin&&item.ct<stepEnd);
+        const total = events.reduce((prev, curr, currentIndex)=>{
+            return {
+                cals: prev.cals + curr.s,
+                commits: prev.commits + (curr.oper=="commit"?1:0),      
+                lines: prev.lines + curr.decoded.changeSummary.inserts+curr.decoded.changeSummary.deletions,
+                entropy: prev.entropy + (Number.isNaN(curr.e.e)?0:curr.e.e)
+            }
+        },{cals: 0, commits: 0, lines: 0, entropy: 0});
+        
+        total.entropy /=  events.length>0?events.length:1;
+
+        return {
+            interval: intervalSpecs,
+            value: total
+        }
     }
 
 

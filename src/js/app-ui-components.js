@@ -13,8 +13,8 @@
 
         stats[dataset.kind].forEach((user)=>{
             const data = {
-                x: stats.days.map(item=>item.dayName),
-                y: user.daily.map(item=>item.value[dataset.effortKey]),
+                x: stats.intervals.map(item=>item.name),
+                y: user.efforts.map(item=>item.value[dataset.effortKey]),
                 mode: 'lines',
                 name: user.user
             }

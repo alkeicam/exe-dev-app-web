@@ -6,6 +6,14 @@
  */
 
 /**
+ * Interval info object
+ * @typedef {Object} IntervalInfo
+ * @property {number} ts - start of interval timestamp
+ * @property {string} name - primary name of interval moment
+ * @property {string} nameLong - secondary name of interval moment
+ */
+
+/**
  * Hour info object
  * @typedef {Object} HourInfo
  * @property {number} ts - start of hour
@@ -28,10 +36,25 @@
  */
 
 /**
+ * Stats for given day
+ * @typedef {Object} IntervalStats
+ * @property {IntervalInfo} interval - interval information
+ * @property {Effort} value - interval stats
+ */
+
+
+/**
  * User Stats for given period
  * @typedef {Object} UserDailyStats
  * @property {string} user - user id (usually email)
  * @property {DailyStats[]} daily - day by day stats
+ */
+
+/**
+ * User Stats for given period
+ * @typedef {Object} UserIntervalStats
+ * @property {string} user - user id (usually email)
+ * @property {IntervalStats[]} stats - day by day stats
  */
 
 
@@ -41,6 +64,14 @@
  * @property {DayInfo[]} days - days included in stats (ascending, continous)
  * @property {UserDailyStats[]} users - user raw performance
  * @property {UserDailyStats[]} usersMa - user moving average performance
+ */
+
+/**
+ * Stats
+ * @typedef {Object} IntervalStats
+ * @property {IntervalInfo[]} intervals - days included in stats (ascending, continous)
+ * @property {UserIntervalStats[]} users - user raw performance
+ * @property {UserIntervalStats[]} usersMa - user moving average performance
  */
 
 
@@ -420,7 +451,10 @@ class AppDemo {
     async populateTrends(events, range, window, projectId){
         let targetEvents = projectId?events.filter((item)=>{return item.project == projectId}):events;
         const processor = new EventProcessor();
-        this.model.trends[range] = processor.userTrends(targetEvents, window);
+        // this.model.trends[range] = processor.userTrends(targetEvents, window);
+        // this.model.trends[range] = processor.userTrends2(targetEvents, "day", window, 1680326539000)
+        // this.model.trends[range] = processor.userTrends2(targetEvents, "day", window, 1680326539000, 1701326573000)
+        this.model.trends[range] = processor.userTrends2(targetEvents, "day", window)
         // console.log("User trends", this.model.events[range]);
         return this.model.trends[range];
     }
