@@ -415,7 +415,7 @@ class Controller {
 
         const processor = new EventProcessor();
         // const zx = processor.trendsTo4ValueHitmapZX(this.model.trends["all_time"], "commits", "0,2,3,4", "maciej.grula@execon.pl", beginTs, endTs);
-        const zx = processor.trendsTo4ValueHitmapZX(this.model.trends["all_time"], "commits", "0,3,8,11", participantId);        
+        const zx = processor.trendsTo4ValueHitmapZX(this.model.trends["all_time"], "commits", "0,1,2,11", participantId);        
         
         zx.z[0].forEach((value)=>{
             this.model.plot.today.z[0].push(value);

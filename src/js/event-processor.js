@@ -430,7 +430,7 @@ class EventProcessor{
 
         intervalEfforts.forEach((item)=>{
             x.push(item.interval.nameLong);
-            const value = this.valueTo4ThresholdId(thresholds, item.value[effortCode]);
+            const value = this.valueToThresholdId(thresholds, item.value[effortCode]);
             if(item.value[effortCode]>0){
                 console.log(`${item.value[effortCode]} => ${value}`)
             }
@@ -476,15 +476,30 @@ class EventProcessor{
         }
     }
 
-    valueTo4ThresholdId(thresholds, value){
-        let result = 0;        
-        const thresholdsArray = thresholds.split(",");
-        for(let i=1; i<=4; i++){
-            if((!thresholdsArray[i])||value<thresholdsArray[i]){
+    valueToThresholdId(thresholds, value){
+        let result = undefined;        
+        
+        let found = false;
+        const thresholdsArray = thresholds.trim().replace(/\s/g, '').split(",");
+        for(let i=1; i<thresholdsArray.length; i++){
+            if(value>=thresholdsArray[i-1]&&value<thresholdsArray[i]){
                 result = i-1;
+                found = true;
                 break;
             }
         }
+        if(value>=thresholdsArray[thresholdsArray.length-1]){
+            found = true;
+            result = thresholdsArray.length-1
+        }
+        if(!found)
+            throw new Error(`Can't calculate threshold id for [${thresholds}] and ${value}`)
         return result;
     }
 }
+
+if (typeof module !== 'undefined' && module.exports != null) {
+    module.exports = EventProcessor;
+}
+
+// export { EventProcessor };
