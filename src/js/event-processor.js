@@ -496,6 +496,7 @@ class EventProcessor{
             throw new Error(`Can't calculate threshold id for [${thresholds}] and ${value}`)
         return result;
     }
+    
 }
 
 if (typeof module !== 'undefined' && module.exports != null) {
