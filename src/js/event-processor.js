@@ -8,7 +8,7 @@ class EventProcessor{
      * @param {number} window moving average length
      * @param {number} minTs when provided this is a start date, overwrites start date calculated from the earliest event in set
      * @param {number} maxTs when provided this is an end date, overwrites end date calculated from the latest event in set
-     * @returns {UserIntervalStats[]} stats for events provided, grouped by users and intervals, with moving average calculated using provided window
+     * @returns {Stats} stats for events provided, grouped by users and intervals, with moving average calculated using provided window
      */
     userTrends(events, interval, window, minTs, maxTs){
 
@@ -68,7 +68,7 @@ class EventProcessor{
             const dailyMas = []
             for(let i=0; i<userCalsMa.length; i++){
                 dailyMas.push({
-                    day: intervals[i],
+                    interval: intervals[i],
                     value: {
                         cals: userCalsMa[i],
                         commits: userCommitsMa[i],
@@ -174,7 +174,7 @@ class EventProcessor{
         console.log(`Effort between ${moment(begin).format("YYYY-MM-DD HH:mm")} - ${moment(end).format("YYYY-MM-DD HH:mm")}`)
 
         for(let i=begin; i<moment(end).add(1,interval.charAt(0)).valueOf(); i = moment(i).add(1,interval.charAt(0)).valueOf()){
-            console.log(`Passing ${moment(i).format("YYYY-MM-DD HH:mm")}`)
+            // console.log(`Passing ${moment(i).format("YYYY-MM-DD HH:mm")}`)
             const intervalStats = this.intervalEffort(rawEvents, i, interval);
             result.push(intervalStats)
         }
@@ -198,7 +198,7 @@ class EventProcessor{
             name: interval == "day"?moment(stepBegin).format("YYYY-MM-DD"):moment(stepBegin).format("HH:mm"),
             nameLong: moment(stepBegin).format("YYYY-MM-DD HH:mm"),
         }
-        console.log(`Internal Effort between ${moment(stepBegin).format("YYYY-MM-DD HH:mm")} - ${moment(stepEnd).format("YYYY-MM-DD HH:mm")}`)
+        // console.log(`Internal Effort between ${moment(stepBegin).format("YYYY-MM-DD HH:mm")} - ${moment(stepEnd).format("YYYY-MM-DD HH:mm")}`)
         const events = rawEvents.filter((item)=>item.ct>=stepBegin&&item.ct<=stepEnd);
         const total = events.reduce((prev, curr, currentIndex)=>{
             return {
@@ -412,5 +412,79 @@ class EventProcessor{
             resArr = resArr.slice(halfSize).slice(0, srcLength);
         }
         return resArr;
+    }
+
+    /**
+     * 
+     * @param {Stats} stats 
+     */
+    trendsTo4ValueHitmapZX(stats, effortCode, thresholds, user, beginTs, endTs){
+        
+        const x = [];
+        const z = [[],[],[],[]];
+        const intervalEfforts = stats.users.find(item=>item.user == user).efforts.filter((item)=>{
+            let isBegin = beginTs?item.interval.ts>=beginTs:true;
+            let isEnd = endTs?item.interval.ts<endTs:true;
+            return isBegin&&isEnd
+        });
+
+        intervalEfforts.forEach((item)=>{
+            x.push(item.interval.nameLong);
+            const value = this.valueTo4ThresholdId(thresholds, item.value[effortCode]);
+            if(item.value[effortCode]>0){
+                console.log(`${item.value[effortCode]} => ${value}`)
+            }
+            switch(value){
+                case 0:
+                    z[0].push(0);
+                    z[1].push(null);
+                    z[2].push(null);
+                    z[3].push(null);
+                    break;
+                case 1:
+                    z[0].push(1);
+                    z[1].push(1);
+                    z[2].push(null);
+                    z[3].push(null);
+                    break;
+                case 2:
+                    z[0].push(2);
+                    z[1].push(2);
+                    z[2].push(2);
+                    z[3].push(null);
+                    break;
+                case 3:
+                    z[0].push(3);
+                    z[1].push(3);
+                    z[2].push(3);
+                    z[3].push(3);
+                    break;
+            }
+
+            
+        })
+        // z: [
+        //     [0, 1, 2, 3, 3], 
+        //     [null, 1, 2, 3, 3], 
+        //     [null, undefined, 2, 3, 3],
+        //     [undefined, undefined, undefined, 3, 3]
+        //   ],
+        //   x: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+        return {
+            z: z,
+            x: x
+        }
+    }
+
+    valueTo4ThresholdId(thresholds, value){
+        let result = 0;        
+        const thresholdsArray = thresholds.split(",");
+        for(let i=1; i<=4; i++){
+            if((!thresholdsArray[i])||value<thresholdsArray[i]){
+                result = i-1;
+                break;
+            }
+        }
+        return result;
     }
 }

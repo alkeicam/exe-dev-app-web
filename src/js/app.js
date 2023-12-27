@@ -273,6 +273,7 @@ class AppDemo {
             await a._selectAccount(preferredAccount.id||a.model.account.id);
             await a._handleRefreshEvents(undefined, a);
         }catch(error){
+            console.log(error);
             window.location = "hello.html?message=Session expired. Please log in again.";
         }
         

@@ -36,6 +36,104 @@
     }
     // class SomeController{}
     
+    rivets.components['plot-map'] = {
+        template: function(item) {
+            console.log("item", item);
+            const template = `
+        <div class="box">   
+            malina 
+            <div class="here-plot"></div>                        
+        </div>
+      `
+              return template;
+          },
+        static: ['iconClass', 'metricLabel', 'label', 'metricProp'],
+        // dynamic bound: 'errorMsg'
+        initialize: function(el, data) {
+            
+            const controller = {
+                emitter: data.emitter,            
+                model: {
+                    entity: data, // timeAgoEvent, metric
+                    forms:{
+                        f1: {
+                            v: "",
+                            e: {
+                                code: 0,
+                                message: "OK"
+                            }
+                        },
+                        f2: {
+                            v: "",
+                            e: {
+                                code: 0,
+                                message: "OK"
+                            }
+                        }
+                    },
+                    error:{
+                        code: 0,
+                        message: "OK"
+                    }
+                },                                               
+            }    
+            // const stats = {}
+            // const dataset = el.dataset;
+    
+            // const graphData = [];
+    
+            // stats[dataset.kind].forEach((user)=>{
+            //     const data = {
+            //         x: stats.intervals.map(item=>item.name),
+            //         y: user.efforts.map(item=>item.value[dataset.effortKey]),
+            //         mode: 'lines',
+            //         name: user.user
+            //     }
+            //     graphData.push(data);
+            // })
+
+            var colorscaleValue = [
+                [0, '#f24545'],
+                [0.33, '#f5e943'],
+                [0.66, '#4edee8'],
+                [1, '#91e84e']
+              ];
+              
+              var dd = [
+                {
+                  z: data.z,
+                  x: data.x,
+                  y: ['Poor', 'Average', 'Good', 'Stellar'],
+                  type: 'heatmap',
+                  hoverongaps: false,
+                  colorscale: colorscaleValue,
+                  showscale: false,
+                  zmin: 0,
+                  zmax: 3
+                }
+              ];
+    
+            var layout = {
+                // title: dataset.title,
+                autosize: true,
+                showlegend: true,
+                // yaxis: {
+                //     range: [0, 3],
+                //     autorange: false
+                // },
+                // width: 500,
+                legend: {
+                    x: 0,
+                    y: -0.3
+                }
+            };      
+            
+            const theElement = el.getElementsByClassName("here-plot")[0];
+    
+            Plotly.newPlot(theElement, dd, layout,  {displayModeBar: false, responsive: true});                
+            return controller;
+        }
+    }   
 
     /**
      * Renders card component that displays top performers from stats.
@@ -62,7 +160,7 @@
                 </thead>
                 <tbody>
                 <tr rv-each-item="model.entity.records">
-                    <th class="is-size-7">{{item | propertyAt model.entity.propA}}</th>
+                    <th class="is-size-7">{{item.user}}</th>
 
                     <td class="is-size-7 is-hidden" rv-class-is-hidden="model.entity.round | gte 1">{{item | propertyAt model.entity.propB | numberRoundDecimal 2}}</td>
                     <td class="is-size-7 is-hidden" rv-class-is-hidden="model.entity.round | empty">{{item | propertyAt model.entity.propB}}</td>
@@ -110,13 +208,16 @@
     rivets.components['user-stats'] = {
         template: function() {
             const template = `
-        <div class="box">                                                
+        <div class="box">   
+            {{model.entity.timeAgoEvent.ct}}                                             
             <div>
               <p class="is-size-3"><i rv-class="model.entity.iconClass"></i></p>
-              <!--<p class="title is-hidden" rv-class-is-hidden="model.entity.metric | empty">{{model.entity.metric | propertyAt model.entity.metricProp | numberRoundDecimal 2}} <span class="is-size-7">{{model.entity.metricLabel}}</span></p>-->
-              <p class="title is-hidden" rv-class-is-hidden="model.entity.timeAgoEvent | empty">{{model.entity.timeAgoEvent.ct | timeAgoMoment}} </p>
-              <p><span class="is-size-7">{{model.entity.label}}</span></p>
-            </div>                                               
+              <p rv-if="model.entity.metricProp | eq 's'" class="title is-hidden" rv-class-is-hidden="model.entity.metricProp | neq 's'">{{model.entity.metric.s | numberRoundDecimal 2}} <span class="is-size-7">{{model.entity.metricLabel}}</span></p>
+              <p rv-if="model.entity.metricProp | eq 'c'" class="title is-hidden" rv-class-is-hidden="model.entity.metricProp | neq 'c'">{{model.entity.metric.c | numberRoundDecimal 2}} <span class="is-size-7">{{model.entity.metricLabel}}</span></p>
+              <p rv-if="model.entity.metricProp | eq 'l'" class="title is-hidden" rv-class-is-hidden="model.entity.metricProp | neq 'l'">{{model.entity.metric.l | numberRoundDecimal 2}} <span class="is-size-7">{{model.entity.metricLabel}}</span></p>
+              <p rv-if="model.entity.timeAgoEvent" class="title is-hidden" rv-class-is-hidden="model.entity.timeAgoEvent | empty">{{model.entity.timeAgoEvent.ct | timeAgoMoment}} </p>
+              <p rv-if="model.entity.timeAgoEvent"><span class="is-size-7 is-hidden" rv-class-is-hidden="model.entity.timeAgoEvent | empty">{{model.entity.metricLabel}}</span></p>
+            </div>                          
         </div>
       `
               return template;
