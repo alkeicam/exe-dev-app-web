@@ -130,6 +130,8 @@
         <div class="container">
           <section class="section mt-6" style="padding: 0.5rem 0.5rem;">
             <div id="x7"></div>
+            <heat-map-events title="Today's Performance" events="model.rawEvents" range="14" domain="day" sub-domain="hour"></heat-map-events>
+            <heat-map-events title="Today's Performance" events="model.rawEvents" range="14" domain="hour" sub-domain="minute"></heat-map-events>
             <plot-map title="Today's Performance" z="model.plot.today.z" x="model.plot.today.x"></plot-map>
             <plot-stats title="Historical Performance (last 60 days)" kind="usersMa" effort-key="cals" stats="model.trends.l_60d"></div>
           </section>

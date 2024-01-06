@@ -110,6 +110,7 @@ class Controller {
                 "most_recent": {},
                 "most_recent_increment": {}
             },
+            rawEvents: [],
             account: undefined,
             participant: undefined,
             performance: {
@@ -385,7 +386,8 @@ class Controller {
 
         // project perspective
         
-        let events = await that.populateEvents(accountId,"all_time", participantId);   
+        let events = await that.populateEvents(accountId,"all_time", participantId);  
+        that.model.rawEvents = events; 
         
         // await that._populateLastIncrementAndTeam();
         
@@ -400,7 +402,22 @@ class Controller {
         that._today(participantId);
 
         const cal = new CalHeatmap();
-        cal.paint({itemSelector: '#x7'});
+        cal.paint({
+            itemSelector: '#x7',
+            range: 6,
+            domain: {type: "month"},
+            subDomain: {type: "day"},
+            date: {
+                start: new Date(moment().add(-5,"month").valueOf())
+            },
+            data: {
+                source: that.model.events["all_time"],
+                x: "ct",
+                y: "s"
+
+            }            
+
+        });
         
         that.model.busy = false;
         // that.drawTrends(that.model.trends.all_time);

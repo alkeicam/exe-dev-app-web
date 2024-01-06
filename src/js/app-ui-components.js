@@ -134,7 +134,97 @@
             Plotly.newPlot(theElement, dd, layout,  {displayModeBar: false, responsive: true});                
             return controller;
         }
-    }   
+    }  
+    
+    rivets.components['heat-map-events'] = {
+        template: function(item) {
+            console.log("item", item);
+            const template = `
+        <div class="my-2">               
+            <div class="here-plot"></div>                        
+        </div>
+      `
+              return template;
+          },
+        static: ['iconClass', 'metricLabel', 'label', 'metricProp', 'title', 'domain', 'subDomain'],
+        // dynamic bound: 'errorMsg'
+        initialize: function(el, data) {
+            
+            const controller = {
+                emitter: data.emitter,            
+                model: {
+                    entity: data, // timeAgoEvent, metric
+                    forms:{
+                        f1: {
+                            v: "",
+                            e: {
+                                code: 0,
+                                message: "OK"
+                            }
+                        },
+                        f2: {
+                            v: "",
+                            e: {
+                                code: 0,
+                                message: "OK"
+                            }
+                        }
+                    },
+                    error:{
+                        code: 0,
+                        message: "OK"
+                    }
+                },                                               
+            }    
+            // const stats = {}
+            // const dataset = el.dataset;
+    
+            // const graphData = [];
+    
+            // stats[dataset.kind].forEach((user)=>{
+            //     const data = {
+            //         x: stats.intervals.map(item=>item.name),
+            //         y: user.efforts.map(item=>item.value[dataset.effortKey]),
+            //         mode: 'lines',
+            //         name: user.user
+            //     }
+            //     graphData.push(data);
+            // })
+
+            var colorscaleValue = [
+                [0, '#f24545'],
+                [0.33, '#f5e943'],
+                [0.66, '#4edee8'],
+                [1, '#91e84e']
+              ];
+              
+            
+            
+            const theElement = el.getElementsByClassName("here-plot")[0];
+
+            
+    
+            const cal = new CalHeatmap();
+            cal.paint({
+                itemSelector: theElement,
+                range: data.range,
+                domain: {type: data.domain},
+                subDomain: {type: data.subDomain},
+                date: {
+                    // start: new Date(moment().add(-(data.range-1),data.domain).valueOf())
+                },
+                data: {
+                    source: data.events,
+                    x: "ct",
+                    y: "s"
+    
+                }            
+    
+            });   
+            return controller;
+        }
+    } 
+
 
     rivets.components['plot-stats'] = {
         template: function(item) {            
