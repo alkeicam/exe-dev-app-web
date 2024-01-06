@@ -418,7 +418,7 @@ class EventProcessor{
      * 
      * @param {Stats} stats 
      */
-    trendsTo4ValueHitmapZX(stats, effortCode, thresholds, user, beginTs, endTs){
+    trendsTo4ValueHitmapZX(stats, effortCode, thresholds, user, showZerowsForFuture, beginTs, endTs){
         
         const x = [];
         const z = [[],[],[],[]];
@@ -430,11 +430,20 @@ class EventProcessor{
 
         intervalEfforts.forEach((item)=>{
             x.push(item.interval.nameLong);
-            const value = this.valueToThresholdId(thresholds, item.value[effortCode]);
+            let value = this.valueToThresholdId(thresholds, item.value[effortCode]);
+            if(!showZerowsForFuture && item.interval.ts>moment().valueOf()){
+                value = -1
+            }
             if(item.value[effortCode]>0){
                 console.log(`${item.value[effortCode]} => ${value}`)
             }
             switch(value){
+                case -1:    // case when we want to not show value instead of zero value
+                    z[0].push(null);
+                    z[1].push(null);
+                    z[2].push(null);
+                    z[3].push(null);
+                    break;
                 case 0:
                     z[0].push(0);
                     z[1].push(null);
@@ -496,7 +505,7 @@ class EventProcessor{
             throw new Error(`Can't calculate threshold id for [${thresholds}] and ${value}`)
         return result;
     }
-    
+
 }
 
 if (typeof module !== 'undefined' && module.exports != null) {

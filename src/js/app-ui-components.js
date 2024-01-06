@@ -40,14 +40,13 @@
         template: function(item) {
             console.log("item", item);
             const template = `
-        <div class="box">   
-            malina 
+        <div class="box my-2">               
             <div class="here-plot"></div>                        
         </div>
       `
               return template;
           },
-        static: ['iconClass', 'metricLabel', 'label', 'metricProp'],
+        static: ['iconClass', 'metricLabel', 'label', 'metricProp', 'title'],
         // dynamic bound: 'errorMsg'
         initialize: function(el, data) {
             
@@ -108,13 +107,15 @@
                   hoverongaps: false,
                   colorscale: colorscaleValue,
                   showscale: false,
+                //   hoverinfo: "x+y",
+                  hoverinfo: "none",
                   zmin: 0,
                   zmax: 3
                 }
               ];
     
             var layout = {
-                // title: dataset.title,
+                title: data.title,
                 autosize: true,
                 showlegend: true,
                 // yaxis: {
@@ -134,6 +135,67 @@
             return controller;
         }
     }   
+
+    rivets.components['plot-stats'] = {
+        template: function(item) {            
+            const template = `
+        <div class="box my-2">               
+            <div class="here-plot"></div>                        
+        </div>
+      `
+              return template;
+          },
+        static: ['kind','effortKey', 'title'],
+        // dynamic bound: 'errorMsg'
+        initialize: function(el, data) {
+            
+            const controller = {
+                emitter: data.emitter,            
+                model: {
+                    entity: data, // timeAgoEvent, metric
+                    error:{
+                        code: 0,
+                        message: "OK"
+                    }
+                },                                               
+            }    
+
+     
+            
+            const theElement = el.getElementsByClassName("here-plot")[0];
+
+            // const stats = value
+            // const dataset = el.dataset;
+
+            const graphData = [];
+
+            data.stats[data.kind].forEach((record)=>{
+                const data4Graph = {
+                    x: data.stats.intervals.map(item=>item.name),
+                    y: record.efforts.map(item=>item.value[data.effortKey]),
+                    mode: 'lines',
+                    name: record.user
+                }
+                graphData.push(data4Graph);
+            })
+
+            var layout = {
+                title: data.title,
+                autosize: true,
+                showlegend: true,
+                // width: 500,
+                legend: {
+                    x: 0,
+                    y: -0.3
+                }
+            };        
+
+            Plotly.newPlot(theElement, graphData, layout,  {displayModeBar: false, responsive: true});
+    
+            // Plotly.newPlot(theElement, dd, layout,  {displayModeBar: false, responsive: true});                
+            return controller;
+        }
+    } 
 
     /**
      * Renders card component that displays top performers from stats.

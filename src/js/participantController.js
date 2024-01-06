@@ -283,6 +283,8 @@ class Controller {
 
         const {token, user} = await BackendApi.AUTH.me();
 
+        const users = await BackendApi.USERS.getUserInfo(userId);
+
         if(!user || !token)
             window.location = "hello.html";
 
@@ -388,11 +390,17 @@ class Controller {
         // await that._populateLastIncrementAndTeam();
         
         
-        await that.populateTrends(that.model.events["all_time"],"all_time", 7, undefined, "hour", moment().startOf("day").valueOf(), moment().endOf("day").valueOf());    
+        await that.populateTrends(that.model.events["all_time"],"all_time", 7, undefined, "day");    
+        await that.populateTrends(that.model.events["all_time"],"l_60d", 7, undefined, "day", moment().startOf("day").add(-60,"d").valueOf(), moment().endOf("day").valueOf());    
+        await that.populateTrends(that.model.events["all_time"],"l_30d", 7, undefined, "day", moment().startOf("day").add(-30,"d").valueOf(), moment().endOf("day").valueOf());    
+        await that.populateTrends(that.model.events["all_time"],"l_24h", 7, undefined, "hour", moment().startOf("day").valueOf(), moment().endOf("day").valueOf());    
         
         that.model.forms.f1.f1.v = -1
 
         that._today(participantId);
+
+        const cal = new CalHeatmap();
+        cal.paint({itemSelector: '#x7'});
         
         that.model.busy = false;
         // that.drawTrends(that.model.trends.all_time);
@@ -415,7 +423,7 @@ class Controller {
 
         const processor = new EventProcessor();
         // const zx = processor.trendsTo4ValueHitmapZX(this.model.trends["all_time"], "commits", "0,2,3,4", "maciej.grula@execon.pl", beginTs, endTs);
-        const zx = processor.trendsTo4ValueHitmapZX(this.model.trends["all_time"], "commits", "0,1,2,11", participantId);        
+        const zx = processor.trendsTo4ValueHitmapZX(this.model.trends["l_24h"], "cals", "0,10,100,500", participantId);        
         
         zx.z[0].forEach((value)=>{
             this.model.plot.today.z[0].push(value);

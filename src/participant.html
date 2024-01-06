@@ -29,6 +29,9 @@
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>        
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="js/plotly-2.24.1.min.js" charset="utf-8"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://unpkg.com/cal-heatmap/dist/cal-heatmap.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/cal-heatmap/dist/cal-heatmap.css">
 
     
     
@@ -114,7 +117,7 @@
                   </div>
                 </div>
             </nav>
-            <h3 class="title is-3">Team Overview<span class="is-size-7 is-hidden" rv-class-is-hidden="model.account | empty">@{{model.account.name}}</span></h3>
+            <h3 class="title is-3">{{model.participant.id}}<span class="is-size-7 is-hidden" rv-class-is-hidden="model.account | empty">@{{model.account.name}}</span></h3>
             
 
                         
@@ -126,7 +129,9 @@
         </div>     
         <div class="container">
           <section class="section mt-6" style="padding: 0.5rem 0.5rem;">
-            <plot-map z="model.plot.today.z" x="model.plot.today.x"></plot-map>
+            <div id="x7"></div>
+            <plot-map title="Today's Performance" z="model.plot.today.z" x="model.plot.today.x"></plot-map>
+            <plot-stats title="Historical Performance (last 60 days)" kind="usersMa" effort-key="cals" stats="model.trends.l_60d"></div>
           </section>
         </div>
                 
