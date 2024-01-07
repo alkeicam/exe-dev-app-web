@@ -38,7 +38,7 @@
     
     rivets.components['plot-map'] = {
         template: function(item) {
-            console.log("item", item);
+            
             const template = `
         <div class="box my-2">               
             <div class="here-plot"></div>                        
@@ -137,10 +137,10 @@
     }  
     
     rivets.components['heat-map-events'] = {
-        template: function(item) {
-            console.log("item", item);
+        template: function(item) {        
             const template = `
-        <div class="my-2">               
+        <div class="my-2">  
+            <h5 class="title is-5">{{model.entity.title}}</h5>
             <div class="here-plot"></div>                        
         </div>
       `
@@ -203,24 +203,56 @@
             const theElement = el.getElementsByClassName("here-plot")[0];
 
             
-    
-            const cal = new CalHeatmap();
-            cal.paint({
+
+            const config = {
                 itemSelector: theElement,
-                range: data.range,
-                domain: {type: data.domain},
-                subDomain: {type: data.subDomain},
-                date: {
-                    // start: new Date(moment().add(-(data.range-1),data.domain).valueOf())
+                range: Math.abs(data.range),
+                domain: {
+                    type: data.domain
                 },
+                subDomain: {type: data.subDomain},
+                
+                date:  {},
                 data: {
                     source: data.events,
                     x: "ct",
                     y: "s"
     
-                }            
+                }                
+            }
+
+            let date = data.range<0?{start: new Date(moment().add(-(Math.abs(data.range)-1),data.domain).valueOf())}:{};
     
-            });   
+            if(data.startHour){
+                if(data.domain != "hour")
+                    throw new Error(`Can't use "startHour" without domain set to "hour"`);
+                date.start = new Date(moment().hour(data.startHour,"hour").valueOf())
+            }
+
+            config.date = date;
+
+            console.log(date.start, moment(date.start).format("HH:mm"), moment(date.start).valueOf());
+
+            if(data.domain == "hour"){
+                config.domain.label = {
+                    text: (timestamp)=>{return moment(timestamp).format("HH:mm")}
+                }
+            }
+            
+
+            const cal = new CalHeatmap();
+            cal.paint(config,
+                [[
+                    Tooltip,
+                    {
+                      text: function (date, value, dayjsDate) {
+                        return (
+                          (value ? value.toFixed(1) + ' calories' : 'No data') + ' on ' + dayjsDate.format('LL')
+                        );
+                      },
+                    },
+                  ]]
+            );   
             return controller;
         }
     } 

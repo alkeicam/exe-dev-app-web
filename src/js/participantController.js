@@ -400,24 +400,6 @@ class Controller {
         that.model.forms.f1.f1.v = -1
 
         that._today(participantId);
-
-        const cal = new CalHeatmap();
-        cal.paint({
-            itemSelector: '#x7',
-            range: 6,
-            domain: {type: "month"},
-            subDomain: {type: "day"},
-            date: {
-                start: new Date(moment().add(-5,"month").valueOf())
-            },
-            data: {
-                source: that.model.events["all_time"],
-                x: "ct",
-                y: "s"
-
-            }            
-
-        });
         
         that.model.busy = false;
         // that.drawTrends(that.model.trends.all_time);
