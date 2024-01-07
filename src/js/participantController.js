@@ -275,16 +275,19 @@ class Controller {
         const a = new Controller(emitter, container)
         // const accountId =  "a_execon";
         
-        a.model.participant = {
-            id: userId
-        }
+        
 
         a.model.isManager = false;
         a.model.isOwner = false;
 
         const {token, user} = await BackendApi.AUTH.me();
 
-        const users = await BackendApi.USERS.getUserInfo(userId);
+        const participantsData = await BackendApi.USERS.getUserInfo(userId);
+        a.model.participant = participantsData[0]
+        a.model.participant.id = a.model.participant.email;
+        //  = {
+        //     id: userId
+        // }
 
         if(!user || !token)
             window.location = "hello.html";

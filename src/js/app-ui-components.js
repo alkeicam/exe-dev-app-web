@@ -139,7 +139,7 @@
     rivets.components['heat-map-events'] = {
         template: function(item) {        
             const template = `
-        <div class="my-2">  
+        <div class="my-4 ">  
             <h5 class="title is-5">{{model.entity.title}}</h5>
             <div class="here-plot"></div>                        
         </div>
@@ -261,7 +261,8 @@
     rivets.components['plot-stats'] = {
         template: function(item) {            
             const template = `
-        <div class="box my-2">               
+        <div class="my-4">    
+            <h5 class="title is-5">{{model.entity.title}}</h5>           
             <div class="here-plot"></div>                        
         </div>
       `
@@ -344,7 +345,7 @@
                 </thead>
                 <tbody>
                 <tr rv-each-item="model.entity.records">
-                    <th class="is-size-7">{{item.user}}</th>
+                    <th class="is-size-7"><a target="_blank" rv-href="item.user | hrefBuilder 'participant.html?u=@value'">{{item.user}}</a></th>
 
                     <td class="is-size-7 is-hidden" rv-class-is-hidden="model.entity.round | gte 1">{{item | propertyAt model.entity.propB | numberRoundDecimal 2}}</td>
                     <td class="is-size-7 is-hidden" rv-class-is-hidden="model.entity.round | empty">{{item | propertyAt model.entity.propB}}</td>
