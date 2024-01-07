@@ -30,8 +30,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="js/plotly-2.24.1.min.js" charset="utf-8"></script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/cal-heatmap/dist/plugins/Tooltip.min.js"></script>
     <script src="https://unpkg.com/cal-heatmap/dist/cal-heatmap.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/cal-heatmap/dist/cal-heatmap.css">
+    
 
     
     
@@ -117,7 +120,7 @@
                   </div>
                 </div>
             </nav>
-            <h3 class="title is-3">{{model.participant.id}}<span class="is-size-7 is-hidden" rv-class-is-hidden="model.account | empty">@{{model.account.name}}</span></h3>
+            <h3 class="title is-3">{{model.participant.name}}<span class="is-size-7 is-hidden" rv-class-is-hidden="model.account | empty">@{{model.account.name}}</span></h3>
             
 
                         
@@ -128,12 +131,14 @@
             <progress class="progress is-danger" max="100">30%</progress>
         </div>     
         <div class="container">
-          <section class="section mt-6" style="padding: 0.5rem 0.5rem;">
-            <div id="x7"></div>
-            <heat-map-events title="Today's Performance" events="model.rawEvents" range="14" domain="day" sub-domain="hour"></heat-map-events>
-            <heat-map-events title="Today's Performance" events="model.rawEvents" range="14" domain="hour" sub-domain="minute"></heat-map-events>
-            <plot-map title="Today's Performance" z="model.plot.today.z" x="model.plot.today.x"></plot-map>
-            <plot-stats title="Historical Performance (last 60 days)" kind="usersMa" effort-key="cals" stats="model.trends.l_60d"></div>
+          <section class="section mt-6" style="padding: 0.5rem 0.5rem;">                        
+            <heat-map-events title="Today's Effort" events="model.rawEvents" range="14" start-hour="7" domain="hour" sub-domain="minute"></heat-map-events>
+            <heat-map-events title="Historical Activity" events="model.rawEvents" range="-12" domain="month" sub-domain="day"></heat-map-events>            
+            <plot-stats title="Effort (trending)" kind="usersMa" effort-key="cals" stats="model.trends.l_60d"></plot-stats>
+            <plot-stats title="Commits (trending)" kind="usersMa" effort-key="commits" stats="model.trends.l_60d"></plot-stats>
+            <plot-stats title="Lines (trending)" kind="usersMa" effort-key="lines" stats="model.trends.l_60d"></plot-stats>
+            <plot-stats title="Entropy (trending)" kind="usersMa" effort-key="entropy" stats="model.trends.l_60d"></plot-stats>
+            
           </section>
         </div>
                 

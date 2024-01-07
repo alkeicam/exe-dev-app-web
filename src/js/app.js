@@ -362,6 +362,7 @@ class AppDemo {
 
     async _populateLastIncrementAndTeam(projectId){
         this.model.team.present = this.model.events.c_0.filter((item)=>!projectId||item.project==projectId).map((item)=>item.user).filter((value, index, array) => array.indexOf(value) === index);
+        this.model.team.all_time = this.model.events.all_time.filter((item)=>!projectId||item.project==projectId).map((item)=>item.user).filter((value, index, array) => array.indexOf(value) === index);
         this.model.events.most_recent = this.model.events.all_time.filter((item)=>!projectId||item.project==projectId).filter((item)=>item.oper == "commit").sort((a,b)=>b.ct-a.ct)[0];     
         this.model.events.most_recent_increment = this.model.events.all_time.filter((item)=>!projectId||item.project==projectId).filter((item)=>item.oper == "push").sort((a,b)=>b.ct-a.ct)[0];     
     }

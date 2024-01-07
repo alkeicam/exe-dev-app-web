@@ -1,12 +1,14 @@
 class BackendApi {
-    static BASE_URL = "https://devjam-lab.azurewebsites.net"
-    // static BASE_URL = "http://localhost:7071"
+    // static BASE_URL = "https://devjam-lab.azurewebsites.net"
+    static BASE_URL = "http://localhost:7071"
     static API = {
         EVENTS: "/account/{{accountId}}/events/since/{{dateMs}}",
+        USER_EVENTS: "/account/{{accountId}}/user/{{userId}}/events/since/{{dateMs}}",
         EVENTS_BETWEEN: "/account/{{accountId}}/events/since/{{dateMs}}/to/{{dateToMs}}",
         ACCOUNT_INVITATIONS: "/account/{{accountId}}/invitations",
         ACCOUNT_PROJECT_INVITATION: "/account/{{accountId}}/projects/{{projectId}}/invitations",
         ACCOUNT_PROJECT_MGMT_INVITE: "/account/{{accountId}}/projects/{{projectId}}/mgmt/invitations",
+        USER: "/user/{{userId}}",
         ACCOUNT: "/account/{{accountId}}",
         AUTH_SIGNIN: "/auth/signin",
         PROJECTS_CREATE: "/account/{{accountId}}/projects"
@@ -122,6 +124,30 @@ class BackendApi {
         }
     }
 
+    static EVENTS = {
+        async getAccountUserEventsSince(accountId, userId, sinceMs){
+            const urlFunction = Handlebars.compile(`${BackendApi.BASE_URL}${BackendApi.API.USER_EVENTS}`)
+            const url = urlFunction({accountId: accountId, dateMs: sinceMs, userId: userId});
+            // console.log(url);
+            const response = await BackendApi._fetch(url);
+            const eventsResponse = await response.json();
+            const events = eventsResponse.items;
+            return events;
+        }
+    }
+
+    static USERS = {
+        async getUserInfo(userId){
+            const urlFunction = Handlebars.compile(`${BackendApi.BASE_URL}${BackendApi.API.USER}`)
+            const url = urlFunction({userId: userId});
+            // console.log(url);
+            const response = await BackendApi._fetch(url);
+            const itemsResponse = await response.json();
+            const items = itemsResponse.items;
+            return items;
+        }
+    }
+
     static _authHeadersDecorator(headers){
         const token = localStorage.getItem("Auth:token");
         if(token){
@@ -159,6 +185,9 @@ class BackendApi {
         const events = eventsResponse.items;
         return events;
     }
+
+
+
     static async getAccountEventsBetween(accountId, sinceMs, toMs){
         let dateToMs = toMs;
 
