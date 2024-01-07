@@ -249,7 +249,7 @@
                         let label;
                         switch(data.subDomain){
                             case "minute": 
-                                label = (value ? value.toFixed(1) + ' calories' : 'No data') + ' on ' + dayjsDate.format('LT')
+                                label = (value ? value.toFixed(1) + ' calories' : 'No data') + ' on ' + moment(date).format("LT")
                             break;
                             // case "day": 
                             //     label = (value ? value.toFixed(1) + ' calories' : 'No data') + ' on ' + dayjsDate.format('LL')
