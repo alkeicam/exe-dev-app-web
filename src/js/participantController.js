@@ -315,7 +315,7 @@ class Controller {
             await a._handleRefreshEvents(undefined, a);
         }catch(error){
             console.log(error);
-            // window.location = "hello.html?message=Session expired. Please log in again.";
+            window.location = "hello.html?message=Session expired. Please log in again.";
         }
         
         

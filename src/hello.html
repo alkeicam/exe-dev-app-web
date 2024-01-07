@@ -36,6 +36,11 @@
 <body >
     <div id="app"> 
         <div class="container is-hidden" rv-class-is-hidden="model.notBusy | eq false">
+            <section class="section is-hidden" style="padding: 0.5rem 0.5rem;" rv-class-is-hidden="model.error.code | eq 0">
+                <div class="notification is-info">                    
+                    {{model.error.message}}
+                  </div>
+            </section>
             <section class="section" style="padding: 0.5rem 0.5rem;">                    
                 <article class="message is-hidden" rv-class-is-hidden="model.process.step | neq 'ONBOARDING'">                    
                     <!-- heading, title, titleIconClasses, failedMsg, errorMsg, loginLabel, passLabel, signCtaLabel, cancelCtaLabel, helpMsg, successURL                       -->

@@ -48,6 +48,7 @@ class HelloController {
     }
 
     static async getInstance(emitter){
+        
         const a = new HelloController(emitter)
         a.emitter.on("ui:busy",()=>{
             a.model.notBusy = false
@@ -55,6 +56,13 @@ class HelloController {
         a.emitter.on("ui:notBusy",()=>{
             a.model.notBusy = true
         })
+
+        const errorMessage = HelloController.getQueryParam("message");
+        if(errorMessage){
+            a.model.error.message = errorMessage;
+            a.model.error.code = 403
+        }
+        //message
         
         return a;
     }
@@ -113,7 +121,7 @@ class HelloController {
  
     }
 
-    getQueryParam(paramName){
+    static getQueryParam(paramName){
         const urlParams = new URLSearchParams(window.location.search);
         const myParam = urlParams.get(paramName);
         return myParam;
