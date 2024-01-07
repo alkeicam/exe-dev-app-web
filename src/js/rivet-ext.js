@@ -47,7 +47,7 @@
         return value % mod == target;
     }
 
-    // <a rv-href="group.Id | formatString 'group.aspx?id=@value&name=@0&owner=@1' group.Name group.Owner">My Link</a>
+    // <a rv-href="group.Id | hrefBuilder 'group.aspx?id=@value&name=@0&owner=@1' group.Name group.Owner">My Link</a>
     rivets.formatters.hrefBuilder = function (value, text) {
         text = text.replace('@value', value);
 

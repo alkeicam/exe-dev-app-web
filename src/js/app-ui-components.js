@@ -246,9 +246,20 @@
                     Tooltip,
                     {
                       text: function (date, value, dayjsDate) {
-                        return (
-                          (value ? value.toFixed(1) + ' calories' : 'No data') + ' on ' + dayjsDate.format('LL')
-                        );
+                        let label;
+                        switch(data.subDomain){
+                            case "minute": 
+                                label = (value ? value.toFixed(1) + ' calories' : 'No data') + ' on ' + dayjsDate.format('LT')
+                            break;
+                            // case "day": 
+                            //     label = (value ? value.toFixed(1) + ' calories' : 'No data') + ' on ' + dayjsDate.format('LL')
+                            // break;
+                            default: 
+                                label = (value ? value.toFixed(1) + ' calories' : 'No data') + ' on ' + dayjsDate.format('LL')
+                            break;
+
+                        }
+                        return label;
                       },
                     },
                   ]]
