@@ -282,12 +282,6 @@ class Controller {
 
         const {token, user} = await BackendApi.AUTH.me();
 
-        const participantsData = await BackendApi.USERS.getUserInfo(userId);
-        a.model.participant = participantsData[0]
-        a.model.participant.id = a.model.participant.email;
-        //  = {
-        //     id: userId
-        // }
 
         if(!user || !token)
             window.location = "hello.html";
@@ -298,6 +292,9 @@ class Controller {
         try{
 
             await a._prepareAccounts(a.model.user);
+            const participantsData = await BackendApi.USERS.getUserInfo(userId);
+            a.model.participant = participantsData[0]
+            a.model.participant.id = a.model.participant.email;
 
             
 
