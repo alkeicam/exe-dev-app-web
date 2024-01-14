@@ -1,12 +1,13 @@
 {
   "name": "vanilla-basic",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "scripts": {
     "build": "cp -r ./src ./dist",
     "start": "sirv ./src public --cors --single --no-clear --port 8000",
     "test": "mocha",
     "coverage": "nyc --reporter html --reporter text npm test",
-    "apply-version": "npm version patch -f && echo $npm_package_version && find . -path ./node_modules -prune -o -name \"*.js\" -print0 | xargs -0 sed -i '' -e \"s/const X_APP_VERSION \\=.*/const X_APP_VERSION \\= '$npm_package_version'/g\""
+    "patch": "npm version patch -f ",
+    "apply-version": "npm run patch && echo $npm_package_version && find . -path ./node_modules -prune -o -name \"*.js\" -print0 | xargs -0 sed -i '' -e \"s/const X_APP_VERSION \\=.*/const X_APP_VERSION \\= '$npm_package_version'/g\""
   },
   "devDependencies": {
     "chai": "^3.5.0",
