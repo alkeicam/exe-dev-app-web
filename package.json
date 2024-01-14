@@ -1,11 +1,11 @@
 {
   "name": "dev-workout-spa-app",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "scripts": {
     "build": "cp -r ./src ./dist",
     "start": "sirv ./src public --cors --single --no-clear --port 8000",
     "test": "mocha",
-    "coverage": "nyc --reporter html --reporter text npm test",    
+    "coverage": "nyc --reporter html --reporter text npm test",
     "apply-version": "echo $npm_package_version && find . -path ./node_modules -prune -o -name \"*.js\" -print0 | xargs -0 sed -i '' -e \"s/const X_APP_VERSION \\=.*/const X_APP_VERSION \\= '$npm_package_version'/g\"",
     "rc": "npm version patch && npm run apply-version && git commit -a -m 'release candidate' && git push origin && git push origin --tags"
   },
