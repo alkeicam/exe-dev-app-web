@@ -8,6 +8,8 @@ class BackendApi {
         ACCOUNT_INVITATIONS: "/account/{{accountId}}/invitations",
         ACCOUNT_PROJECT_INVITATION: "/account/{{accountId}}/projects/{{projectId}}/invitations",
         ACCOUNT_PROJECT_MGMT_INVITE: "/account/{{accountId}}/projects/{{projectId}}/mgmt/invitations",
+        ACCOUNT_PLAYLIST: "/account/{{accountId}}/playlist/{{playlistId}}/{{secret}}",
+        ACCOUNT_DASHBOARDS: "/account/{{accountId}}/dashboards",
         USER: "/user/{{userId}}",
         ACCOUNT: "/account/{{accountId}}",
         AUTH_SIGNIN: "/auth/signin",
@@ -121,6 +123,22 @@ class BackendApi {
             const response = await BackendApi._fetch(url);
             const jsonResponse = await response.json();
             return jsonResponse.items;        
+        },
+        async getPlaylist(accountId, playlistId, secret){
+            const urlFunction = Handlebars.compile(`${BackendApi.BASE_URL}${BackendApi.API.ACCOUNT_PLAYLIST}`)
+            const url = urlFunction({accountId: accountId, playlistId: playlistId, secret: secret});
+            // console.log(url);
+            const response = await BackendApi._fetch(url);
+            const jsonResponse = await response.json();
+            return jsonResponse.items;   
+        },
+        async getDashboards(accountId){
+            const urlFunction = Handlebars.compile(`${BackendApi.BASE_URL}${BackendApi.API.ACCOUNT_DASHBOARDS}`)
+            const url = urlFunction({accountId: accountId});
+            // console.log(url);
+            const response = await BackendApi._fetch(url);
+            const jsonResponse = await response.json();
+            return jsonResponse.items;   
         }
     }
 
