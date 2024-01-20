@@ -1,0 +1,149 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    
+    <!-- <base href="app"> -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Dashboard - Founder's Assistant</title>
+    <meta name="description" content="Help startup founders track and measure developer's effort and engagment">
+    <meta name="author" content="grulka">
+
+    <!-- <meta property="og:title" content="Dev Workout">
+    <meta property="og:type" content="website">
+    <meta property="og:url"
+        content="https://spectator-40e33.web.app/?g=xAz4g5">
+    <meta property="og:description" content="Broadcast amateur sport event live and share with friends">
+    <meta property="og:image" content="https://spectator-40e33.web.app/assets/img_51.png.jpg"> -->
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <link rel="stylesheet" href="css/style.css">
+
+    <script src="js/rivet.js"></script>
+    <script src="js/rivet-ext.js"></script>
+    <script src="js/ui-components.js"></script>
+    <script src="js/app-ui-components.js"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>        
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="js/plotly-2.24.1.min.js" charset="utf-8"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/cal-heatmap/dist/plugins/Tooltip.min.js"></script>
+    <script src="https://unpkg.com/cal-heatmap/dist/cal-heatmap.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/cal-heatmap/dist/cal-heatmap.css">
+    
+
+    
+    
+</head>
+
+<body >
+    <div id="app" style="margin-top: 5vh;min-height: 80vh;">                   
+        <div class="container" style="padding-top: 40vh; padding-bottom: 40vh;" rv-class-is-hidden="model.busy | eq false">
+            <progress class="progress is-danger" max="100">30%</progress>
+        </div>
+        <!-- layout X -->
+        <div class=" is-hidden" rv-class-is-hidden="model.busy">
+          <section class="section py-3 is-hidden" rv-class-is-hidden="model.entity.layout | neq 'l4'">
+            <dashboard-l4 dashboard="model.entity"></dashboard-l4>
+          </section>
+          <section class="section py-3 is-hidden" rv-class-is-hidden="model.entity.layout | neq 'l3'">
+            <dashboard-l3 dashboard="model.entity"></dashboard-l3>
+          </section>
+          <section class="section pt-5 mt-5">
+            <p class="has-text-right"><strong>Updated:</strong> <script>document.write(new Date().toString())</script></p>
+          </section>
+        </div>     
+        
+                
+        
+    </div>
+    
+        
+    <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    <script src="js/version.js"></script>
+    <footer class="footer">
+        <div class="content has-text-centered">
+            <p>
+                Made with <span style="color: #e25555;">&#9829;</span> in EU<br>
+                &copy;
+                <span id="copyright">
+                    <script>document.getElementById('copyright').appendChild(document.createTextNode(new Date().getFullYear()))</script>
+                </span>
+                Dev Workout powered by LaaS Cloud (ver. <script>document.write(X_APP_VERSION)</script>)
+            </p>
+        </div>
+    </footer>   
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.8/handlebars.min.js" integrity="sha512-E1dSFxg+wsfJ4HKjutk/WaCzK7S2wv1POn1RRPGh8ZK+ag9l244Vqxji3r6wgz9YBf6+vhQEYJZpSjqWFPg9gg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="js/state.js"></script>
+    <script src="js/event-processor.js"></script>    
+    <script src="js/api.js"></script>
+    <script src="js/dashboardController.js"></script>
+    <!-- <script src="js/onboardingModalController.js"></script>
+    <script src="js/preferencesModalController.js"></script> -->
+    <script>
+
+        
+
+
+        class EventEmitter {
+            constructor() {
+                this.listeners = {};
+            }
+
+            static getInstance() {
+                return new EventEmitter();
+            }
+
+            on(event, callback) {
+                if (!this.listeners.hasOwnProperty(event)) {
+                    this.listeners[event] = [];
+                }
+
+                this.listeners[event].push(callback);
+
+                return this;
+            }
+
+            emit(event, ...data) {
+                if (!this.listeners.hasOwnProperty(event)) {
+                    return null;
+                }
+
+                for (let i = 0; i < this.listeners[event].length; i++) {
+                    const callback = this.listeners[event][i];
+
+                    callback.call(this, ...data);
+                }
+            }
+        }
+        const emitter = EventEmitter.getInstance();
+        const mapCanvas = document.getElementById("map");
+
+        const emitter2 = EventEmitter.getInstance();
+        const mapCanvas2 = document.getElementById("map2");
+
+        rivets.templateDelimiters = ["{{", "}}"]
+
+        Controller.getInstance(emitter, "userGraph").then((app)=>{            
+            rivets.bind(document.getElementById('app'), app);            
+        })
+        // OnboardingModalController.getInstance(emitter).then((controller)=>{
+        //     rivets.bind(document.getElementById('onboardingModal'),controller);
+        // })
+
+        // PreferencesModalController.getInstance(emitter).then((controller)=>{
+        //     rivets.bind(document.getElementById('preferencesModal'),controller);
+        // })
+        // console.log(window.location.href);
+
+        window.appEmiter = emitter;
+    </script>
+</body>
+
+</html>

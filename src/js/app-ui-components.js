@@ -452,4 +452,204 @@
         }
     }   
 
+    rivets.components['dashboard-l4'] = {
+        template: function(item) {        
+            const template = `
+            <div class="columns">
+                <div class="column is-two-fifths">
+                    <h1 class="title is-1">{{model.entity.dashboard.title}}</h1>
+                    <h2 class="title is-2">{{model.entity.dashboard.subtitle}}</h2>
+                    <h2 class="title is-6">{{model.entity.dashboard.info}}</h2>
+                </div>
+                <div class="column">
+                <p class="has-text-centered">
+                    <img rv-src="model.entity.dashboard.resources.image" style="width: 45cqmin"></img>
+                </p>
+                </div>                
+            </div>
+            
+            
+            <div class="tile is-ancestor">
+              <div class="tile is-4 is-vertical is-parent">                
+                <div class="tile is-child box notification" rv-class-is-success="model.metrics.m1.state | eq 'green'" rv-class-is-warning="model.metrics.m1.state | eq 'yellow'" rv-class-is-danger="model.metrics.m1.state | eq 'red'">
+                  <p class="title is-5">{{model.metrics.m1.label }}</p>                                    
+                  <p class="has-text-centered" style="font-size: 15cqmin;">{{model.metrics.m1.value}}<span class="ml-3 has-text-weight-bold" style="font-size: 5cqb;">{{model.metrics.m1.suffix}}</span></p>
+                </div>                
+              </div>
+              <div class="tile is-parent">
+                <div class="tile is-child box notification " rv-class-is-success="model.metrics.m3.state | eq 'green'" rv-class-is-warning="model.metrics.m3.state | eq 'yellow'" rv-class-is-danger="model.metrics.m3.state | eq 'red'">
+                  <article>
+                  <p class="title is-5">{{model.metrics.m3.label }}</p>                                    
+                  <p class="has-text-centered" style="font-size: 15cqmin;">{{model.metrics.m3.value}}<span class="ml-3 has-text-weight-bold" style="font-size: 5cqb;">{{model.metrics.m3.suffix}}</span></p>
+                    
+                  </article>                  
+                </div>
+              </div>
+              <div class="tile is-parent">
+                <div class="tile is-child box notification" rv-class-is-success="model.metrics.m4.state | eq 'green'" rv-class-is-warning="model.metrics.m4.state | eq 'yellow'" rv-class-is-danger="model.metrics.m4.state | eq 'red'">
+                  <article>
+                  <p class="title is-5">{{model.metrics.m4.label }}</p>                                    
+                  <p class="has-text-centered" style="font-size: 15cqmin;">{{model.metrics.m4.value}}<span class="ml-3 has-text-weight-bold" style="font-size: 5cqb;">{{model.metrics.m4.suffix}}</span></p>
+                  </article>                  
+                </div>                
+              </div>
+              <div class="tile is-parent">
+                <div class="tile is-child box notification" rv-class-is-success="model.metrics.m2.state | eq 'green'" rv-class-is-warning="model.metrics.m2.state | eq 'yellow'" rv-class-is-danger="model.metrics.m2.state | eq 'red'">
+                  <article>
+                  <p class="title is-5">{{model.metrics.m2.label }}</p>                                    
+                  <p class="has-text-centered" style="font-size: 15cqmin;">{{model.metrics.m2.value}}<span class="ml-3 has-text-weight-bold" style="font-size: 5cqb;">{{model.metrics.m2.suffix}}</span></p>
+                  </article>                  
+                </div>                
+              </div>
+            </div>
+            
+            
+            
+      `
+              return template;
+          },
+        static: [],
+        // dynamic bound: 'errorMsg'
+        initialize: function(el, data) {
+            
+            const controller = {
+                emitter: data.emitter,            
+                model: {
+                    entity: data, // dashboard
+                    metrics: {},
+                    forms:{
+                        f1: {
+                            v: "",
+                            e: {
+                                code: 0,
+                                message: "OK"
+                            }
+                        },
+                        f2: {
+                            v: "",
+                            e: {
+                                code: 0,
+                                message: "OK"
+                            }
+                        }
+                    },
+                    error:{
+                        code: 0,
+                        message: "OK"
+                    }
+                },                                               
+            }     
+
+            function make(which){
+                if(!controller.model.entity.dashboard.data[which]) return;
+                controller.model.metrics[which] = {
+                    label: controller.model.entity.dashboard.data[which].specs.label,
+                    value: controller.model.entity.dashboard.data[which].item.value,
+                    suffix: controller.model.entity.dashboard.data[which].specs.suffix,
+                    state: controller.model.entity.dashboard.data[which].item.state
+                }    
+            }
+            
+            make("m1");
+            make("m2");
+            make("m3");
+            make("m4");
+            return controller;
+        }
+    }
+    
+    rivets.components['dashboard-l3'] = {
+        template: function(item) {        
+            const template = `
+            <div class="columns">
+                <div class="column is-two-fifths">
+                    <h1 class="title is-1">{{model.entity.dashboard.title}}</h1>
+                    <h2 class="title is-2">{{model.entity.dashboard.subtitle}}</h2>
+                    <h2 class="title is-6">{{model.entity.dashboard.info}}</h2>
+                </div>
+                <div class="column">
+                <p class="has-text-centered">
+                    <img rv-src="model.entity.dashboard.resources.image" style="width: 45cqmin"></img>
+                </p>
+                </div>                
+            </div>
+
+            <div class="tile is-ancestor">
+              <div class="tile is-4 is-vertical is-parent">                
+                <div class="tile is-child box notification" rv-class-is-success="model.metrics.m1.state | eq 'green'" rv-class-is-warning="model.metrics.m1.state | eq 'yellow'" rv-class-is-danger="model.metrics.m1.state | eq 'red'">
+                  <p class="title is-5">{{model.metrics.m1.label }}</p>                                    
+                  <p class="has-text-centered" style="font-size: 10cqmin;">{{model.metrics.m1.value}}<span class="ml-3 has-text-weight-bold" style="font-size: 3cqb;">{{model.metrics.m1.suffix}}</span></p>
+                </div>                
+              </div>
+              <div class="tile is-parent">
+                <div class="tile is-child box notification " rv-class-is-success="model.metrics.m2.state | eq 'green'" rv-class-is-warning="model.metrics.m2.state | eq 'yellow'" rv-class-is-danger="model.metrics.m2.state | eq 'red'">
+                  <article>
+                  <p class="title is-5">{{model.metrics.m2.label }}</p>                                    
+                  <p class="has-text-centered" style="font-size: 10cqmin;">{{model.metrics.m2.value}}<span class="ml-3 has-text-weight-bold" style="font-size: 3cqb;">{{model.metrics.m2.suffix}}</span></p>
+                    
+                  </article>                  
+                </div>
+              </div>
+              <div class="tile is-parent">
+                <div class="tile is-child box notification" rv-class-is-success="model.metrics.m3.state | eq 'green'" rv-class-is-warning="model.metrics.m3.state | eq 'yellow'" rv-class-is-danger="model.metrics.m3.state | eq 'red'">
+                  <article>
+                  <p class="title is-5">{{model.metrics.m3.label }}</p>                                    
+                  <p class="has-text-centered" style="font-size: 10cqmin;">{{model.metrics.m3.value}}<span class="ml-3 has-text-weight-bold" style="font-size: 3cqb;">{{model.metrics.m3.suffix}}</span></p>
+                  </article>                  
+                </div>
+              </div>
+            </div>
+            
+      `
+              return template;
+          },
+        static: [],
+        // dynamic bound: 'errorMsg'
+        initialize: function(el, data) {
+            
+            const controller = {
+                emitter: data.emitter,            
+                model: {
+                    entity: data, // dashboard
+                    metrics: {},
+                    forms:{
+                        f1: {
+                            v: "",
+                            e: {
+                                code: 0,
+                                message: "OK"
+                            }
+                        },
+                        f2: {
+                            v: "",
+                            e: {
+                                code: 0,
+                                message: "OK"
+                            }
+                        }
+                    },
+                    error:{
+                        code: 0,
+                        message: "OK"
+                    }
+                },                                               
+            }     
+
+            function make(which){
+                if(!controller.model.entity.dashboard.data[which]) return;
+                controller.model.metrics[which] = {
+                    label: controller.model.entity.dashboard.data[which].specs.label,
+                    value: controller.model.entity.dashboard.data[which].item.value,
+                    suffix: controller.model.entity.dashboard.data[which].specs.suffix,
+                    state: controller.model.entity.dashboard.data[which].item.state
+                }    
+            }
+            
+            make("m1");
+            make("m2");
+            make("m3");            
+            return controller;
+        }
+    }
+
 })();
