@@ -357,7 +357,7 @@ class Controller {
 
         }catch(error){
             console.log(error);
-            // window.location = "hello.html?message=Session expired. Please log in again.";
+            window.location = "hello.html?message=Session expired. Please log in again.";
         }
         
         
