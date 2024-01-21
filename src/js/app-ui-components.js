@@ -652,4 +652,75 @@
         }
     }
 
+    rivets.components['user-projects-stats'] = {
+        template: function(item) {        
+            const template = `
+            <table class="table my-6">
+              <thead>
+                <tr>
+                  <th>Project</th>
+                  <th>Effort</th>
+                  <th>Commits</th>
+                  <th>Lines</th>
+                </tr>
+              </thead>
+              <tbody rv-if="model.projects | sizeGte 1">
+                <tr rv-each-item="model.projects">
+                  <th>{{item.name}}@{{item.accountName}}</th>
+                  <td>{{item.stats.s | numberRoundDecimal 2}}</td>
+                  <td>{{item.stats.c | numberRoundDecimal 2}}</td>
+                  <td>{{item.stats.l | numberRoundDecimal 2}}</td>
+                </tr>
+              </tbody>
+              <tbody rv-if="model.projects | sizeLt 1">
+                <tr >
+                  <th></th>
+                  <td colspan="3">No data</td>                  
+                </tr>
+              </tbody>
+            </table>            
+      `
+              return template;
+          },
+        static: [],
+        // dynamic bound: 'errorMsg'
+        initialize: function(el, data) {
+            
+            const controller = {
+                emitter: data.emitter,            
+                model: {
+                    entity: data, // dashboard
+                    
+                    forms:{
+                        f1: {
+                            v: "",
+                            e: {
+                                code: 0,
+                                message: "OK"
+                            }
+                        },
+                        f2: {
+                            v: "",
+                            e: {
+                                code: 0,
+                                message: "OK"
+                            }
+                        }
+                    },
+                    error:{
+                        code: 0,
+                        message: "OK"
+                    },
+                    projects: []
+                },                                               
+            }     
+
+            let projects = data.stats[data.user]?.projects;
+            if(projects){
+                controller.model.projects = Object.keys(projects).map(item=>projects[item])
+            }        
+            return controller;
+        }
+    }
+
 })();

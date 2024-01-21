@@ -130,10 +130,13 @@
         <div class="container" style="padding-top: 40vh; padding-bottom: 40vh;" rv-class-is-hidden="model.busy | eq false">
             <progress class="progress is-danger" max="100">30%</progress>
         </div>     
-        <div class="container">
-          <section class="section mt-6" style="padding: 0.5rem 0.5rem;">                        
+        <div class="container is-hidden" rv-class-is-hidden="model.busy">
+          <section class="section mt-6" style="padding: 0.5rem 0.5rem;">
+                                    
             <heat-map-events title="Today's Effort" events="model.rawEvents" range="14" start-hour="7" domain="hour" sub-domain="minute"></heat-map-events>
+            <user-projects-stats stats="model.userProjectsStatsToday" user="model.participant.id"></user-projects-stats>            
             <heat-map-events title="Historical Activity" events="model.rawEvents" range="-12" domain="month" sub-domain="day"></heat-map-events>            
+            <user-projects-stats stats="model.userProjectsStats" user="model.participant.id"></user-projects-stats>
             <plot-stats title="Effort (trending)" kind="usersMa" effort-key="cals" stats="model.trends.l_60d"></plot-stats>
             <plot-stats title="Commits (trending)" kind="usersMa" effort-key="commits" stats="model.trends.l_60d"></plot-stats>
             <plot-stats title="Lines (trending)" kind="usersMa" effort-key="lines" stats="model.trends.l_60d"></plot-stats>

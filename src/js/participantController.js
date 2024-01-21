@@ -165,7 +165,8 @@ class Controller {
                     z: [[],[],[],[]],
                     x: [],
                 }
-            }
+            },
+            userProjectsStats: {}
 
         }
     }
@@ -203,6 +204,46 @@ class Controller {
         
 
         that.model.busy = false;
+    }
+
+    async _userProjectsStats(events, accounts /* { id, projects: [id, name]} */){
+
+        const result = {}
+
+        events.forEach(event=>{
+            let user = result[event.user];
+            if(!user){
+                user = {
+                    user: event.user,
+                    projects: {}
+                }
+                result[event.user] = user;
+            }
+            let project = user.projects[`${event.account}::${event.project}`];
+
+            if(!project){
+                project = {
+                    id: event.project,
+                    accountId: event.account,
+                    name: accounts.find(item=>item.id == event.account).projects.find(item=>item.id == event.project).name,
+                    accountName: accounts.find(item=>item.id == event.account).name,
+                    stats: {
+                        s: 0,
+                        c: 0,
+                        l: 0
+                    }
+                }
+                user.projects[`${event.account}::${event.project}`] = project;
+            }
+
+            project.stats.s += event.s
+            project.stats.c += event.oper.toLowerCase()=="commit"?1:0
+            project.stats.l += event.decoded.changeSummary.inserts
+            project.stats.l += event.decoded.changeSummary.deletions
+        })
+
+        return result;
+
     }
 
     async populateEvents(accountId, range, userId){
@@ -310,9 +351,13 @@ class Controller {
 
             await a._selectAccount(preferredAccount.id||a.model.account.id);
             await a._handleRefreshEvents(undefined, a);
+
+            a.model.userProjectsStats = await a._userProjectsStats(a.model.rawEvents, a.model.accounts);
+            a.model.userProjectsStatsToday = await a._userProjectsStats(a.model.rawEvents.filter(item=>item.ct>=moment().startOf("day").valueOf()), a.model.accounts);
+
         }catch(error){
             console.log(error);
-            window.location = "hello.html?message=Session expired. Please log in again.";
+            // window.location = "hello.html?message=Session expired. Please log in again.";
         }
         
         
@@ -399,7 +444,7 @@ class Controller {
         
         that.model.forms.f1.f1.v = -1
 
-        that._today(participantId);
+        // that._today(participantId);
         
         that.model.busy = false;
         // that.drawTrends(that.model.trends.all_time);
