@@ -578,14 +578,14 @@
               <div class="tile is-4 is-vertical is-parent">                
                 <div class="tile is-child box notification" rv-class-is-success="model.metrics.m1.state | eq 'green'" rv-class-is-warning="model.metrics.m1.state | eq 'yellow'" rv-class-is-danger="model.metrics.m1.state | eq 'red'">
                   <p class="title is-5">{{model.metrics.m1.label }}</p>                                    
-                  <p class="has-text-centered" style="font-size: 5em;">{{model.metrics.m1.value}}<span class="ml-3 has-text-weight-bold" style="font-size: 1em;">{{model.metrics.m1.suffix}}</span></p>
+                  <p class="has-text-centered" style="font-size: 5em;">{{model.metrics.m1.value}}<span class="ml-3 has-text-weight-bold" style="font-size: 30px !important;">{{model.metrics.m1.suffix}}</span></p>
                 </div>                
               </div>
               <div class="tile is-parent">
                 <div class="tile is-child box notification " rv-class-is-success="model.metrics.m2.state | eq 'green'" rv-class-is-warning="model.metrics.m2.state | eq 'yellow'" rv-class-is-danger="model.metrics.m2.state | eq 'red'">
                   <article>
                   <p class="title is-5">{{model.metrics.m2.label }}</p>                                    
-                  <p class="has-text-centered" style="font-size: 5em;">{{model.metrics.m2.value}}<span class="ml-3 has-text-weight-bold" style="font-size: 1em;">{{model.metrics.m2.suffix}}</span></p>
+                  <p class="has-text-centered" style="font-size: 5em;">{{model.metrics.m2.value}}<span class="ml-3 has-text-weight-bold" style="font-size: 30px !important;">{{model.metrics.m2.suffix}}</span></p>
                     
                   </article>                  
                 </div>
@@ -594,7 +594,7 @@
                 <div class="tile is-child box notification" rv-class-is-success="model.metrics.m3.state | eq 'green'" rv-class-is-warning="model.metrics.m3.state | eq 'yellow'" rv-class-is-danger="model.metrics.m3.state | eq 'red'">
                   <article>
                   <p class="title is-5">{{model.metrics.m3.label }}</p>                                    
-                  <p class="has-text-centered" style="font-size: 5em;">{{model.metrics.m3.value}}<span class="ml-3 has-text-weight-bold" style="font-size: 1em;">{{model.metrics.m3.suffix}}</span></p>
+                  <p class="has-text-centered" style="font-size: 5em;">{{model.metrics.m3.value}}<span class="ml-3 has-text-weight-bold" style="font-size: 30px !important;">{{model.metrics.m3.suffix}}</span></p>
                   </article>                  
                 </div>
               </div>
