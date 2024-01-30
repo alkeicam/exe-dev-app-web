@@ -1,0 +1,31 @@
+html {
+    background-color: #262626;
+}
+
+body {
+    background-color: #262626;
+    color: white
+}
+
+strong {
+    color: white
+}
+.title {
+    color: white
+}
+
+.notification.is-success{
+    background-color: #75975b;
+}
+
+.notification.is-warning{
+    background-color: #ffba33;
+}
+
+.notification.is-danger{
+    background-color: #ff7033;
+}
+
+.footer {
+    background-color:  #262626;
+}
