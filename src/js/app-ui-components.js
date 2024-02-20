@@ -541,6 +541,7 @@
             }     
 
             function make(which){
+                if(!controller.model.entity.dashboard.data) return;
                 if(!controller.model.entity.dashboard.data[which]) return;
                 controller.model.metrics[which] = {
                     label: controller.model.entity.dashboard.data[which].specs.label,
@@ -636,6 +637,7 @@
             }     
 
             function make(which){
+                if(!controller.model.entity.dashboard.data) return;
                 if(!controller.model.entity.dashboard.data[which]) return;
                 controller.model.metrics[which] = {
                     label: controller.model.entity.dashboard.data[which].specs.label,
@@ -648,6 +650,64 @@
             make("m1");
             make("m2");
             make("m3");            
+            return controller;
+        }
+    }
+
+    rivets.components['dashboard-e1'] = {
+        template: function(item) {        
+            const template = `
+            <div class="columns">
+                <div class="column is-two-fifths">
+                    <h1 class="title is-1">{{model.entity.dashboard.title}}</h1>
+                    <h2 class="title is-2">{{model.entity.dashboard.subtitle}}</h2>
+                    <h2 class="title is-6">{{model.entity.dashboard.info}}</h2>
+                </div>
+                <div class="column">
+                <p class="has-text-centered">
+                    <img rv-src="model.entity.dashboard.resources.image" style="width: 45cqmin"></img>
+                </p>
+                </div>                
+            </div>
+
+            <div>
+                <iframe rv-src="model.entity.dashboard.resources.embedURL" loading="eager" style="min-height: 65vh; width: 100%" scrolling="no"></iframe>              
+            </div>
+            
+      `
+              return template;
+          },
+        static: [],
+        // dynamic bound: 'errorMsg'
+        initialize: function(el, data) {
+            
+            const controller = {
+                emitter: data.emitter,            
+                model: {
+                    entity: data, // dashboard
+                    metrics: {},
+                    forms:{
+                        f1: {
+                            v: "",
+                            e: {
+                                code: 0,
+                                message: "OK"
+                            }
+                        },
+                        f2: {
+                            v: "",
+                            e: {
+                                code: 0,
+                                message: "OK"
+                            }
+                        }
+                    },
+                    error:{
+                        code: 0,
+                        message: "OK"
+                    }
+                },                                               
+            }                             
             return controller;
         }
     }
