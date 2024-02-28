@@ -1,1 +1,1 @@
-const X_APP_VERSION = '1.0.13'
+const X_APP_VERSION = '1.0.14'
