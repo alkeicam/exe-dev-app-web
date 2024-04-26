@@ -55,9 +55,9 @@
                     <a class="navbar-item" href="index.html">
                       Team Overview
                     </a>
-                    <a class="navbar-item is-hidden" href="onboarding.html" rv-class-is-hidden="model.isManager | eq false">
+                    <a class="navbar-item is-hidden" href="onboarding.html" rv-class-is-hidden="model.isManager | noneTrue model.isOwner">
                         Onboarding
-                    </a>
+                    </a>                    
 <!--               
                     <a class="navbar-item">
                       Documentation

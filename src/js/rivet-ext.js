@@ -341,6 +341,23 @@
         return parseFloat(value.toFixed(arg))
     }
 
+    rivets.formatters.noneTrue = function(comparee, ...rest) {
+        let result = rest.reduce((prev, curr)=>{
+            return prev || curr
+        },false);
+
+        result =  comparee || result;
+        return !result;
+    }
+    rivets.formatters.anyTrue = function(comparee, ...rest) {
+        let result = rest.reduce((prev, curr)=>{
+            return prev || curr
+        },false);
+
+        result =  comparee || result;
+        return result;
+    }
+
     
     
 
