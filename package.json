@@ -1,6 +1,6 @@
 {
   "name": "dev-workout-spa-app",
-  "version": "1.0.17",
+  "version": "1.0.18",
   "scripts": {
     "build": "cp -r ./src ./dist",
     "start": "sirv ./src public --cors --single --no-clear --port 8000",
