@@ -224,10 +224,18 @@ class AppDemo {
 
     populatePerformers(events, range, projectId){
         let targetEvents = projectId?events.filter((item)=>{return item.project == projectId}):events;
-
-        this.model.performance[range].performers = this._performance(targetEvents).sort((a,b)=>b.s-a.s);
-        this.model.performance[range].commiters = this._performance(targetEvents).sort((a,b)=>b.c-a.c);
-        this.model.performance[range].liners = this._performance(targetEvents).sort((a,b)=>b.l-a.l);
+        
+        let performance = this._performance(targetEvents).sort((a,b)=>b.s-a.s);
+        while(this.model.performance[range].performers.length>0) this.model.performance[range].performers.pop();
+        performance.forEach(item=>this.model.performance[range].performers.push(item));
+        
+        performance = this._performance(targetEvents).sort((a,b)=>b.c-a.c);        
+        while(this.model.performance[range].commiters.length>0) this.model.performance[range].commiters.pop();
+        performance.forEach(item=>this.model.performance[range].commiters.push(item));
+        
+        performance = this._performance(targetEvents).sort((a,b)=>b.l-a.l);         
+        while(this.model.performance[range].liners.length>0) this.model.performance[range].liners.pop();
+        performance.forEach(item=>this.model.performance[range].liners.push(item));                
     }
 
     populateProjects(events, range, projectId){

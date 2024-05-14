@@ -344,7 +344,7 @@
      */
     rivets.components['app-top-listing'] = {
         template: function() {
-            const template = `
+            const template = `            
         <div class="box">
             <p class="heading">{{model.entity.heading}}</p>
             <table class="table">
@@ -355,7 +355,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr rv-each-item="model.entity.records">
+                <tr rv-each-item="model.entity.records">                    
                     <th class="is-size-7"><a target="_blank" rv-href="item.user | hrefBuilder 'participant.html?u=@value'">{{item.user}}</a></th>
 
                     <td class="is-size-7 is-hidden" rv-class-is-hidden="model.entity.round | gte 1">{{item | propertyAt model.entity.propB | numberRoundDecimal 2}}</td>
@@ -395,7 +395,7 @@
                         code: 0,
                         message: "OK"
                     }
-                },                                               
+                }                                         
             }                    
             return controller;
         }

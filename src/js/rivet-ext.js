@@ -358,6 +358,10 @@
         return result;
     }
 
+    rivets.formatters.fmtJsonString = function (value){
+        return `${JSON.stringify(value)}`;
+    }
+
     
     
 
