@@ -232,7 +232,8 @@ class AppDemo {
 
     populateProjects(events, range, projectId){
         let targetEvents = projectId?events.filter((item)=>{return item.project == projectId}):events;
-        this.model.projects[range] = this._projectPerformance(targetEvents);
+        const projectPerformance = this._projectPerformance(targetEvents);
+        Commons.mergeObjects(this.model.projects[range], projectPerformance);
     }
 
 
