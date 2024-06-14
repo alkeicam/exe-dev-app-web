@@ -387,7 +387,10 @@ class AppDemo {
                     s: 0, 
                     c: 0,
                     l: 0,
-                    user: item.user}
+                    user: item.user,
+                    name: item.name,
+                    img_source: item.img_source
+                }
                 performers.push(user);
             }
             user.s += item.s;

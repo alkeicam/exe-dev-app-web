@@ -26,6 +26,14 @@
             autosize: true,
             showlegend: true,
             // width: 500,
+            height: 400, // Set the height of the plot
+            margin: { // Adjust padding around the plot area
+                l: 50, // left margin
+                r: 50, // right margin
+                b: 0, // bottom margin
+                t: 0, // top margin
+                pad: 4 // padding between plot area and axis labels
+            },
             legend: {
                 x: 0,
                 y: -0.3
@@ -345,7 +353,6 @@
     rivets.components['app-top-listing'] = {
         template: function() {
             const template = `            
-        <div class="box">
             <p class="heading">{{model.entity.heading}}</p>
             <table class="table">
                 <thead>
@@ -363,14 +370,12 @@
                 </tr>                      
                 </tbody>
             </table>                
-        </div>
       `
               return template;
           },
         static: ['heading','when','metric', 'propA', 'propB', 'round'],
         // dynamic bound: 'errorMsg'
         initialize: function(el, data) {
-            
             const controller = {
                 emitter: data.emitter,            
                 model: {
@@ -399,7 +404,52 @@
             }                    
             return controller;
         }
-    }        
+    } 
+    
+    rivets.components['top-performers'] = {
+        template: function() {
+            // Corrected the template to iterate over `model.entity.performers`
+            const template = `            
+                <div class="is-flex is-align-items-center is-flex-direction-column" rv-each-item="model.entity.records | sliceArray 7">
+                    <img class="mb-1" rv-src="item.img_source | default './assets/user.png'" style="width:93px" alt="User image">
+                    <p class="performer-name">{{item.name | default item.user}}</p>
+                    <p class="performer-score has-text-weight-bold">{{item.s | numberRoundDecimal 2}} Cal</p>
+                </div>
+              
+            `;
+            return template;
+        },
+        // Removed the unused 'static' property for clarity
+        initialize: function(el, data) {
+            const controller = {
+                emitter: data.emitter, // Presuming 'emitter' is correctly provided in 'data'
+                model: {
+                    entity: data,
+                    forms: {
+                        f1: {
+                            v: "",
+                            e: {
+                                code: 0,
+                                message: "OK"
+                            }
+                        },
+                        f2: {
+                            v: "",
+                            e: {
+                                code: 0,
+                                message: "OK"
+                            }
+                        }
+                    },
+                    error: {
+                        code: 0,
+                        message: "OK"
+                    }
+                }
+            };
+            return controller;
+        }
+    };
         
     rivets.components['user-stats'] = {
         template: function() {
