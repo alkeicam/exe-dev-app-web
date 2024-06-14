@@ -345,8 +345,8 @@
         return parseFloat(value.toFixed(arg))
     }
     
-    rivets.formatters.sliceToSeven = function(array) {
-        return array.slice(0, 7);
+    rivets.formatters.sliceArray = function(array, arg) {
+        return array.slice(0, arg);
     };
 
     rivets.formatters.noneTrue = function(comparee, ...rest) {
