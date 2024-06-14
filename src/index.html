@@ -223,7 +223,8 @@
                     </h4>
                     <p class="ml-2 mt-1 has-text-grey is-4">Last 14 days</p>
                   </div>
-                  <top-performers class="is-flex is-justify-content-space-between is-flex-wrap-wrap is-flex-direction-column-mobile"
+                  <top-performers
+                    class="is-flex is-justify-content-space-between is-flex-wrap-wrap is-flex-direction-column-mobile"
                     records="model.performance.l_14.performers"></top-performers>
                 </div>
               </div>
@@ -448,8 +449,8 @@
                 <h4 class="title is-4 has-text-weight-bold mb-2">
                   Top Commiters
                 </h4>
-                <app-top-listing when="Last 14 days" , metric="#Commits" , records="model.performance.l_14.commiters"
-                  , prop-a="user" , prop-b="c">
+                <app-top-listing when="Last 14 days" , metric="#Commits" , records="model.performance.l_14.commiters" ,
+                  prop-a="user" , prop-b="c">
                 </app-top-listing>
               </div>
 
@@ -515,93 +516,93 @@
     </div>
   </div>
 
-      <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
-      <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-      <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
-      <script src="js/version.js"></script>
-      <footer class="footer">
-        <div class="content has-text-centered">
-          <p>
-            Made with <span style="color: #e25555">&#9829;</span> in EU<br />
-            &copy;
-            <span id="copyright">
-              <script>
-                document
-                  .getElementById("copyright")
-                  .appendChild(document.createTextNode(new Date().getFullYear()));
-              </script>
-            </span>
-            Dev Workout powered by LaaS Cloud (ver.
-            <script>
-              document.write(X_APP_VERSION);
-            </script>
-            )
-          </p>
-        </div>
-      </footer>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.8/handlebars.min.js"
-        integrity="sha512-E1dSFxg+wsfJ4HKjutk/WaCzK7S2wv1POn1RRPGh8ZK+ag9l244Vqxji3r6wgz9YBf6+vhQEYJZpSjqWFPg9gg=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-      <script src="js/state.js"></script>
-      <script src="js/event-processor.js"></script>
-      <script src="js/api.js"></script>
-      <script src="js/app.js"></script>
-      <!-- <script src="js/onboardingModalController.js"></script>
-    <script src="js/preferencesModalController.js"></script> -->
-      <script>
-        class EventEmitter {
-          constructor() {
-            this.listeners = {};
-          }
+  <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+  <script src="js/version.js"></script>
+  <footer class="footer">
+    <div class="content has-text-centered">
+      <p>
+        Made with <span style="color: #e25555">&#9829;</span> in EU<br />
+        &copy;
+        <span id="copyright">
+          <script>
+            document
+              .getElementById("copyright")
+              .appendChild(document.createTextNode(new Date().getFullYear()));
+          </script>
+        </span>
+        Dev Workout powered by LaaS Cloud (ver.
+        <script>
+          document.write(X_APP_VERSION);
+        </script>
+        )
+      </p>
+    </div>
+  </footer>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.8/handlebars.min.js"
+    integrity="sha512-E1dSFxg+wsfJ4HKjutk/WaCzK7S2wv1POn1RRPGh8ZK+ag9l244Vqxji3r6wgz9YBf6+vhQEYJZpSjqWFPg9gg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="js/state.js"></script>
+  <script src="js/event-processor.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+  <!-- <script src="js/onboardingModalController.js"></script>
+      <script src="js/preferencesModalController.js"></script> -->
+  <script>
+    class EventEmitter {
+      constructor() {
+        this.listeners = {};
+      }
 
-          static getInstance() {
-            return new EventEmitter();
-          }
+      static getInstance() {
+        return new EventEmitter();
+      }
 
-          on(event, callback) {
-            if (!this.listeners.hasOwnProperty(event)) {
-              this.listeners[event] = [];
-            }
-
-            this.listeners[event].push(callback);
-
-            return this;
-          }
-
-          emit(event, ...data) {
-            if (!this.listeners.hasOwnProperty(event)) {
-              return null;
-            }
-
-            for (let i = 0; i < this.listeners[event].length; i++) {
-              const callback = this.listeners[event][i];
-
-              callback.call(this, ...data);
-            }
-          }
+      on(event, callback) {
+        if (!this.listeners.hasOwnProperty(event)) {
+          this.listeners[event] = [];
         }
-        const emitter = EventEmitter.getInstance();
-        const mapCanvas = document.getElementById("map");
 
-        const emitter2 = EventEmitter.getInstance();
-        const mapCanvas2 = document.getElementById("map2");
+        this.listeners[event].push(callback);
 
-        rivets.templateDelimiters = ["{{", "}}"];
+        return this;
+      }
 
-        AppDemo.getInstance(emitter, "userGraph").then((app) => {
-          rivets.bind(document.getElementById("app"), app);
-        });
-        // OnboardingModalController.getInstance(emitter).then((controller)=>{
-        //     rivets.bind(document.getElementById('onboardingModal'),controller);
-        // })
+      emit(event, ...data) {
+        if (!this.listeners.hasOwnProperty(event)) {
+          return null;
+        }
 
-        // PreferencesModalController.getInstance(emitter).then((controller)=>{
-        //     rivets.bind(document.getElementById('preferencesModal'),controller);
-        // })
-        // console.log(window.location.href);
+        for (let i = 0; i < this.listeners[event].length; i++) {
+          const callback = this.listeners[event][i];
 
-        window.appEmiter = emitter;
-      </script>
+          callback.call(this, ...data);
+        }
+      }
+    }
+    const emitter = EventEmitter.getInstance();
+    const mapCanvas = document.getElementById("map");
+
+    const emitter2 = EventEmitter.getInstance();
+    const mapCanvas2 = document.getElementById("map2");
+
+    rivets.templateDelimiters = ["{{", "}}"];
+
+    AppDemo.getInstance(emitter, "userGraph").then((app) => {
+      rivets.bind(document.getElementById("app"), app);
+    });
+    // OnboardingModalController.getInstance(emitter).then((controller)=>{
+    //     rivets.bind(document.getElementById('onboardingModal'),controller);
+    // })
+
+    // PreferencesModalController.getInstance(emitter).then((controller)=>{
+    //     rivets.bind(document.getElementById('preferencesModal'),controller);
+    // })
+    // console.log(window.location.href);
+
+    window.appEmiter = emitter;
+  </script>
 </body>
 
 </html>
