@@ -116,10 +116,6 @@
         return false;
     }
 
-    rivets.formatters.not = function(value) {
-        return !value;
-      };
-
     rivets.formatters.empty = function (value) {
         if (value)
             return false;
