@@ -410,7 +410,7 @@
         template: function() {
             // Corrected the template to iterate over `model.entity.performers`
             const template = `            
-                <div class="is-flex is-align-items-center is-flex-direction-column" rv-each-item="model.entity.records | sliceArray 7">
+                <div class="is-flex is-align-items-center is-flex-direction-column performer" rv-each-item="model.entity.records | sliceArray 7">
                     <img class="mb-1" rv-src="item.img_source | default './assets/user.png'" style="width:93px" alt="User image">
                     <p class="performer-name">{{item.name | default item.user}}</p>
                     <p class="performer-score has-text-weight-bold">{{item.s | numberRoundDecimal 2}} Cal</p>

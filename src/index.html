@@ -153,7 +153,8 @@
         </div>
       </div>
 
-      <div class="fixed-grid has-12-cols">
+      <!-- Desktop Layout -->
+      <div class="fixed-grid has-12-cols desktop-layout">
         <div class="grid is-gap-3">
           <div class="cell is-col-span-3 is-col-span-12-mobile">
             <div class="box">
@@ -222,7 +223,7 @@
                     </h4>
                     <p class="ml-2 mt-1 has-text-grey is-4">Last 14 days</p>
                   </div>
-                  <top-performers class="is-flex is-justify-content-space-between is-flex-direction-column-mobile"
+                  <top-performers class="is-flex is-justify-content-space-between is-flex-wrap-wrap is-flex-direction-column-mobile"
                     records="model.performance.l_14.performers"></top-performers>
                 </div>
               </div>
@@ -231,7 +232,7 @@
                   <h4 class="title is-4 has-text-weight-bold">
                     Activity Log
                   </h4>
-                  <div class="is-flex is-justify-content-space-between">
+                  <div class="is-flex is-justify-content-space-between is-flex-direction-column-mobile">
                     <div class="is-flex is-align-items-center is-flex-direction-column">
                       <p class="is-size-3 has-text-grey">
                         <i class="fas fa-laptop-code"></i>
@@ -329,277 +330,278 @@
           </div>
         </div>
 
-        <!-- <section class="section" style="padding: 0.5rem 0.5rem;">
-          <h3 class="title is-4">Today <span class="is-size-7 is-hidden"
-              rv-class-is-hidden="model.forms.f1.f1.v | eq -1">@{{model.selectedProject.name}}</span></h3>
-
-          <nav class="level">
-            <div class="level-item has-text-centered">
-              <div class="box">
-                <div>
-                  <p class="is-size-3"><i class="far fa-keyboard"></i></p>
-                  <p class="title">{{model.projects.c_0.s | numberRoundDecimal 2}} <span
-                      class="is-size-7">Calories</span>
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="level-item has-text-centered">
-              <user-stats icon-class="fas fa-code-branch" metric="model.projects.c_0" metric-label="Commits"
-                metric-prop="c"></user-stats>
-            </div>
-            <div class="level-item has-text-centered">
-              <user-stats icon-class="fas fa-file-code" metric="model.projects.c_0" metric-label="Lines"
-                metric-prop="l"></user-stats>
-            </div>
-
-          </nav>
-        </section> -->
-        <!-- <section class="section" style="padding: 0.5rem 0.5rem;">
-          <h3 class="title is-4">Activity Log<span class="is-size-7 is-hidden"
-              rv-class-is-hidden="model.forms.f1.f1.v | eq -1">@{{model.selectedProject.name}}</span></h3>
-
-          <nav class="level">
-            <div class="level-item has-text-centered">
-              <div class="box">
-                <div>
-                  <p class="is-size-3"><i class="fas fa-laptop-code"></i></p>
-                  <p class="title">{{model.events.most_recent.ct | timeAgoMoment}} </p>
-                  <p><span class="is-size-7">last code change</span></p>
-                </div>
-              </div>
-            </div>
-            <div class="level-item has-text-centered">
-              <div class="box">
-                <div>
-                  <p class="is-size-3"><i class="fas fa-shipping-fast"></i></p>
-                  <p class="title">{{model.events.most_recent_increment.ct | timeAgoMoment}} </p>
-                  <p><span class="is-size-7">last increment</span></p>
-                </div>
-              </div>
-            </div>
-            <div class="level-item has-text-centered">
-              <div class="box">
-                <div>
-                  <p class="is-size-3"><i class="fas fa-user-friends"></i></p>
-                  <p class="is-size-7" rv-each-participant="model.team.present">{{participant}}</p>
-                  <p class="title is-hidden" rv-class-is-hidden="model.team.present | sizeGte 1 ">Ups...</p>
-                  <p class="title">
-                    <span class="is-size-7 is-hidden" rv-class-is-hidden="model.team.present | sizeLt 1 ">participated
-                      today</span>
-                  </p>
-                  <p class="is-size-7 is-hidden" rv-class-is-hidden="model.team.present | sizeGte 1 ">No participants
-                    today :(</p>
-
-                </div>
-              </div>
-            </div>
-          </nav>
-        </section> -->
-
-        <!-- <section class="section" style="padding: 0.5rem 0.5rem;">
-          <h3 class="title is-4">Top Performers <span class="is-size-7 is-hidden"
-              rv-class-is-hidden="model.forms.f1.f1.v | eq -1">@{{model.selectedProject.name}}</span></h3>
-
-          <nav class="level">
-            <div class="level-item has-text-centered">
-              <app-top-listing heading="Top Performers" , when="Today" , metric="Cal" ,
-                records="model.performance.c_0.performers" , prop-a="user" , prop-b="s" prop-round="2">
-              </app-top-listing>
-            </div>
-            <div class="level-item has-text-centered">
-              <app-top-listing heading="Top Performers" , when="Yesterday" , metric="Cal" ,
-                records="model.performance.c_1.performers" , prop-a="user" , prop-b="s" prop-round="2">
-              </app-top-listing>
-            </div>
-            <div class="level-item has-text-centered">
-              <app-top-listing heading="Top Performers" , when="Last 7 days" , metric="Cal" ,
-                records="model.performance.l_7.performers" , prop-a="user" , prop-b="s" prop-round="2">
-              </app-top-listing>
-            </div>
-            <div class="level-item has-text-centered">
-              <app-top-listing heading="Top Performers" , when="Last 14 days" , metric="Cal" ,
-                records="model.performance.l_14.performers" , prop-a="user" , prop-b="s" prop-round="2">
-              </app-top-listing>
-            </div>
-
-          </nav>
-          <h3 class="title is-4">Top Commiters <span class="is-size-7 is-hidden"
-              rv-class-is-hidden="model.forms.f1.f1.v | eq -1">@{{model.selectedProject.name}}</span></h3>
-          <nav class="level">
-            <div class="level-item has-text-centered">
-              <app-top-listing heading="Top Commiters" , when="Today" , metric="#Commits" ,
-                records="model.performance.c_0.commiters" , prop-a="user" , prop-b="c">
-              </app-top-listing>
-            </div>
-            <div class="level-item has-text-centered">
-              <app-top-listing heading="Top Commiters" , when="Yesterday" , metric="#Commits" ,
-                records="model.performance.c_1.commiters" , prop-a="user" , prop-b="c">
-              </app-top-listing>
-            </div>
-            <div class="level-item has-text-centered">
-              <app-top-listing heading="Top Commiters" , when="Last 7 days" , metric="#Commits" ,
-                records="model.performance.l_7.commiters" , prop-a="user" , prop-b="c">
-              </app-top-listing>
-            </div>
-            <div class="level-item has-text-centered">
-              <app-top-listing heading="Top Commiters" , when="Last 14 days" , metric="#Commits" ,
-                records="model.performance.l_14.commiters" , prop-a="user" , prop-b="c">
-              </app-top-listing>
-            </div>
-          </nav>
-          <h3 class="title is-4">Top Liners <span class="is-size-7 is-hidden"
-              rv-class-is-hidden="model.forms.f1.f1.v | eq -1">@{{model.selectedProject.name}}</span></h3>
-          <nav class="level">
-            <div class="level-item has-text-centered">
-              <app-top-listing heading="Top Changes" , when="Today" , metric="#Lines" ,
-                records="model.performance.c_0.liners" , prop-a="user" , prop-b="l">
-              </app-top-listing>
-            </div>
-            <div class="level-item has-text-centered">
-              <app-top-listing heading="Top Changes" , when="Yesterday" , metric="#Lines" ,
-                records="model.performance.c_1.liners" , prop-a="user" , prop-b="l">
-              </app-top-listing>
-            </div>
-            <div class="level-item has-text-centered">
-              <app-top-listing heading="Top Changes" , when="Last 7 days" , metric="#Lines" ,
-                records="model.performance.l_7.liners" , prop-a="user" , prop-b="l">
-              </app-top-listing>
-            </div>
-            <div class="level-item has-text-centered">
-              <app-top-listing heading="Top Changes" , when="Last 14 days" , metric="#Lines" ,
-                records="model.performance.l_14.liners" , prop-a="user" , prop-b="l">
-              </app-top-listing>
-            </div>
-
-          </nav>
-        </section> -->
       </div>
-      <!-- <div class="container" style="padding-top: 40vh; padding-bottom: 40vh;"
-        rv-class-is-hidden="model.busy | eq false">
-        <progress class="progress is-danger" max="100">30%</progress>
-      </div>
-      <div class="container is-vis-hidden" rv-class-is-vis-hidden="model.busy">
-        <section class="section mt-6" style="padding: 0.5rem 0.5rem;">
-          <h3 class="title is-3 ">Overview</h3>
-          <h4 class="title is-4 ">Participants</h3>
-            <div class="my-2">
-              <ul>
-                <li rv-each-participant="model.team.all_time">
-                  <a target="_blank" rv-href="participant | hrefBuilder 'participant.html?u=@value'">{{participant}}</a>
-                </li>
-              </ul>
+
+
+      <!-- Mobile Layout -->
+      <div class="fixed-grid has-12-cols mobile-layout mb-6">
+        <div class="grid is-gap-3">
+          <div class="cell is-col-span-12">
+            <div class="box">
+              <div class="is-flex is-justify-content-space-between">
+                <h4 class="title is-4 has-text-weight-bold">Today</h4>
+                <div>
+                  <div class="has-text-grey is-size-6" rv-text="model.timestamp | timeFormatMoment 'DD.MM.YYYY'"></div>
+                </div>
+              </div>
+              <div class="media is-flex is-justify-content-center">
+                <div>
+                  <figure class="image">
+                    <img src="./assets/people.jpg" alt="Placeholder image" />
+                  </figure>
+                </div>
+              </div>
+              <div class="is-flex is-justify-content-space-between px-5">
+                <div class="is-flex is-align-items-center is-flex-direction-column">
+                  <div class="is-size-4 has-text-grey">
+                    <i class="far fa-keyboard"></i>
+                  </div>
+                  <div class="has-text-primary has-text-weight-bold is-size-4">
+                    {{model.projects.c_0.s | numberRoundDecimal 2}}
+                  </div>
+                  <div class="has-text-grey is-size-7">Calories</div>
+                </div>
+                <div class="is-flex is-align-items-center is-flex-direction-column">
+                  <div class="is-size-4 has-text-grey">
+                    <i class="fas fa-code-branch"></i>
+                  </div>
+                  <div class="has-text-primary has-text-weight-bold is-size-4">
+                    {{model.projects.c_0.c}}
+                  </div>
+                  <div class="has-text-grey is-size-7">Commits</div>
+                </div>
+                <div class="is-flex is-align-items-center is-flex-direction-column">
+                  <div class="is-size-4 has-text-grey">
+                    <i class="fas fa-file-code"></i>
+                  </div>
+                  <div class="has-text-primary has-text-weight-bold is-size-4">
+                    {{model.projects.c_0.l}}
+                  </div>
+                  <div class="has-text-grey is-size-7">Lines</div>
+                </div>
+              </div>
             </div>
 
-            <h3 class="title is-4 ">Performance</h3> -->
-      <!-- <div data-kind="users" data-effort-key="cals" data-title="Daily User Calories"
-        rv-plot-stats="model.trends.all_time"></div>
-      <div data-kind="users" data-effort-key="commits" data-title="Daily User Commits"
-        rv-plot-stats="model.trends.all_time"></div>
-      <div data-kind="users" data-effort-key="lines" data-title="Daily User Lines"
-        rv-plot-stats="model.trends.all_time"></div>
-      <div data-kind="users" data-effort-key="entropy" data-title="Daily User Entropy"
-        rv-plot-stats="model.trends.all_time"></div> -->
-      <!-- <h3 class="title is-4">Trends & Dynamics</h3>
-                <div id="maGraphs">
-                </div> -->
-      <!-- <h3 class="title is-4">Trends & Dynamics</h3>
-      <div data-kind="usersMa" data-effort-key="cals" data-title="User Contribution"
-        rv-plot-stats="model.trends.all_time"></div>
-      <div data-kind="usersMa" data-effort-key="entropy" data-title="User Efficiency"
-        rv-plot-stats="model.trends.all_time"></div> -->
-      <!-- <app-stats-plot kind="users" effort-key="cals" title="Daily User Calories" stats="model.trends.all_time"></app-stats-plot> -->
-      <!-- </section> -->
+            <div class="box">
+              <div class="is-flex is-align-content-flex-end">
+                <h4 class="title is-4 has-text-weight-bold">
+                  Top Performers
+                </h4>
+                <p class="ml-2 mt-1 has-text-grey is-4">Last 14 days</p>
+              </div>
+              <top-performers class="is-flex is-justify-content-space-between is-flex-direction-column-mobile"
+                records="model.performance.l_14.performers"></top-performers>
+            </div>
+
+            <div class="cell is-col-span-8 is-col-span-12-mobile">
+              <div class="box">
+                <h4 class="title is-4 has-text-weight-bold">
+                  Activity Log
+                </h4>
+                <div class="is-flex is-justify-content-space-between is-flex-direction-column-mobile">
+                  <div class="is-flex is-align-items-center is-flex-direction-column">
+                    <p class="is-size-3 has-text-grey">
+                      <i class="fas fa-laptop-code"></i>
+                    </p>
+                    <p class="has-text-weight-bold has-text-primary is-size-4">
+                      {{model.events.most_recent.ct | timeAgoMoment}}
+                    </p>
+                    <p>
+                      <span class="is-size-7 has-text-grey">last code change</span>
+                    </p>
+                  </div>
+                  <div class="is-flex is-align-items-center is-flex-direction-column">
+                    <p class="is-size-3 has-text-grey">
+                      <i class="fas fa-shipping-fast"></i>
+                    </p>
+                    <p class="has-text-weight-bold has-text-primary is-size-4">
+                      {{model.events.most_recent_increment.ct |
+                      timeAgoMoment}}
+                    </p>
+                    <p>
+                      <span class="is-size-7 has-text-grey">last increment</span>
+                    </p>
+                  </div>
+                  <div class="is-flex is-align-items-center is-flex-direction-column">
+                    <p class="is-size-3 has-text-grey">
+                      <i class="fas fa-user-friends"></i>
+                    </p>
+                    <p class="is-size-7" rv-each-participant="model.team.present">
+                      {{participant}}
+                    </p>
+                    <p class="is-hidden has-text-weight-bold has-text-primary is-size-4"
+                      rv-class-is-hidden="model.team.present | sizeGte 1 ">
+                      Ups...
+                    </p>
+                    <p class="is-size-7">
+                      <span class="is-size-7 is-hidden" rv-class-is-hidden="model.team.present | sizeLt 1 ">participated
+                        today</span>
+                    </p>
+                    <p class="has-text-grey is-hidden" rv-class-is-hidden="model.team.present | sizeGte 1 ">
+                      <span class="is-size-7">No participants today :(</span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="box">
+                <h4 class="title is-4 has-text-weight-bold mb-2">
+                  Top Commiters
+                </h4>
+                <app-top-listing when="Last 14 days" , metric="#Commits" , records="model.performance.l_14.commiters"
+                  , prop-a="user" , prop-b="c">
+                </app-top-listing>
+              </div>
+
+              <div class="box">
+                <h4 class="title is-4 has-text-weight-bold">Participants</h4>
+                <div class="my-2">
+                  <ul>
+                    <li rv-each-participant="model.team.all_time">
+                      <a target="_blank"
+                        rv-href="participant | hrefBuilder 'participant.html?u=@value'">{{participant}}</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="box">
+                <h4 class="title is-4 has-text-weight-bold">
+                  Daily User Calories
+                </h4>
+                <div data-kind="users" data-effort-key="cals" rv-plot-stats="model.trends.all_time"></div>
+              </div>
+              <div class="box">
+                <h4 class="title is-4 has-text-weight-bold">
+                  Daily User Commits
+                </h4>
+                <div data-kind="users" data-effort-key="commits" rv-plot-stats="model.trends.all_time"></div>
+              </div>
+              <div class="box">
+                <h4 class="title is-4 has-text-weight-bold">
+                  Daily User Lines
+                </h4>
+                <div data-kind="users" data-effort-key="lines" rv-plot-stats="model.trends.all_time"></div>
+              </div>
+              <div class="box">
+                <h4 class="title is-4 has-text-weight-bold">
+                  Daily User Entropy
+                </h4>
+                <div data-kind="users" data-effort-key="entropy" rv-plot-stats="model.trends.all_time"></div>
+              </div>
+              <div class="box">
+                <h4 class="title is-4 has-text-weight-bold">
+                  User Contribution
+                </h4>
+                <div data-kind="usersMa" data-effort-key="cals" rv-plot-stats="model.trends.all_time"></div>
+              </div>
+              <div class="box">
+                <h4 class="title is-4 has-text-weight-bold">
+                  User Efficiency
+                </h4>
+                <div data-kind="usersMa" data-effort-key="entropy" rv-plot-stats="model.trends.all_time"></div>
+              </div>
+
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+
+    </div>
+    <div class="loader-wrapper" rv-class-is-hidden="model.busy | not">
+      <div class="loader"></div>
     </div>
   </div>
 
-  <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
-  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
-  <script src="js/version.js"></script>
-  <footer class="footer">
-    <div class="content has-text-centered">
-      <p>
-        Made with <span style="color: #e25555">&#9829;</span> in EU<br />
-        &copy;
-        <span id="copyright">
-          <script>
-            document
-              .getElementById("copyright")
-              .appendChild(document.createTextNode(new Date().getFullYear()));
-          </script>
-        </span>
-        Dev Workout powered by LaaS Cloud (ver.
-        <script>
-          document.write(X_APP_VERSION);
-        </script>
-        )
-      </p>
-    </div>
-  </footer>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.8/handlebars.min.js"
-    integrity="sha512-E1dSFxg+wsfJ4HKjutk/WaCzK7S2wv1POn1RRPGh8ZK+ag9l244Vqxji3r6wgz9YBf6+vhQEYJZpSjqWFPg9gg=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="js/state.js"></script>
-  <script src="js/event-processor.js"></script>
-  <script src="js/api.js"></script>
-  <script src="js/app.js"></script>
-  <!-- <script src="js/onboardingModalController.js"></script>
+      <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+      <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+      <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+      <script src="js/version.js"></script>
+      <footer class="footer">
+        <div class="content has-text-centered">
+          <p>
+            Made with <span style="color: #e25555">&#9829;</span> in EU<br />
+            &copy;
+            <span id="copyright">
+              <script>
+                document
+                  .getElementById("copyright")
+                  .appendChild(document.createTextNode(new Date().getFullYear()));
+              </script>
+            </span>
+            Dev Workout powered by LaaS Cloud (ver.
+            <script>
+              document.write(X_APP_VERSION);
+            </script>
+            )
+          </p>
+        </div>
+      </footer>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.8/handlebars.min.js"
+        integrity="sha512-E1dSFxg+wsfJ4HKjutk/WaCzK7S2wv1POn1RRPGh8ZK+ag9l244Vqxji3r6wgz9YBf6+vhQEYJZpSjqWFPg9gg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+      <script src="js/state.js"></script>
+      <script src="js/event-processor.js"></script>
+      <script src="js/api.js"></script>
+      <script src="js/app.js"></script>
+      <!-- <script src="js/onboardingModalController.js"></script>
     <script src="js/preferencesModalController.js"></script> -->
-  <script>
-    class EventEmitter {
-      constructor() {
-        this.listeners = {};
-      }
+      <script>
+        class EventEmitter {
+          constructor() {
+            this.listeners = {};
+          }
 
-      static getInstance() {
-        return new EventEmitter();
-      }
+          static getInstance() {
+            return new EventEmitter();
+          }
 
-      on(event, callback) {
-        if (!this.listeners.hasOwnProperty(event)) {
-          this.listeners[event] = [];
+          on(event, callback) {
+            if (!this.listeners.hasOwnProperty(event)) {
+              this.listeners[event] = [];
+            }
+
+            this.listeners[event].push(callback);
+
+            return this;
+          }
+
+          emit(event, ...data) {
+            if (!this.listeners.hasOwnProperty(event)) {
+              return null;
+            }
+
+            for (let i = 0; i < this.listeners[event].length; i++) {
+              const callback = this.listeners[event][i];
+
+              callback.call(this, ...data);
+            }
+          }
         }
+        const emitter = EventEmitter.getInstance();
+        const mapCanvas = document.getElementById("map");
 
-        this.listeners[event].push(callback);
+        const emitter2 = EventEmitter.getInstance();
+        const mapCanvas2 = document.getElementById("map2");
 
-        return this;
-      }
+        rivets.templateDelimiters = ["{{", "}}"];
 
-      emit(event, ...data) {
-        if (!this.listeners.hasOwnProperty(event)) {
-          return null;
-        }
+        AppDemo.getInstance(emitter, "userGraph").then((app) => {
+          rivets.bind(document.getElementById("app"), app);
+        });
+        // OnboardingModalController.getInstance(emitter).then((controller)=>{
+        //     rivets.bind(document.getElementById('onboardingModal'),controller);
+        // })
 
-        for (let i = 0; i < this.listeners[event].length; i++) {
-          const callback = this.listeners[event][i];
+        // PreferencesModalController.getInstance(emitter).then((controller)=>{
+        //     rivets.bind(document.getElementById('preferencesModal'),controller);
+        // })
+        // console.log(window.location.href);
 
-          callback.call(this, ...data);
-        }
-      }
-    }
-    const emitter = EventEmitter.getInstance();
-    const mapCanvas = document.getElementById("map");
-
-    const emitter2 = EventEmitter.getInstance();
-    const mapCanvas2 = document.getElementById("map2");
-
-    rivets.templateDelimiters = ["{{", "}}"];
-
-    AppDemo.getInstance(emitter, "userGraph").then((app) => {
-      rivets.bind(document.getElementById("app"), app);
-    });
-    // OnboardingModalController.getInstance(emitter).then((controller)=>{
-    //     rivets.bind(document.getElementById('onboardingModal'),controller);
-    // })
-
-    // PreferencesModalController.getInstance(emitter).then((controller)=>{
-    //     rivets.bind(document.getElementById('preferencesModal'),controller);
-    // })
-    // console.log(window.location.href);
-
-    window.appEmiter = emitter;
-  </script>
+        window.appEmiter = emitter;
+      </script>
 </body>
 
 </html>
