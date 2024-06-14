@@ -1,0 +1,29 @@
+$black: #363636;
+$link-color: #485fca;
+// Path to Bulma's sass folder
+@use "bulma/sass" with (
+  $family-primary: '"Segoe UI", "Roboto", sans-serif',
+//   make box shadow look like light border
+  $box-shadow: 0 0 0 1px rgba($black, 0.2),
+  $link: $link-color,
+);
+
+.px-4-mobile {
+  padding-left: 1rem; // Assuming 1rem is equivalent to your desired '4' spacing
+  padding-right: 1rem;
+
+  // Use a media query directly if a mixin is not available
+  @media screen and (min-width: 769px) { // This corresponds to Bulma's tablet breakpoint
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .is-flex-direction-column-mobile {
+    flex-direction: column;
+  }
+}
+
+// Import the Google Font
+@import url("https://fonts.googleapis.com/css?family=Roboto:400,700");

@@ -296,6 +296,10 @@
         return description;
     }
 
+    rivets.formatters.default = function(value, defaultValue) {
+        return value || defaultValue;
+    };
+
     rivets.formatters.and = function(comparee, comparator) {
         return comparee && comparator;
     }
@@ -340,6 +344,10 @@
     rivets.formatters.numberRoundDecimal = function (value, arg) {
         return parseFloat(value.toFixed(arg))
     }
+    
+    rivets.formatters.sliceToSeven = function(array) {
+        return array.slice(0, 7);
+    };
 
     rivets.formatters.noneTrue = function(comparee, ...rest) {
         let result = rest.reduce((prev, curr)=>{

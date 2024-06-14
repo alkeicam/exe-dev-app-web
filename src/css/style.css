@@ -1,3 +1,15 @@
 .is-vis-hidden{
     visibility: hidden;
 }
+
+@media (min-width: 1024px) {
+    .filters {
+        position: relative;
+        top: -40px;
+    }
+}
+
+
+.navbar {
+    background-color: transparent;
+}
