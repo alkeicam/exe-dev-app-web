@@ -242,10 +242,13 @@ class OnboardingController {
     }
 
     async _handleResetInvitation(e, that){
+        that.model.busy = true;
         const participantInvitation = that.participant.invitation;
         const projectId = that.project.id;
         const accountId = that.model.account.id;        
-        const {responseJson} = await BackendApi.PROJECTS.MANAGEMENT.resetInvitation(accountId, projectId, participantInvitation.code);        
+        const {responseJson} = await BackendApi.PROJECTS.MANAGEMENT.resetInvitation(accountId, projectId, participantInvitation.code); 
+        this._reload(accountId)       
+        that.model.busy = false;
     }
 
     async handleLogin(e, that){
