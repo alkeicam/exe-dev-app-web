@@ -8,6 +8,7 @@ class BackendApi {
         ACCOUNT_INVITATIONS: "/account/{{accountId}}/invitations",
         ACCOUNT_PROJECT_INVITATION: "/account/{{accountId}}/projects/{{projectId}}/invitations",
         ACCOUNT_PROJECT_MGMT_INVITE: "/account/{{accountId}}/projects/{{projectId}}/mgmt/invitations",
+        ACCOUNT_PROJECT_MGMT_INVITATION_RESET: "/account/{{accountId}}/projects/{{projectId}}/mgmt/invitation/{{invitationCode}}/reset",
         ACCOUNT_PLAYLIST: "/account/{{accountId}}/playlist/{{playlistId}}/{{secret}}",
         ACCOUNT_DASHBOARDS: "/account/{{accountId}}/dashboards",
         USER: "/user/{{userId}}",
@@ -108,6 +109,24 @@ class BackendApi {
                     "Content-Type": "application/json",
                     },
                     body: JSON.stringify({name: name, email: email, role: role, password: password}),
+                });
+                const responseJson = await response.json();            
+                return responseJson;
+            },
+            async resetInvitation(accountId, projectId, invitationCode){
+                const urlFunction = Handlebars.compile(`${BackendApi.BASE_URL}${BackendApi.API.ACCOUNT_PROJECT_MGMT_INVITATION_RESET}`)
+                const url = urlFunction({
+                    accountId: accountId,
+                    projectId: projectId,
+                    invitationCode: invitationCode
+                });
+                // console.log(url);
+                const response = await BackendApi._fetch(url,{
+                    method: "POST", 
+                    headers: {
+                    "Content-Type": "application/json",
+                    },
+                    // body: JSON.stringify({name: name, email: email, role: role, password: password}),
                 });
                 const responseJson = await response.json();            
                 return responseJson;

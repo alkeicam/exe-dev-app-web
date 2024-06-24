@@ -151,6 +151,9 @@ class OnboardingController {
             },
             menu:{
                 active: false
+            },
+            f: {
+                _handleResetInvitation: this._handleResetInvitation.bind(this)
             }
         }
     }
@@ -230,11 +233,19 @@ class OnboardingController {
                     code: matchingInvitation?matchingInvitation.used?1:0:1
                 };
                 participant.invitation.code = matchingInvitation?.id || "--- Manual Join ---"
+                participant.invitation.resendable = matchingInvitation && matchingInvitation.id && matchingInvitation.used?true:false                
 
                 return participant;
             })      
             return project;      
         })               
+    }
+
+    async _handleResetInvitation(e, that){
+        const participantInvitation = that.participant.invitation;
+        const projectId = that.project.id;
+        const accountId = that.model.account.id;        
+        const {responseJson} = await BackendApi.PROJECTS.MANAGEMENT.resetInvitation(accountId, projectId, participantInvitation.code);        
     }
 
     async handleLogin(e, that){
