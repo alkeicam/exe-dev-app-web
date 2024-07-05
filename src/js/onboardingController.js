@@ -490,10 +490,11 @@ class OnboardingController {
         const errors = [];
         this.model.modals.m3.forms.f1.e = errors
         this.model.modals.m3.forms.f1.f1.v = undefined
+        this.model.modals.m3.forms.f1.f2 = []
 
         this.model.modals.m3.active = false
-        that.model.modals.m3.f1 = undefined
-        that.model.modals.m3.f2 = undefined
+        this.model.modals.m3.f1 = undefined
+        this.model.modals.m3.f2 = undefined
 
         // on change workaround to allow multiple times to load same file
         const fileInputElement = document.getElementsByClassName("participants-file-input")[0];
@@ -503,12 +504,16 @@ class OnboardingController {
 
     async _handleImportParticipantsFromFile(e, that){
         this.model.busy = true;
+
+        
         
         const participants = this.model.modals.m3.forms.f1.f2;
         const accountId = this.model.modals.m3.f1;
         const projectId = this.model.modals.m3.f2;
-
         console.log(participants);
+
+        this._handleCancelAddParticipants({},{});
+
         for(let i=0; i<participants.length; i++){
             const participant = participants[i];
             if(["MANAGER","DIRECTOR"].includes(participant.role.toUpperCase())){
