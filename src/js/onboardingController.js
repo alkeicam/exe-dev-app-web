@@ -81,7 +81,8 @@ class OnboardingController {
             },            
             handlers: {
                 // handleHide: this.handleHide.bind(this),
-                _handleInviteParticipant: this._handleInviteParticipant.bind(this)
+                _handleInviteParticipant: this._handleInviteParticipant.bind(this),
+                _handleBulkInviteParticipants: this._handleBulkInviteParticipants.bind(this)
             },
             process:{
                 step: "ONBOARDING" // PREPARE // WORKOUT                
@@ -133,7 +134,7 @@ class OnboardingController {
                         message: "OK"
                     },
                     h:true
-                },
+                }                
             },
             modals: {
                 m1: {
@@ -143,6 +144,28 @@ class OnboardingController {
                     active: false,
                     f1: "",
                     f2: ""
+                },
+                m3: {
+                    active: false,
+                    f1: "",
+                    f2: "",
+                    valid: false,
+                    forms: {
+                        f1: {
+                            f1: {
+                                v: ""
+                            },
+                            f2: [],
+                            e: {
+                                code: 0,
+                                message: "OK"
+                            },                            
+                            handleChooseParticipantsFile: this._handleChooseParticipantsFile.bind(this),                            
+                        },                        
+                    },
+                    handleAddParticipantsFile: this._handleAddParticipantsFile.bind(this),
+                    handleCancelAddParticipants: this._handleCancelAddParticipants.bind(this)
+                    
                 }
             },
             error:{
@@ -346,6 +369,129 @@ class OnboardingController {
         that.model.forms.f4.v = -1;    
         that.model.forms["f5"].h = true;    
         that.model.forms["f5"].v = Math.random().toString(36).substring(2, 12);
+    }
+
+    async _handleBulkInviteParticipants(e, that){
+        that.model.modals.m3.active = true;
+        that.model.modals.m3.f1 = e.target.dataset.accountId;
+        that.model.modals.m3.f2 = e.target.dataset.projectId;
+    }
+
+    async _handleChooseParticipantsFile(e, that){
+        // clear previous errors
+        const errors = [];
+        this.model.modals.m3.forms.f1.e = errors
+
+        if(e.target.files.length>0){
+            const fileName = e.target.files[0].name;
+            this.model.modals.m3.forms.f1.f1.v = fileName
+
+            var fileReader = new FileReader();
+
+            fileReader.onloadend = () => {
+                
+                const fileData = fileReader.result;
+                console.log(fileData);            
+                const lines = fileData.split(/\r?\n/);
+
+                if(lines.length==0) return;
+                let indexShift = 0
+                // remove column names
+                if(lines[0].toLowerCase().startsWith("name")){
+                    lines.shift()
+                    indexShift += 1
+                }
+
+                
+                const participants = []
+
+
+                for(let i=0; i<lines.length; i++){
+                    const lineNo = i+indexShift;
+                    if(lines[i].length == 0) continue;
+                    const participant = {
+                        name: undefined,
+                        email: undefined,
+                        role: undefined,                        
+                        lineNo: lineNo,
+                        password: undefined,
+                        line: undefined,
+                        errorMessage: undefined                                                      
+                    }
+                    try{
+                        participant.line = lines[i]
+                        const columns = lines[i].split(/\s+/g)                        
+                        if(columns.length<4) throw new Error(`Invalid entry at line ${lineNo} - At least Name, Surname, Email and Role must be provided`)
+                        if(columns.length>5) throw new Error(`Invalid entry at line ${lineNo} - At most five columns may be provided: Name, Surname, Email, Role and (optionally for Manager/Director) Password`)
+                        let role = columns[3].toLowerCase();
+                        role = role.charAt(0).toUpperCase() + role.slice(1);
+                        participant.name = `${columns[0]} ${columns[1]}`;
+                        participant.email = columns[2]
+                        participant.role = role     
+                        
+                        if(!["DEVELOPER", "FRONTENDDEVELOPER", "BACKENDDEVELOPER", "MOBILEDEVELOPER", "FULLSTACKDEVELOPER", "TECHLEAD", "MANAGER", "DIRECTOR"].includes(participant.role.toUpperCase())) throw new Error(`Invalid entry at line ${lineNo} - role must be one of Developer, FrontendDeveloper, BackendDeveloper, MobileDeveloper, FullstackDeveloper, TechLead, Manager, Director`)
+                        if(["MANAGER", "DIRECTOR"].includes(role.toUpperCase())){
+                            // use provided, if not password will be autogenerated
+                            if(columns.length == 5 && columns[4]) 
+                                participant.password = columns[4]
+                            else
+                                participant.password = Math.random().toString(36).substring(2, 12)
+                        }else{
+                            if(columns.length == 5 && columns[4].length > 0) throw new Error(`Invalid entry at line ${lineNo} - Non manager/director role MUST NOT have password provided`)
+                        }
+                        let validEmailRegexp = new RegExp("([!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*|\"\(\[\]!#-[^-~ \t]|(\\[\t -~]))+\")@([!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*|\[[\t -Z^-~]*])");
+                        if(!validEmailRegexp.test(participant.email)) throw new Error(`Invalid entry at line ${lineNo} - valid email must be provided in third column`)                    
+                        if(participants.findIndex(item=>item.email == participant.email) != -1) throw new Error(`Invalid entry at line ${lineNo} - duplicate email ${participant.email}`)                                                                                            
+                        
+                        participants.push(participant)
+                    }
+                    catch(error){                        
+                        participant.errorMessage = error.message
+                        participants.push(participant)
+                        errors.push({
+                            code: 13,
+                            message: error.message
+                        });                        
+                    }                                        
+                }
+                this.model.modals.m3.forms.f1.f2 = participants
+                this.model.modals.m3.forms.f1.e = errors
+                
+
+                // that.model.prop.display_value = `${e.target.files[0].name}`
+                const fileName = e.target.files[0].name;
+                const fileSize = e.target.files[0].size;
+                // that.model.prop.value = `name:${fileName};size:${fileSize};${fileData}`
+                // // Logs data:<type>;base64,wL2dvYWwgbW9yZ...
+                // that.validate();
+                // // process rule if validation is ok
+                // if(!that.model.error.message && that.model.prop.rule){
+                //     const f = new Function('value','props', that.model.prop.rule);
+                //     f.call(null, that.model.prop.value, that.model.props)
+                // }
+            };
+
+            fileReader.readAsText(e.target.files[0]);
+        }else{
+            this.model.modals.m3.forms.f1.f1.v = undefined
+        }
+        
+    }
+
+    async _handleCancelAddParticipants(e, that){
+        // clear previous errors
+        const errors = [];
+        this.model.modals.m3.forms.f1.e = errors
+        this.model.modals.m3.forms.f1.f1.v = undefined
+
+        this.model.modals.m3.active = false
+        that.model.modals.m3.f1 = undefined
+        that.model.modals.m3.f2 = undefined
+
+    }
+
+    async _handleAddParticipantsFile(e, that){
+        
     }
 
     async _handleAddInvitation(e, that){

@@ -125,7 +125,19 @@
                                   </button>
                               </div>
                             </div>    
-                          </div>                      
+                        </div>
+                        <div class="level-item">
+                          <div class="field">                          
+                            <div class="control">
+                              <button class="button" rv-on-click="model.handlers._handleBulkInviteParticipants">
+                                  <span class="icon is-small">
+                                    <i class="fas fa-file-medical"></i>
+                                  </span>
+                                  <span class="mx-2" rv-data-project-id="project.id" rv-data-account-id="model.account.id">Bulk invite participants</span>
+                                </button>
+                            </div>
+                          </div>    
+                      </div>                      
                     </div>                            
                 </nav>
                 <section class="section" style="padding: 0.5rem 0.5rem;">
@@ -271,7 +283,47 @@
             </div>
             
             <button class="modal-close is-large" aria-label="close"></button>
-        </div>                  
+        </div>  
+        <div class="modal " rv-class-is-active="model.modals.m3.active">
+          <div class="modal-background"></div>
+          <div class="modal-card">
+              <header class="modal-card-head">
+                <p class="modal-card-title">Add participants</p>
+                <button class="delete" aria-label="close" rv-on-click="model.modals.m3.handleCancelAddParticipants"></button>
+              </header>
+              <section class="modal-card-body">
+                  <div class="field">
+                      <label class="label">Participants file</label>
+                      <div class="file has-name is-fullwidth is-right">
+                        <label class="file-label">
+                          <input class="file-input" type="file" name="load" rv-on-change="model.modals.m3.forms.f1.handleChooseParticipantsFile"/>
+                          <span class="file-cta">
+                            <span class="file-icon">
+                              <i class="fas fa-upload"></i>
+                            </span>
+                            <span class="file-label"> Choose a file… </span>
+                          </span>
+                          <span class="file-name"> {{model.modals.m3.forms.f1.f1.v}} </span>
+                        </label>
+                      </div>
+                      <p class="help is-danger is-hidden" rv-class-is-hidden="model.modals.m3.forms.f1.e.code | eq 0">{{model.modals.m3.forms.f1.e.message}}</p>
+                  </div>  
+              </section>              
+              <section class="modal-card-body is-hidden" rv-class-is-hidden="model.modals.m3.forms.f1.e | size | eq 0">
+                <strong>Errors detected in file</strong>
+                <div class="notification" rv-each-participant="model.modals.m3.forms.f1.f2" rv-class-is-danger="participant.errorMessage | notEmpty" rv-class-is-hidden="participant.errorMessage | empty">
+                  <!-- {{participant.lineNo}}: {{participant.line}}</br> -->
+                  {{participant.errorMessage}}
+                </div>                
+              </section>
+              <footer class="modal-card-foot">
+                <button class="button is-success" rv-on-click="model.modals.m3.handleLoadParticipantsFile" rv-disabled="model.modals.m3.valid | eq false">Import</button>
+                <button class="button" rv-on-click="model.modals.m3.handleCancelAddParticipants">Cancel</button>
+              </footer>
+          </div>
+          
+          <button class="modal-close is-large" aria-label="close"></button>
+      </div>                  
     </div>
     
         

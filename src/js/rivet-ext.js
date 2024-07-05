@@ -135,12 +135,14 @@
     }
 
     rivets.formatters.size = function (value) {
+        if(value?.constructor === Object) return 0
         if (!value)
             return 0;
         return value.length;
     }
 
     rivets.formatters.sizeGte = function (value, arg) {
+        if(value?.constructor === Object) return 0
         if (!value)
             return false;
         
@@ -148,13 +150,17 @@
     }
 
     rivets.formatters.sizeLt = function (value, arg) {
+        if(value?.constructor === Object) return 0
         if (!value)
             return false;
+
+        if(!Array.isArray(value)) return false;
         
         return value.length < arg;
     }
 
     rivets.formatters.sizeLtAnd = function (value, arg, condition) {
+        if(value?.constructor === Object) return 0
         if (!value)
             return false;
         
@@ -162,6 +168,7 @@
     }
 
     rivets.formatters.sizeLte = function (value, arg) {
+        if(value?.constructor === Object) return 0
         if (!value)
             return false;
         
