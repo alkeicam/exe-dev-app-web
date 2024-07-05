@@ -163,7 +163,7 @@ class OnboardingController {
                             handleChooseParticipantsFile: this._handleChooseParticipantsFile.bind(this),                            
                         },                        
                     },
-                    handleAddParticipantsFile: this._handleAddParticipantsFile.bind(this),
+                    handleAddParticipantsFile: this._handleImportParticipantsFromFile.bind(this),
                     handleCancelAddParticipants: this._handleCancelAddParticipants.bind(this)
                     
                 }
@@ -441,7 +441,11 @@ class OnboardingController {
                         }
                         let validEmailRegexp = new RegExp("([!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*|\"\(\[\]!#-[^-~ \t]|(\\[\t -~]))+\")@([!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*|\[[\t -Z^-~]*])");
                         if(!validEmailRegexp.test(participant.email)) throw new Error(`Invalid entry at line ${lineNo} - valid email must be provided in third column`)                    
+                        // check duplicates in file
                         if(participants.findIndex(item=>item.email == participant.email) != -1) throw new Error(`Invalid entry at line ${lineNo} - duplicate email ${participant.email}`)                                                                                            
+                        // check if the user is already a member of the project
+                        const userAlreadyInProject = this.model.account.projects.find(item=>item.id == this.model.modals.m3.f2).participants?.find(item=>item.email == participant.email);
+                        if(userAlreadyInProject) throw new Error(`Invalid entry at line ${lineNo} - user ${participant.email} already in project`)
                         
                         participants.push(participant)
                     }
@@ -488,9 +492,38 @@ class OnboardingController {
         that.model.modals.m3.f1 = undefined
         that.model.modals.m3.f2 = undefined
 
+        // on change workaround to allow multiple times to load same file
+        const fileInputElement = document.getElementsByClassName("participants-file-input")[0];
+        fileInputElement.value = ""
+
     }
 
-    async _handleAddParticipantsFile(e, that){
+    async _handleImportParticipantsFromFile(e, that){
+        this.model.busy = true;
+        
+        const participants = this.model.modals.m3.forms.f1.f2;
+        const accountId = this.model.modals.m3.f1;
+        const projectId = this.model.modals.m3.f2;
+
+        console.log(participants);
+        for(let i=0; i<participants.length; i++){
+            const participant = participants[i];
+            if(["MANAGER","DIRECTOR"].includes(participant.role.toUpperCase())){
+                // check - if Manager or Director call admin user create
+                const user = await BackendApi.PROJECTS.MANAGEMENT.invite(accountId, projectId, participant.name, participant.email, participant.role, participant.password); 
+            }else{
+                // project memeber invitation create
+                const invitation = await BackendApi.PROJECTS.INVITATIONS.create(accountId, projectId, participant.name, participant.email, participant.role); 
+            }
+        }  
+        
+        await this._loadAccount(this.model.account.id);   
+        await this._loadInvitations(this.model.account.id);
+        
+        
+        
+        this.model.busy = false;
+        
         
     }
 
