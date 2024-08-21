@@ -205,7 +205,8 @@ class EventProcessor{
                 cals: prev.cals + curr.s,
                 commits: prev.commits + (curr.oper=="commit"?1:0),      
                 lines: prev.lines + curr.decoded.changeSummary.inserts+curr.decoded.changeSummary.deletions,
-                entropy: prev.entropy + (Number.isNaN(curr.e.e)?0:curr.e.e)
+                // workaround for new model version where event.e is not populated
+                entropy: prev.entropy + curr.e?(Number.isNaN(curr.e.e)?0:curr.e.e):0
             }
         },{cals: 0, commits: 0, lines: 0, entropy: 0});
         
