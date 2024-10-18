@@ -120,7 +120,7 @@
                   </div>
                 </div>
             </nav>
-            <h3 class="title is-3">{{model.participant.name}}<span class="is-size-7">{{model.participant.email}}</span><span class="is-size-7 is-hidden" rv-class-is-hidden="model.account | empty">@{{model.account.name}}</span></h3>                                                                      
+            <h3 class="title is-3">{{model.participant.name}}<span class="is-size-7 ml-2">{{model.participant.email}}</span><span class="is-size-7 is-hidden ml-2" rv-class-is-hidden="model.account | empty">@{{model.account.name}}</span></h3>                                                                      
         </div>  
         <div class="container" style="padding-top: 40vh; padding-bottom: 40vh;" rv-class-is-hidden="model.busy | eq false">
             <progress class="progress is-danger" max="100">30%</progress>
