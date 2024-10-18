@@ -209,7 +209,9 @@ class AppDemo {
             events = await BackendApi.getAccountEventsBetween(accountId, startMs, endMs);                                
         }else if(range.toLowerCase()=="all_time"){
             // get all events since 1.01.2022
-            events = await BackendApi.getAccountEventsSince(accountId, 1640991600000); 
+            // due to optimization we narrow data to last 30 days
+            let startMs = moment().startOf("day").add(-35,"days").valueOf();
+            events = await BackendApi.getAccountEventsSince(accountId, startMs); 
         }
         else{
             // "l_7"

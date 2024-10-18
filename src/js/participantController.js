@@ -258,8 +258,9 @@ class Controller {
             // console.log(range, startMs, endMs)
             events = await BackendApi.getAccountEventsBetween(accountId, startMs, endMs);                                
         }else if(range.toLowerCase()=="all_time"){
-            // get all events since 1.01.2022
-            const startMs = 1640991600000;
+            
+            // due to optimization we narrow data to last 12 mths
+            let startMs = moment().startOf("day").add(-12,"months").valueOf();
             if(!userId)
                 events = await BackendApi.getAccountEventsSince(accountId, startMs); 
             else    
