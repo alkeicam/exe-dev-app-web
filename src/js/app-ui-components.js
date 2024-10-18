@@ -15,6 +15,7 @@
             const data = {
                 x: stats.intervals.map(item=>item.name),
                 y: user.efforts.map(item=>item.value[dataset.effortKey]),
+                type: dataset.visual || 'scatter',
                 mode: 'lines',
                 name: user.user
             }
@@ -36,9 +37,10 @@
             },
             legend: {
                 x: 0,
-                y: -0.3
+                y: -1
             }
-        };        
+        };  
+        if(dataset.visual == "bar") layout.barmode = 'stack'; 
 
         Plotly.newPlot(el, graphData, layout,  {displayModeBar: false, responsive: true});
     }
