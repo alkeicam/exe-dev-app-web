@@ -8,7 +8,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Founder's Assistant</title>
+    <title>Project Details - Founder's Assistant</title>
     <meta name="description" content="Help startup founders track and measure developer's effort and engagment">
     <meta name="author" content="grulka">
 
@@ -120,29 +120,168 @@
                   </div>
                 </div>
             </nav>
-            <h3 class="title is-3">{{model.participant.name}}<span class="is-size-7 ml-2">{{model.participant.email}}</span><span class="is-size-7 is-hidden ml-2" rv-class-is-hidden="model.account | empty">@{{model.account.name}}</span></h3>                                                                      
+            <h3 class="title is-3">{{model.projectInfo.project.name}}<span class="is-size-7 is-hidden ml-2" rv-class-is-hidden="model.account | empty">@{{model.account.name}}</span></h3>                                                                      
         </div>  
         <div class="container" style="padding-top: 40vh; padding-bottom: 40vh;" rv-class-is-hidden="model.busy | eq false">
             <progress class="progress is-danger" max="100">30%</progress>
         </div>     
         <div class="container is-hidden" rv-class-is-hidden="model.busy">
           <section class="section mt-6" style="padding: 0.5rem 0.5rem;">
-                         
+            <h3 class="title is-5">Project Metrics</h3>      
             <div class="box">
-              <heat-map-events title="Today's Effort" events="model.rawEvents" range="14" start-hour="7" domain="hour" sub-domain="minute"></heat-map-events>
+              <nav class="level">
+                <div class="level-item has-text-centered">
+                  <div>
+                    <p class="heading">First increment date</p>
+                    <p class="title">{{model.projectInfo.projectStats.time.startDate | timeFormatMoment "YYYY-MM-DD"}}</p>
+                  </div>
+                </div>
+                <div class="level-item has-text-centered">
+                  <div>
+                    <p class="heading">Last increment date</p>
+                    <p class="title">{{model.projectInfo.projectStats.time.endDate | timeFormatMoment "YYYY-MM-DD"}}</p>
+                  </div>
+                </div>
+                <div class="level-item has-text-centered">
+                  <div>
+                    <p class="heading">Duration</p>
+                    <p class="title">{{model.projectInfo.projectStats.time.durationDays | numberRoundDecimal 2}} <span class="is-size-6">days</span></p>
+                  </div>
+                </div>
+                <div class="level-item has-text-centered">
+                  <div>
+                    <p class="heading">Duration (working days)</p>
+                    <p class="title">{{model.projectInfo.projectStats.time.durationWorkingDays | numberRoundDecimal 2}} <span class="is-size-6">days</span></p>
+                  </div>
+                </div>
+                <div class="level-item has-text-centered">
+                  <div>
+                    <p class="heading">Calories per day</p>
+                    <p class="title">{{model.projectInfo.projectStats.avg.calsPerDay | numberRoundDecimal 2}}</p>
+                  </div>
+                </div>
+                <div class="level-item has-text-centered">
+                  <div>
+                    <p class="heading">Increments per day</p>
+                    <p class="title">{{model.projectInfo.projectStats.avg.commitsPerDay | numberRoundDecimal 2}}</p>
+                  </div>
+                </div>
+              </nav>
             </div>
+            <div class="box">
+              <nav class="level">
+                <div class="level-item has-text-centered">
+                  <div>
+                    <p class="heading">Calories</p>
+                    <p class="title">{{model.projectInfo.projectStats.sum.cals | numberRoundDecimal 2}}</p>
+                  </div>
+                </div>
+                <div class="level-item has-text-centered">
+                  <div>
+                    <p class="heading">Increments</p>
+                    <p class="title">{{model.projectInfo.projectStats.sum.commits | numberRoundDecimal 2}}</p>
+                  </div>
+                </div>
+                <div class="level-item has-text-centered">
+                  <div>
+                    <p class="heading">Calories per increment</p>
+                    <p class="title">{{model.projectInfo.projectStats.avg.calsPerCommit | numberRoundDecimal 2}}</p>
+                  </div>
+                </div>                
+                <div class="level-item has-text-centered">
+                  <div>
+                    <p class="heading">Calories per person</p>
+                    <p class="title">{{model.projectInfo.projectStats.avg.calsPerUserPerDay | numberRoundDecimal 2}} <span class="is-size-6">a day</span></p>
+                  </div>
+                </div>                
+                <div class="level-item has-text-centered">
+                  <div>
+                    <p class="heading">Increments per person</p>
+                    <p class="title">{{model.projectInfo.projectStats.avg.commitsPerUserPerDay | numberRoundDecimal 2}} <span class="is-size-6">a day</span></p>
+                  </div>
+                </div>                
+              </nav> 
+            </div> 
+            <div class="box">
+              <nav class="level">
+                <div class="level-item has-text-centered">
+                  <div>
+                    <p class="heading">Team capacity</p>
+                    <p class="title">{{model.projectInfo.projectStats.teamSize | numberRoundDecimal 2}} <span class="is-size-6">people</span></p>
+                  </div>
+                </div>
+                <div class="level-item has-text-centered">
+                  <div>
+                    <p class="heading">Effective team capacity</p>
+                    <p class="title">{{model.projectInfo.projectStats.avg.ftePerDay | numberRoundDecimal 2}} <span class="is-size-6">people</span></p>
+                  </div>
+                </div>
+                <div class="level-item has-text-centered">
+                  <div>
+                    <p class="heading">Calories per person</p>
+                    <p class="title">{{model.projectInfo.projectStats.avg.calsPerUser | numberRoundDecimal 2}}</p>
+                  </div>
+                </div>
+                <div class="level-item has-text-centered">
+                  <div>
+                    <p class="heading">Increments per person</p>
+                    <p class="title">{{model.projectInfo.projectStats.avg.commitsPerUser | numberRoundDecimal 2}}</p>
+                  </div>
+                </div>                                
+              </nav>   
+            </div>  
+
+            <h3 class="title is-5">Team Metrics</h3> 
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Person</th>
+                  <th>Grade</th>
+                  <th>Daily Calories</th>
+                  <th>Joined</th>
+                  <th>Last increment</th>
+                  <th>Calories (Total)</th>
+                  <th>Increments (Total)</th>
+                  <th>Days</th>
+                  <th>Working days</th>
+                  <th>Productive days</th>
+                  <th>Days between increments</th>
+                  <th>Non productive days</th>
+                  
+                  <th>Daily Increments</th>
+                  <th>Calories per increment</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr rv-each-item="model.projectInfo.usersStats | objectToArray | objectsArraySortBy 'avg.calsPerDay'">
+                  <th>{{item.email}}</th>
+                  <td>
+
+                    {{model.projectInfo.usersStats | percentileValueFromObject 85 'avg.calsPerDay'}} x {{model.projectInfo.usersStats | percentileValueFromObject 85 'avg.calsPerDay' | lteObject item 'avg.calsPerDay'}}</td>
+                  <td>{{item.avg.calsPerDay | numberRoundDecimal 2}}</td>
+                  <td>{{item.startDate | timeFormatMoment "YYYY-MM-DD"}}</td>
+                  <td>{{item.endDate | timeFormatMoment "YYYY-MM-DD"}}</td>
+                  <td>{{item.sum.cals | numberRoundDecimal 2}}</td>
+                  <td>{{item.sum.commits | numberRoundDecimal 2}}</td>
+                  <td>{{item.time.days | numberRoundDecimal 0}}</td>
+                  <td>{{item.time.workingDays | numberRoundDecimal 0}}</td>
+                  <td>{{item.time.productiveDays | numberRoundDecimal 0}}</td>
+                  <td>{{item.avg.daysBetweenCommits | numberRoundDecimal 2}}</td>
+                  <td>{{item.time.nonProductiveDays | numberRoundDecimal 0}}</td>                  
+                  <td>{{item.avg.commitsPerDay | numberRoundDecimal 2}}</td>
+                  <td>{{item.avg.calsPerCommit | numberRoundDecimal 2}}</td>                  
+                </tr>
+              </tbody>
+            </table>
+                                                                            
+                            
+            <heat-map-events title="Today's Effort" events="model.rawEvents" range="14" start-hour="7" domain="hour" sub-domain="minute"></heat-map-events>
             <user-projects-stats stats="model.userProjectsStatsToday" user="model.participant.id"></user-projects-stats>            
             <heat-map-events title="Historical Activity" events="model.rawEvents" range="-12" domain="month" sub-domain="day"></heat-map-events>            
             <user-projects-stats stats="model.userProjectsStats" user="model.participant.id"></user-projects-stats>
-            <div class="box">
-              <plot-stats title="Effort (trending)" kind="usersMa" effort-key="cals" stats="model.trends.l_60d"></plot-stats>
-            </div>
-            <div class="box">
-              <plot-stats title="Commits (trending)" kind="usersMa" effort-key="commits" stats="model.trends.l_60d"></plot-stats>
-            </div>
-            <div class="box">
-              <plot-stats title="Lines (trending)" kind="usersMa" effort-key="lines" stats="model.trends.l_60d"></plot-stats>
-            </div>
+            <plot-stats title="Effort (trending)" kind="usersMa" effort-key="cals" stats="model.trends.l_60d"></plot-stats>
+            <plot-stats title="Commits (trending)" kind="usersMa" effort-key="commits" stats="model.trends.l_60d"></plot-stats>
+            <plot-stats title="Lines (trending)" kind="usersMa" effort-key="lines" stats="model.trends.l_60d"></plot-stats>
             <!-- <plot-stats title="Entropy (trending)" kind="usersMa" effort-key="entropy" stats="model.trends.l_60d"></plot-stats> -->
             
           </section>
@@ -172,7 +311,7 @@
     <script src="js/state.js"></script>
     <script src="js/event-processor.js"></script>    
     <script src="js/api.js"></script>
-    <script src="js/participantController.js"></script>
+    <script src="js/projectController.js"></script>
     <!-- <script src="js/onboardingModalController.js"></script>
     <script src="js/preferencesModalController.js"></script> -->
     <script>

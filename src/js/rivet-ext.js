@@ -192,10 +192,24 @@
             return false;
         return value < arg;
     }
-    rivets.formatters.lte = function (value, arg) {
+    rivets.formatters.lte = function (value, arg, property) {
+        if (!value)
+            return false;        
+        return value <= arg;                
+    }
+    
+    rivets.formatters.lteObject = function (value, arg, property) {
         if (!value)
             return false;
-        return value <= arg;
+
+        if(property){
+            const p1 = property.split(".")[0]
+            const p2 = property.split(".")[1]
+            return p2?value <= arg[p1][p2]:arg[p1];
+        }else{
+            return value <= arg;
+        }
+        
     }
 
     
@@ -215,7 +229,15 @@
     rivets.formatters.propertyAt = function (value, propName) {
         if (!(value && value instanceof Object))
             return null;
-        return value[propName];
+
+        if(propName.includes(".")){
+            const p1 = propName.split(".")[0]
+            const p2 = propName.split(".")[1]
+            return value[p1][p2];
+        }else{
+            return value[propName];
+        }
+        
     }
 
     rivets.formatters.propertyAtWithSubProperty = function (value, propName, subPropName) {
@@ -377,6 +399,117 @@
         return `${JSON.stringify(value)}`;
     }
 
+    rivets.formatters.objectToArray = function (value){
+        return Object.keys(value).map(item=>value[item])
+    }
+
+    rivets.formatters.objectsArraySortBy = function (value, property, ascending){
+        return value.sort((a,b)=>{
+            return ascending?a[property]-b[property]:b[property]-a[property]
+        })
+    }
+    
+    rivets.formatters.objectsArraySortBy = function (value, property, ascending){
+        if(property.includes(".")){
+            return value.sort((a,b)=>{
+                const p1 = property.split(".")[0]
+                const p2 = property.split(".")[1]
+                return ascending?a[p1][p2]-b[p1][p2]:b[p1][p2]-a[p1][p2]
+            })
+        }else{
+            return value.sort((a,b)=>{
+                return ascending?a[property]-b[property]:b[property]-a[property]
+            })
+        }
+
+        
+    }
+
+    rivets.formatters.matchPercentile = function (value, percentile, values){
+        // Step 1: Sort the array in ascending order
+        const sortedArr = values.sort((a, b) => a - b);
+
+        // Step 2: Calculate the index for the percentile
+        const index = (percentile / 100) * (sortedArr.length - 1);
+
+        // Step 3: If the index is an integer, return the element at that index
+        if (Number.isInteger(index)) {
+            return sortedArr[index];
+        }
+
+        // Step 4: If not an integer, interpolate between two closest values
+        const lowerIndex = Math.floor(index);
+        const upperIndex = Math.ceil(index);
+        const weight = index - lowerIndex;
+
+        const percentileTarget =  sortedArr[lowerIndex] * (1 - weight) + sortedArr[upperIndex] * weight;
+        return value >= percentileTarget
+    }
+
+    rivets.formatters.matchPercentileFromObject = function (value, percentile, sourceProperty, targetProperty){
+        const values = [];
+        // get values array from object - its assumed that first level keys will be turned to array
+        Object.keys(value).map(key=>value[key]).map(item=>{
+            const p1 = targetProperty.split(".")[0]
+            const p2 = targetProperty.split(".")[1]
+            const arrayItem = p2?item[p1][p2]:item[p1]
+            values.push(arrayItem)
+        })
+        
+        // Step 1: Sort the array in ascending order
+        const sortedArr = values.sort((a, b) => a - b);
+
+        // Step 2: Calculate the index for the percentile
+        const index = (percentile / 100) * (sortedArr.length - 1);
+
+        // Step 3: If the index is an integer, return the element at that index
+        if (Number.isInteger(index)) {
+            return sortedArr[index];
+        }
+
+        // Step 4: If not an integer, interpolate between two closest values
+        const lowerIndex = Math.floor(index);
+        const upperIndex = Math.ceil(index);
+        const weight = index - lowerIndex;
+
+        const percentileTarget =  sortedArr[lowerIndex] * (1 - weight) + sortedArr[upperIndex] * weight;
+
+        const p1 = sourceProperty.split(".")[0]
+        const p2 = sourceProperty.split(".")[1]
+
+        return p2?value[p1][p2] >= percentileTarget:value[p1] >= percentileTarget
+    }
+
+    rivets.formatters.percentileValueFromObject = function (value, percentile, targetProperty){
+        const values = [];
+        // get values array from object - its assumed that first level keys will be turned to array
+        Object.keys(value).map(key=>value[key]).map(item=>{
+            const p1 = targetProperty.split(".")[0]
+            const p2 = targetProperty.split(".")[1]
+            const arrayItem = p2?item[p1][p2]:item[p1]
+            values.push(arrayItem)
+        })
+        
+        // Step 1: Sort the array in ascending order
+        const sortedArr = values.sort((a, b) => a - b);
+
+        // Step 2: Calculate the index for the percentile
+        const index = (percentile / 100) * (sortedArr.length - 1);
+
+        // Step 3: If the index is an integer, return the element at that index
+        if (Number.isInteger(index)) {
+            return sortedArr[index];
+        }
+
+        // Step 4: If not an integer, interpolate between two closest values
+        const lowerIndex = Math.floor(index);
+        const upperIndex = Math.ceil(index);
+        const weight = index - lowerIndex;
+
+        const percentileTarget =  sortedArr[lowerIndex] * (1 - weight) + sortedArr[upperIndex] * weight;
+
+        return percentileTarget
+    }
     
     
 

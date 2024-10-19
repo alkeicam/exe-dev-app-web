@@ -111,6 +111,12 @@
                     <div class="level-left">
                         <div class="level-item">
                             <h3 class="title is-4">{{project.name}} <span class="subtitle is-size-7">#{{project.id}}</span></h3>
+                            <a class="button is-ghost is-small" rv-href="project.id | hrefBuilder 'project.html?i=@value'">
+                              <span class="icon is-small">
+                                <i class="fas fa-eye"></i>
+                              </span>
+                              <span>View</span>
+                            </a>
                         </div>                      
                     </div>                            
                     <div class="level-right">
