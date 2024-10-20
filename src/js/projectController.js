@@ -140,8 +140,7 @@ class Controller {
             handlers: {
                 // _handleOnChangeProject: this._handleOnChangeProject.bind(this),
                 _handleSwitchAccount: this._handleSwitchAccount.bind(this),
-                _selectAccount: this._selectAccount.bind(this),
-                _handleRefreshEvents: this._handleRefreshEvents.bind(this)
+                _selectAccount: this._selectAccount.bind(this),                
             },
             process:{
                 step: "PREPARE" // PREPARE // WORKOUT                
@@ -167,14 +166,27 @@ class Controller {
                     x: [],
                 }
             },
-            userProjectsStats: {}
+            userProjectsStats: {},
+            views: {
+                weeklyGraph: {
+                    title: 'Weekly calories',
+                    redrawTs: -1,
+                    doAverage: true,
+                    traces: {
+                        // "some": {
+                        //     values: [],
+                        //     timestamps: []
+                        // }
+                    }
+                }
+            }
 
         }
     }
 
     static async getInstance(emitter, container){   
         
-        const id = Controller.getQueryParam("i");
+        const id = Commons.getQueryParam("i");
 
         
         const a = new Controller(emitter, container)
@@ -197,9 +209,11 @@ class Controller {
         try{
 
             await a._prepareAccounts(a.model.user);
-            const projectInfos = await BackendApi.PROJECTS.getProjectInfo(a.model.account.id, id);
-            const projectInfo = projectInfos[0];
-            a.model.projectInfo = projectInfo            
+            
+            // await a._loadAccount(accountId);   
+            let preferredAccount = State.PREFERENCES.account()||{};     
+
+            await a._selectAccount(preferredAccount.id||a.model.account.id);
  
             const accountAuthority = user.authority.find(item=>item.accountId == a.model.account.id);        
             if(accountAuthority){
@@ -207,24 +221,81 @@ class Controller {
                 a.model.isOwner = accountAuthority.roles.some(item=>["OWNER", "ADMIN"].includes(item.toUpperCase()))?true:false;
             }        
                 
-            // await a._loadAccount(accountId);   
-            let preferredAccount = State.PREFERENCES.account()||{};     
+            
 
-            await a._selectAccount(preferredAccount.id||a.model.account.id);
-            // await a._handleRefreshEvents(undefined, a);
+            const projectInfos = await BackendApi.PROJECTS.getProjectInfo(a.model.account.id, id);
+            const projectInfo = projectInfos[0];
+            a.model.projectInfo = projectInfo            
+            // await a._weeklyCaloriesUpdate("next", 52);
+            
+            
+            await a._weeklyCaloriesUpdate(a.model.account.id, a.model.projectInfo.project.id, Date.now(), "next", 52)
+            
+            
 
-            // a.model.userProjectsStats = await a._userProjectsStats(a.model.rawEvents, a.model.accounts);
-            // a.model.userProjectsStatsToday = await a._userProjectsStats(a.model.rawEvents.filter(item=>item.ct>=moment().startOf("day").valueOf()), a.model.accounts);
+
+            // const weeklyData = EventProcessor.aggregateCaloriesByWeek(a.model.events['w_52'], -1, Date.now()) 
+            // weeklyData.timestamps = weeklyData.timestamps.map(item=>moment(item).format('YYYY-MM[ (W]WW[)]'));
+            // a.model.views.weeklyGraph.traces = {
+            //     "Weekly project calories": weeklyData
+            // }
+            // a.model.views.weeklyGraph.redrawTs = Date.now();            
+
 
         }catch(error){
             console.log(error);
-            // window.location = "hello.html?message=Session expired. Please log in again.";
-        }
-        
-        
+            window.location = `hello.html?message=Session expired. Please log in again.&url=${Commons.getCurrentPathAndParams()}`;
+        }                
         a.model.busy = false;
         return a;
     }
+
+        
+
+    async populateEvents(accountId, projectId, range, referenceDateTs ){        
+        this.model.events[range] = await this.loadEvents(accountId, projectId, range, referenceDateTs )
+
+        return this.model.events[range];
+    }
+
+    
+    async _weeklyCaloriesUpdate(accountId, projectId, baseReferenceTs, direction, window){
+        
+        // let referenceTs = baseReferenceTs>Date.now()?Date.now():baseReferenceTs;
+        
+        
+        const newRedrawTs = Commons.rebaseTs(baseReferenceTs, direction=="prev"?-window:window, 'weeks', true);
+        const newStartTs = Commons.rebaseTs(newRedrawTs, -window, 'weeks', true);        
+        
+        const events = await CommonsApp.loadEventsForProject(accountId, projectId, `w_${window}`, newRedrawTs)
+        const weeklyData = EventProcessor.aggregateCaloriesByWeek(events, newStartTs, newRedrawTs, true);
+
+        weeklyData.timestamps = weeklyData.timestamps.map(item=>moment(item).format('YYYY-MM[ (W]WW[)]'));
+        this.model.views.weeklyGraph.traces = {
+            "Weekly project calories": weeklyData
+        }
+        this.model.views.weeklyGraph.redrawTs = newRedrawTs;            
+    }
+
+    async _handleChangeWeeklyCalories(e, that){
+        that.model.busy = true
+        const direction = e.target.dataset.dir
+        try{
+            await that._weeklyCaloriesUpdate(that.model.account.id, that.model.projectInfo.project.id, that.model.views.weeklyGraph.redrawTs, direction, 52);
+            
+        }catch(error){
+            window.location = `hello.html?message=Session expired. Please log in again.&url=${Commons.getCurrentPathAndParams()}`;
+        }
+        finally{
+            that.model.busy = false
+            // hack to redraw graph when busy indicator is hidden
+            that.model.views.weeklyGraph.redrawTs++;                        
+        }
+        
+
+    }
+
+    // ====== standard methods
 
     async _prepareAccounts(user){
         const accountIds = user.authority.map(item=>item.accountId);
@@ -237,90 +308,6 @@ class Controller {
         }
         this.model.account = this.model.accounts[0];                
     }
-
-    _ellipsis(text){
-        if(text.length<=50)
-            return text;
-        return text.substring(0,18)+"..."+text.substr(text.length-28, text.length)
-    }
-
-    
-
-    async _userProjectsStats(events, accounts /* { id, projects: [id, name]} */){
-
-        const result = {}
-
-        events.forEach(event=>{
-            let user = result[event.user];
-            if(!user){
-                user = {
-                    user: event.user,
-                    projects: {}
-                }
-                result[event.user] = user;
-            }
-            let project = user.projects[`${event.account}::${event.project}`];
-
-            if(!project){
-                project = {
-                    id: event.project,
-                    accountId: event.account,
-                    name: accounts.find(item=>item.id == event.account).projects.find(item=>item.id == event.project).name,
-                    accountName: accounts.find(item=>item.id == event.account).name,
-                    stats: {
-                        s: 0,
-                        c: 0,
-                        l: 0
-                    }
-                }
-                user.projects[`${event.account}::${event.project}`] = project;
-            }
-
-            project.stats.s += event.s
-            project.stats.c += event.oper.toLowerCase()=="commit"?1:0
-            project.stats.l += event.decoded.changeSummary.inserts
-            project.stats.l += event.decoded.changeSummary.deletions
-        })
-
-        return result;
-
-    }
-
-    async populateEvents(accountId, range, userId){
-        const specifications = range.split("_");
-        // console.log(range, JSON.stringify(specifications));
-        let events = []
-        if(specifications[0]=="c"){
-            // "c_0"
-            // console.log(range, specifications[1]);
-            let startMs = moment().startOf("day").add(-specifications[1],"days").valueOf();
-            let endMs = moment().endOf("day").add(-specifications[1],"days").valueOf();                    
-            // console.log(range, startMs, endMs)
-            events = await BackendApi.getAccountEventsBetween(accountId, startMs, endMs);                                
-        }else if(range.toLowerCase()=="all_time"){
-            
-            // due to optimization we narrow data to last 12 mths
-            let startMs = moment().startOf("day").add(-12,"months").valueOf();
-            if(!userId)
-                events = await BackendApi.getAccountEventsSince(accountId, startMs); 
-            else    
-            events = await BackendApi.EVENTS.getAccountUserEventsSince(accountId, userId, startMs);                                
-        }
-        else{
-            // "l_7"
-            // console.log(range, specifications[1]);
-            let startMs = moment().startOf("day").add(-specifications[1],"days").valueOf();
-            // console.log(range, startMs)
-            if(!userId)
-                events = await BackendApi.getAccountEventsSince(accountId, startMs);                                
-            else 
-                events = await BackendApi.EVENTS.getAccountUserEventsSince(accountId, userId, startMs);                                
-        }
-        this.model.events[range] = events;
-        return events;
-    }
-
-    
 
     async _handleSignOut(e, that){
         State.PREFERENCES.accountReset();
@@ -340,8 +327,6 @@ class Controller {
         this.model.forms.f1.f1.e = this.model.account.projects.map((item)=>{return {k: item.id, v: item.name}});
     }
 
-    
-
     async _handleSwitchAccount(e, that){
         that.model.busy = true;
         const account = that.item;
@@ -352,74 +337,6 @@ class Controller {
         window.location = "index.html";
         that.model.busy = false;
 
-    }
-
-    async _handleRefreshEvents(e, that){
-        that.model.busy = true;
-        const accountId = that.model.account.id;
-        const participantId = that.model.participant.id;
-        // let events = await that.populateEvents(accountId,"c_0");
-        // that.populatePerformers(events, "c_0");
-        
-        // events = await that.populateEvents(accountId,"c_1");
-        // that.populatePerformers(events, "c_1");
-
-        // events = await that.populateEvents(accountId,"l_7");
-        // that.populatePerformers(events, "l_7");
-
-        // events = await that.populateEvents(accountId,"l_14");
-        // that.populatePerformers(events, "l_14");
-        // // console.log(events);
-
-        // that.populateProjects(that.model.events["c_0"],"c_0")
-        // that.populateProjects(that.model.events["c_1"], "c_1")
-        // that.populateProjects(that.model.events["l_7"], "l_7")
-        // that.populateProjects(that.model.events["l_14"], "l_14")
-
-        // project perspective
-        
-        let events = await that.populateEvents(accountId,"all_time", participantId);  
-        that.model.rawEvents = events; 
-        
-        // await that._populateLastIncrementAndTeam();
-        
-        
-        await that.populateTrends(that.model.events["all_time"],"all_time", 7, undefined, "day");    
-        await that.populateTrends(that.model.events["all_time"],"l_60d", 7, undefined, "day", moment().startOf("day").add(-60,"d").valueOf(), moment().endOf("day").valueOf());    
-        await that.populateTrends(that.model.events["all_time"],"l_30d", 7, undefined, "day", moment().startOf("day").add(-30,"d").valueOf(), moment().endOf("day").valueOf());    
-        await that.populateTrends(that.model.events["all_time"],"l_24h", 7, undefined, "hour", moment().startOf("day").valueOf(), moment().endOf("day").valueOf());    
-        
-        that.model.forms.f1.f1.v = -1
-
-        // that._today(participantId);
-        
-        that.model.busy = false;
-        // that.drawTrends(that.model.trends.all_time);
-        
-    }    
-    
-    async populateTrends(events, range, window, projectId, interval, beginTs, endTs){
-        let targetEvents = projectId?events.filter((item)=>{return item.project == projectId}):events;
-        const processor = new EventProcessor();
-        // this.model.trends[range] = processor.userTrends(targetEvents, window);
-        // this.model.trends[range] = processor.userTrends2(targetEvents, "day", window, 1680326539000)
-        // this.model.trends[range] = processor.userTrends2(targetEvents, "day", window, 1680326539000, 1701326573000)
-        
-        
-        this.model.trends[range] = processor.userTrends(targetEvents, interval, window, beginTs, endTs)
-        
-        
-        // this.model.trends[range] = processor.userTrends(targetEvents, "day", window)
-        
-        // this.model.trends[range] = processor.userTrends2(targetEvents, "hour", window)
-        // console.log("User trends", this.model.events[range]);
-        return this.model.trends[range];
-    }
-
-    static getQueryParam(paramName){
-        const urlParams = new URLSearchParams(window.location.search);
-        const myParam = urlParams.get(paramName);
-        return myParam;
-    }    
+    }        
 }
 

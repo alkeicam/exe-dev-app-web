@@ -39,4 +39,31 @@ class Commons {
         const myParam = urlParams.get(paramName);
         return myParam;
     }
+
+    static getCurrentPathAndParams(){
+        const path = window.location.pathname;
+        const queryParams = window.location.search;
+        const fullPathWithQuery = path + queryParams;
+
+        return fullPathWithQuery
+    }
+
+    static ellipsis(text, maxLength){
+        if(text.length<=maxLength)
+            return text;
+        return text.substring(0,18)+"..."+text.substr(text.length-18, text.length)
+    }
+
+    /**
+     * For given timestamp calculates rebased date that is distance days/weeks/months away 
+     * from srcTs.
+     * @param {*} srcTs 
+     * @param {*} delta 
+     * @param {*} range 
+     */
+    static rebaseTs(srcTs, distance, range /* days, weeks, months */, noFuture){
+        let targetTs = moment(srcTs).add(distance,range).valueOf();
+        targetTs = noFuture?Math.min(targetTs, Date.now()):targetTs;
+        return targetTs
+    }
 }

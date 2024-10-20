@@ -312,7 +312,7 @@
             // const dataset = el.dataset;
 
             const graphData = [];
-
+            if(!data.stats) return controller
             data.stats[data.kind].forEach((record)=>{
                 const data4Graph = {
                     x: data.stats.intervals.map(item=>item.name),
@@ -340,6 +340,133 @@
             return controller;
         }
     } 
+
+    rivets.components['plot-ts-vals'] = {
+        template: function(item) {            
+            const template = `
+        <div class="my-4">    
+            <h5 class="title is-5">{{model.dto.title}}</h5>           
+            <div class="here-plot"></div>  
+            <span class="is-invisible" rv-data-x="redraw | call model.dto.redrawTs"></span>                      
+        </div>
+      `
+              return template;
+          },
+        // static: ['kind','effortKey', 'title'],
+        // dynamic bound: 'errorMsg'
+        initialize: function(el, data) {
+            
+            const controller = {
+                emitter: data.emitter,            
+                model: {
+                    dto: data.dto, // title, traces->samples(timestamp, value)
+                    error:{
+                        code: 0,
+                        message: "OK"
+                    }
+                },
+                redraw: (redrawTimestamp)=>{                    
+                    
+                    // remove previous
+                    let holderElement = document.getElementsByClassName("here-plot")[0]
+                    holderElement.innerHTML = '';
+                    const theElement = document.createElement("div");
+                    holderElement.appendChild(theElement);
+                    
+                    
+
+                    // no data to draw
+                    if(Object.keys(controller.model.dto.traces).length == 0){
+                        // controller.model.timeFilter.isHidden = true;
+                        return;
+                    } 
+
+                    // controller.model.timeFilter.isHidden = false;
+
+                    // const stats = value
+                    // const dataset = el.dataset;
+
+                    const graphData = [];
+
+                    const averageGraph = {
+                        x: [],
+                        y: [],
+                        mode: 'lines',
+                        name: "Average",
+                        connectgaps: true
+                    }
+
+                    let average = 0;
+                    
+                    // const xLabels = {}
+
+                    // let itemsCount = 0;
+
+                    Object.keys(controller.model.dto.traces).forEach((traceName,index)=>{
+                        const sample = controller.model.dto.traces[traceName];
+                        
+
+                        const data4Graph = {
+                            x: sample.timestamps,
+                            y: sample.values,
+                            mode: 'lines',
+                            name: traceName,
+                            connectgaps: true
+                        }
+                        
+                        // average calculation
+                        const theSum = data4Graph.y.reduce((prev, curr)=>{
+                            return prev+curr
+                        },0)
+                        const theAverage = theSum/sample.values.length;
+                        average += theAverage
+                        
+                        data4Graph.x.forEach((v,i)=>{                            
+                            averageGraph.x[i] = v
+                        })                        
+                        graphData.push(data4Graph);                    
+                    })
+
+                    if(controller.model.dto.doAverage){
+                        const finalAverage = average/Object.keys(controller.model.dto.traces).length;
+                        averageGraph.x.forEach((v,i)=>averageGraph.y[i]=finalAverage)
+                        graphData.push(averageGraph)
+                    }
+                    
+                    var layout = {
+                        title: controller.model.dto.title,
+                        autosize: true,
+                        showlegend: true,
+                        // width: 500,
+                        legend: {
+                            x: 0,
+                            y: -0.75
+                        },
+                        // xaxis: {
+                        //     tickvals: Object.keys(xLabels).map(Number).sort((a, b) => a - b),  // Specify the actual x values
+                        //     ticktext: Object.keys(xLabels).map(Number).sort((a, b) => a - b).map(item=>xLabels[item]),  // Custom labels for x values
+                        //     tickmode: 'array'  // Use an array to map tickvals to ticktext
+                        // }                        
+                    };   
+                    
+                    // // once more check if there is anything to draw - as time filter might have filtered out all data
+                    // if(itemsCount == 0){
+                    //     return
+                    // }                        
+
+                    Plotly.newPlot(theElement, graphData, layout,  {displayModeBar: false, responsive: true});            
+                }                                                 
+            }    
+
+            
+            return controller;
+        }
+    } 
+
+    // const result = {
+    //     timestamps: [],
+    //     values: []
+    // };
 
     /**
      * Renders card component that displays top performers from stats.
@@ -827,6 +954,7 @@
                 },                                               
             }     
 
+            if(!data.stats) return controller;
             let projects = data.stats[data.user]?.projects;
             if(projects){
                 controller.model.projects = Object.keys(projects).map(item=>projects[item])

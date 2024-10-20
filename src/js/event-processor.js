@@ -507,6 +507,63 @@ class EventProcessor{
         return result;
     }
 
+    static aggregateCaloriesByWeek(events, startDate, endDate, fillMissing) {        
+    
+        // Convert start and end dates to Moment objects and truncate to the start/end of the week
+        const start = moment(startDate).startOf('week').add(1, 'days')
+        const end = moment(endDate).endOf('week').add(1, 'days')
+    
+        // Object to store weekly aggregates
+        const weeklyData = {};
+    
+        // Loop over the data array
+        events.forEach(item => {
+            const itemDate = moment(item.ct); // Convert 'ct' to Moment object (timestamp in ms)
+            if (itemDate.isBetween(start, end, null, '[]')) { // Check if itemDate is between start and end
+                const weekStart = moment(itemDate).startOf('week').add(1, 'days').valueOf(); // Get week start timestamp
+    
+                // Aggregate calories ('s' property) by week
+                if (!weeklyData[weekStart]) {
+                    weeklyData[weekStart] = 0;
+                }
+                weeklyData[weekStart] += item.s;
+            }
+        });
+
+        if(fillMissing){
+            let currentWeek = start.clone();
+            while (currentWeek.isBefore(end)) {
+                const weekStart = currentWeek.valueOf();
+    
+                if (!weeklyData[weekStart]) {
+                    weeklyData[weekStart] = 0;
+                }
+    
+                currentWeek.add(1, 'weeks');
+                
+            }
+        }        
+    
+        // Prepare result arrays
+        const result = {
+            timestamps: [],
+            values: []
+        };
+    
+        // Populate result arrays with sorted week data
+        Object.keys(weeklyData).sort().forEach(weekStart => {
+            result.timestamps.push(Number(weekStart)); // Convert string key back to number
+            result.values.push(weeklyData[weekStart]);
+        });
+
+        
+    
+        return result;
+    }
+
+
+    
+
 }
 
 if (typeof module !== 'undefined' && module.exports != null) {

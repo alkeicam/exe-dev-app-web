@@ -197,7 +197,7 @@
             return false;        
         return value <= arg;                
     }
-    
+
     rivets.formatters.lteObject = function (value, arg, property) {
         if (!value)
             return false;
@@ -509,6 +509,100 @@
         const percentileTarget =  sortedArr[lowerIndex] * (1 - weight) + sortedArr[upperIndex] * weight;
 
         return percentileTarget
+    }
+
+    /**
+     * Calculates percentiles for the array generated from theObject objectProperty values and
+     * checks if target object target property value matches requested percentile.
+     * @param {*} theObject 
+     * @param {*} objectProperty 
+     * @param {*} percentile 
+     * @param {*} targetObject 
+     * @param {*} targetProperty 
+     * @returns 
+     */
+    rivets.formatters.percentileValueFromObjectAgainstObject = function (theObject, objectProperty, percentile, targetObject, targetProperty){
+        const values = [];
+        // get values array from object - its assumed that first level keys will be turned to array
+        Object.keys(theObject).map(key=>theObject[key]).map(item=>{
+            const p1 = objectProperty.split(".")[0]
+            const p2 = objectProperty.split(".")[1]
+            const arrayItem = p2?item[p1][p2]:item[p1]
+            values.push(arrayItem)
+        })
+        
+        // Step 1: Sort the array in ascending order
+        const sortedArr = values.sort((a, b) => a - b);
+
+        // Step 2: Calculate the index for the percentile
+        const index = (percentile / 100) * (sortedArr.length - 1);
+
+        // Step 3: If the index is an integer, return the element at that index
+        if (Number.isInteger(index)) {
+            return sortedArr[index];
+        }
+
+        // Step 4: If not an integer, interpolate between two closest values
+        const lowerIndex = Math.floor(index);
+        const upperIndex = Math.ceil(index);
+        const weight = index - lowerIndex;
+
+        const percentileTarget =  sortedArr[lowerIndex] * (1 - weight) + sortedArr[upperIndex] * weight;
+
+        const p1 = targetProperty.split(".")[0]
+        const p2 = targetProperty.split(".")[1]
+
+        if(p2){
+            return targetObject[p1][p2] >= percentileTarget
+        }else{
+            return targetObject[p1] >= percentileTarget
+        }
+
+        
+    }
+
+
+    rivets.formatters.percentileLabelFromObjectAgainstObject = function (theObject, objectProperty, targetObject, targetProperty, percentileThresholds, percentileLabels, theDefault){
+        const values = [];
+        // get values array from object - its assumed that first level keys will be turned to array
+        Object.keys(theObject).map(key=>theObject[key]).map(item=>{
+            const p1 = objectProperty.split(".")[0]
+            const p2 = objectProperty.split(".")[1]
+            const arrayItem = p2?item[p1][p2]:item[p1]
+            values.push(arrayItem)
+        })
+        // Step 1: Sort the array in ascending order
+        const sortedArr = values.sort((a, b) => a - b);
+
+        const percentileTargets = percentileThresholds.split(",").map(item=>{
+            const percentile = item
+            // Step 2: Calculate the index for the percentile
+            const index = (percentile / 100) * (sortedArr.length - 1);
+
+            // Step 3: If the index is an integer, return the element at that index
+            if (Number.isInteger(index)) {
+                return sortedArr[index];
+            }
+
+            // Step 4: If not an integer, interpolate between two closest values
+            const lowerIndex = Math.floor(index);
+            const upperIndex = Math.ceil(index);
+            const weight = index - lowerIndex;
+
+            const percentileTarget =  sortedArr[lowerIndex] * (1 - weight) + sortedArr[upperIndex] * weight;
+            return percentileTarget;
+        })                
+        
+        const p1 = targetProperty.split(".")[0]
+        const p2 = targetProperty.split(".")[1]
+
+        let targetValue = p2?targetObject[p1][p2]:targetObject[p1];                
+
+        for(let i=0; i<percentileTargets.length; i++){
+            if(percentileTargets[i]<targetValue) return percentileLabels.split(",")[i]
+        }
+
+        return theDefault
     }
     
     

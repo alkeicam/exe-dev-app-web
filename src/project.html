@@ -24,8 +24,11 @@
 
     <script src="js/rivet.js"></script>
     <script src="js/rivet-ext.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/common-app.js"></script>
     <script src="js/ui-components.js"></script>
     <script src="js/app-ui-components.js"></script>
+
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>        
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="js/plotly-2.24.1.min.js" charset="utf-8"></script>
@@ -232,56 +235,142 @@
             </div>  
 
             <h3 class="title is-5">Team Metrics</h3> 
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>Person</th>
-                  <th>Grade</th>
-                  <th>Daily Calories</th>
-                  <th>Joined</th>
-                  <th>Last increment</th>
-                  <th>Calories (Total)</th>
-                  <th>Increments (Total)</th>
-                  <th>Days</th>
-                  <th>Working days</th>
-                  <th>Productive days</th>
-                  <th>Days between increments</th>
-                  <th>Non productive days</th>
-                  
-                  <th>Daily Increments</th>
-                  <th>Calories per increment</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr rv-each-item="model.projectInfo.usersStats | objectToArray | objectsArraySortBy 'avg.calsPerDay'">
-                  <th>{{item.email}}</th>
-                  <td>
+            <div class="table-container ">
+              <table class="table is-hidden-touch">
+                <thead>
+                  <tr>
+                    <th>Person</th>
+                    <th>Grade</th>
+                    <th>Daily Calories</th>
+                    <th>Joined</th>
+                    <th>Days on project</th>
+                    <th>Calories (Total)</th>
+                    <th>Increments (Total)</th>                    
+                    <th>Working days</th>
+                    <th>Productive days</th>
+                    <th>Days between increments</th>
+                    <th>Non productive days</th>                    
+                    <th>Daily Increments</th>
+                    <th>Calories per increment</th>
+                  </tr>
+                </thead>
+                <tfoot>
+                  <tr>
+                    <th>Person</th>
+                    <th>Grade</th>
+                    <th>Daily Calories</th>
+                    <th>Joined</th>
+                    <th>Days on project</th>                    
+                    <th>Calories (Total)</th>
+                    <th>Increments (Total)</th>                    
+                    <th>Working days</th>
+                    <th>Productive days</th>
+                    <th>Days between increments</th>
+                    <th>Non productive days</th>                    
+                    <th>Daily Increments</th>
+                    <th>Calories per increment</th>
+                  </tr>
+                </tfoot>
+                <tbody>
+                  <tr rv-each-item="model.projectInfo.usersStats | objectToArray | objectsArraySortBy 'avg.calsPerDay'">
+                    <td><span class="is-size-7">{{item.email}}</span></td>
+                    <td>
+                      <span class="tag" 
+                        rv-class-is-success="model.projectInfo.usersStats | percentileLabelFromObjectAgainstObject 'avg.calsPerDay' item 'avg.calsPerDay' '85,70,50,25,0' 'A,B,C,D,E' ' '] | eq 'A'"
+                        rv-class-is-primary="model.projectInfo.usersStats | percentileLabelFromObjectAgainstObject 'avg.calsPerDay' item 'avg.calsPerDay' '85,70,50,25,0' 'A,B,C,D,E' ' '] | eq 'B'"
+                        rv-class-is-info="model.projectInfo.usersStats | percentileLabelFromObjectAgainstObject 'avg.calsPerDay' item 'avg.calsPerDay' '85,70,50,25,0' 'A,B,C,D,E' ' '] | eq 'C'"                      
+                        rv-class-is-warning="model.projectInfo.usersStats | percentileLabelFromObjectAgainstObject 'avg.calsPerDay' item 'avg.calsPerDay' '85,70,50,25,0' 'A,B,C,D,E' ' '] | eq 'D'"
+                        rv-class-is-danger="model.projectInfo.usersStats | percentileLabelFromObjectAgainstObject 'avg.calsPerDay' item 'avg.calsPerDay' '85,70,50,25,0' 'A,B,C,D,E' ' '] | eq 'E'"                      
+                      >
+                        {{model.projectInfo.usersStats | percentileLabelFromObjectAgainstObject 'avg.calsPerDay' item 'avg.calsPerDay' '85,70,50,25,0' 'A,B,C,D,E' 'X']}}
+                      </span>
+                      
+                      <!-- <span rv-if="model.projectInfo.usersStats | percentileValueFromObjectAgainstObject 'avg.calsPerDay' 85 item 'avg.calsPerDay'">A</span>
+                      <span rv-if="model.projectInfo.usersStats | percentileValueFromObjectAgainstObject 'avg.calsPerDay' 75 item 'avg.calsPerDay'">B</span> -->
+                      <!-- <span rv-unless="model.projectInfo.usersStats | percentileValueFromObject 75 'avg.calsPerDay' | lteObject item 'avg.calsPerDay'">B</span>
+                      <span rv-unless="model.projectInfo.usersStats | percentileValueFromObject 65 'avg.calsPerDay' | lteObject item 'avg.calsPerDay'">C</span>
+                      <span rv-unless="model.projectInfo.usersStats | percentileValueFromObject 55 'avg.calsPerDay' | lteObject item 'avg.calsPerDay'">D</span>
+                      <span rv-unless="model.projectInfo.usersStats | percentileValueFromObject 45 'avg.calsPerDay' | lteObject item 'avg.calsPerDay'">E</span> -->
+                    </td>
+                    <!-- {{model.projectInfo.usersStats | percentileValueFromObject 85 'avg.calsPerDay'}} x {{model.projectInfo.usersStats | percentileValueFromObject 85 'avg.calsPerDay' | lteObject item 'avg.calsPerDay'}} -->
+                    <td><span class="is-size-7">{{item.avg.calsPerDay | numberRoundDecimal 2}}</span></td>
+                    <td>{{item.startDate | timeFormatMoment "YYYY-MM-DD"}}</td>
+                    <td>{{item.time.days | numberRoundDecimal 0}}</td>
+                    <td>{{item.sum.cals | numberRoundDecimal 2}}</td>
+                    <td>{{item.sum.commits | numberRoundDecimal 2}}</td>
+                    
+                    <td>{{item.time.workingDays | numberRoundDecimal 0}}</td>
+                    <td>{{item.time.productiveDays | numberRoundDecimal 0}}</td>
+                    <td>{{item.avg.daysBetweenCommits | numberRoundDecimal 2}}</td>
+                    <td>{{item.time.nonProductiveDays | numberRoundDecimal 0}}</td>                  
+                    <td>{{item.avg.commitsPerDay | numberRoundDecimal 2}}</td>
+                    <td>{{item.avg.calsPerCommit | numberRoundDecimal 2}}</td>                  
+                  </tr>
+                </tbody>
+              </table>
+              <table class="table is-hidden-desktop">
+                <thead>
+                  <tr>
+                    <th>Person</th>
+                    <th>Grade</th>
+                    <th>Daily Calories</th>
+                  </tr>
+                </thead>
+                <tfoot>
+                  <tr>
+                    <th>Person</th>
+                    <th>Grade</th>
+                    <th>Daily Calories</th>
+                  </tr>
+                </tfoot>
+                <tbody>
+                  <tr rv-each-item="model.projectInfo.usersStats | objectToArray | objectsArraySortBy 'avg.calsPerDay'">
+                    <th ><span class="is-size-7">{{item.email}}</span></th>
+                    <td>
+                      <span class="tag" 
+                        rv-class-is-success="model.projectInfo.usersStats | percentileLabelFromObjectAgainstObject 'avg.calsPerDay' item 'avg.calsPerDay' '85,70,50,25,0' 'A,B,C,D,E' ' '] | eq 'A'"
+                        rv-class-is-primary="model.projectInfo.usersStats | percentileLabelFromObjectAgainstObject 'avg.calsPerDay' item 'avg.calsPerDay' '85,70,50,25,0' 'A,B,C,D,E' ' '] | eq 'B'"
+                        rv-class-is-info="model.projectInfo.usersStats | percentileLabelFromObjectAgainstObject 'avg.calsPerDay' item 'avg.calsPerDay' '85,70,50,25,0' 'A,B,C,D,E' ' '] | eq 'C'"                      
+                        rv-class-is-warning="model.projectInfo.usersStats | percentileLabelFromObjectAgainstObject 'avg.calsPerDay' item 'avg.calsPerDay' '85,70,50,25,0' 'A,B,C,D,E' ' '] | eq 'D'"
+                        rv-class-is-danger="model.projectInfo.usersStats | percentileLabelFromObjectAgainstObject 'avg.calsPerDay' item 'avg.calsPerDay' '85,70,50,25,0' 'A,B,C,D,E' ' '] | eq 'E'"                      
+                      >
+                        {{model.projectInfo.usersStats | percentileLabelFromObjectAgainstObject 'avg.calsPerDay' item 'avg.calsPerDay' '85,70,50,25,0' 'A,B,C,D,E' 'X']}}
+                      </span>
+                      
+                      <!-- <span rv-if="model.projectInfo.usersStats | percentileValueFromObjectAgainstObject 'avg.calsPerDay' 85 item 'avg.calsPerDay'">A</span>
+                      <span rv-if="model.projectInfo.usersStats | percentileValueFromObjectAgainstObject 'avg.calsPerDay' 75 item 'avg.calsPerDay'">B</span> -->
+                      <!-- <span rv-unless="model.projectInfo.usersStats | percentileValueFromObject 75 'avg.calsPerDay' | lteObject item 'avg.calsPerDay'">B</span>
+                      <span rv-unless="model.projectInfo.usersStats | percentileValueFromObject 65 'avg.calsPerDay' | lteObject item 'avg.calsPerDay'">C</span>
+                      <span rv-unless="model.projectInfo.usersStats | percentileValueFromObject 55 'avg.calsPerDay' | lteObject item 'avg.calsPerDay'">D</span>
+                      <span rv-unless="model.projectInfo.usersStats | percentileValueFromObject 45 'avg.calsPerDay' | lteObject item 'avg.calsPerDay'">E</span> -->
+                    </td>
+                    <!-- {{model.projectInfo.usersStats | percentileValueFromObject 85 'avg.calsPerDay'}} x {{model.projectInfo.usersStats | percentileValueFromObject 85 'avg.calsPerDay' | lteObject item 'avg.calsPerDay'}} -->
+                    <td>{{item.avg.calsPerDay | numberRoundDecimal 2}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            
+            
 
-                    {{model.projectInfo.usersStats | percentileValueFromObject 85 'avg.calsPerDay'}} x {{model.projectInfo.usersStats | percentileValueFromObject 85 'avg.calsPerDay' | lteObject item 'avg.calsPerDay'}}</td>
-                  <td>{{item.avg.calsPerDay | numberRoundDecimal 2}}</td>
-                  <td>{{item.startDate | timeFormatMoment "YYYY-MM-DD"}}</td>
-                  <td>{{item.endDate | timeFormatMoment "YYYY-MM-DD"}}</td>
-                  <td>{{item.sum.cals | numberRoundDecimal 2}}</td>
-                  <td>{{item.sum.commits | numberRoundDecimal 2}}</td>
-                  <td>{{item.time.days | numberRoundDecimal 0}}</td>
-                  <td>{{item.time.workingDays | numberRoundDecimal 0}}</td>
-                  <td>{{item.time.productiveDays | numberRoundDecimal 0}}</td>
-                  <td>{{item.avg.daysBetweenCommits | numberRoundDecimal 2}}</td>
-                  <td>{{item.time.nonProductiveDays | numberRoundDecimal 0}}</td>                  
-                  <td>{{item.avg.commitsPerDay | numberRoundDecimal 2}}</td>
-                  <td>{{item.avg.calsPerCommit | numberRoundDecimal 2}}</td>                  
-                </tr>
-              </tbody>
-            </table>
-                                                                            
+            <plot-ts-vals dto="model.views.weeklyGraph"></plot-ts-vals>
+            <nav class="level px-6">
+              <div class="level-left"></div>
+              <div class="level-right">
+                <p class="level-item"><button class="button is-primary" rv-data-dir="'prev'" rv-on-click="_handleChangeWeeklyCalories"><i class="fas fa-chevron-left mr-4"></i> Prev</button></p>
+                <p class="level-item"><button class="button is-primary" rv-data-dir="'next'" rv-on-click="_handleChangeWeeklyCalories">Next <i class="fas fa-chevron-right ml-4"></i></button></p>
+              </div>
+            </nav>
+
+            
                             
-            <heat-map-events title="Today's Effort" events="model.rawEvents" range="14" start-hour="7" domain="hour" sub-domain="minute"></heat-map-events>
+            <!-- <heat-map-events title="Today's Effort" events="model.rawEvents" range="14" start-hour="7" domain="hour" sub-domain="minute"></heat-map-events>
             <user-projects-stats stats="model.userProjectsStatsToday" user="model.participant.id"></user-projects-stats>            
             <heat-map-events title="Historical Activity" events="model.rawEvents" range="-12" domain="month" sub-domain="day"></heat-map-events>            
             <user-projects-stats stats="model.userProjectsStats" user="model.participant.id"></user-projects-stats>
             <plot-stats title="Effort (trending)" kind="usersMa" effort-key="cals" stats="model.trends.l_60d"></plot-stats>
-            <plot-stats title="Commits (trending)" kind="usersMa" effort-key="commits" stats="model.trends.l_60d"></plot-stats>
-            <plot-stats title="Lines (trending)" kind="usersMa" effort-key="lines" stats="model.trends.l_60d"></plot-stats>
+            <plot-stats title="Commits (trending)" kind="usersMa" effort-key="commits" stats="model.trends.l_60d"></plot-stats> -->
+            
             <!-- <plot-stats title="Entropy (trending)" kind="usersMa" effort-key="entropy" stats="model.trends.l_60d"></plot-stats> -->
             
           </section>
