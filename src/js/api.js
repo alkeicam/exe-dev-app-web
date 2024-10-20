@@ -9,6 +9,8 @@ class BackendApi {
         ACCOUNT_PROJECT_INVITATION: "/account/{{accountId}}/projects/{{projectId}}/invitations",
         ACCOUNT_PROJECT_MGMT_INVITE: "/account/{{accountId}}/projects/{{projectId}}/mgmt/invitations",
         ACCOUNT_PROJECT_MGMT_INVITATION_RESET: "/account/{{accountId}}/projects/{{projectId}}/mgmt/invitation/{{invitationCode}}/reset",
+        ACCOUNT_PROJECT: "/account/{{accountId}}/project/{{projectId}}",
+        ACCOUNT_PROJECT_EVENTS_BETWEEN: "/account/{{accountId}}/project/{{projectId}}/events/since/{{dateMs}}/to/{{dateToMs}}",
         ACCOUNT_PLAYLIST: "/account/{{accountId}}/playlist/{{playlistId}}/{{secret}}",
         ACCOUNT_DASHBOARDS: "/account/{{accountId}}/dashboards",
         USER: "/user/{{userId}}",
@@ -75,6 +77,15 @@ class BackendApi {
             });
             const responseJson = await response.json();            
             return responseJson;
+        },
+        async getProjectInfo(accountId, projectId){
+            const urlFunction = Handlebars.compile(`${BackendApi.BASE_URL}${BackendApi.API.ACCOUNT_PROJECT}`)
+            const url = urlFunction({accountId: accountId, projectId:projectId });
+            // console.log(url);
+            const response = await BackendApi._fetch(url);
+            const itemsResponse = await response.json();
+            const items = itemsResponse.items;
+            return items;
         },
         INVITATIONS: {
             async create(accountId, projectId, name, email, role){
@@ -165,6 +176,24 @@ class BackendApi {
         async getAccountUserEventsSince(accountId, userId, sinceMs){
             const urlFunction = Handlebars.compile(`${BackendApi.BASE_URL}${BackendApi.API.USER_EVENTS}`)
             const url = urlFunction({accountId: accountId, dateMs: sinceMs, userId: userId});
+            // console.log(url);
+            const response = await BackendApi._fetch(url);
+            const eventsResponse = await response.json();
+            const events = eventsResponse.items;
+            return events;
+        },
+        async getAccountProjectEventsSince(accountId, projectId, sinceMs){
+            const urlFunction = Handlebars.compile(`${BackendApi.BASE_URL}${BackendApi.API.ACCOUNT_PROJECT_EVENTS_BETWEEN}`)
+            const url = urlFunction({accountId: accountId, projectId: projectId, dateMs: sinceMs, dateToMs: Date.now()});
+            // console.log(url);
+            const response = await BackendApi._fetch(url);
+            const eventsResponse = await response.json();
+            const events = eventsResponse.items;
+            return events;
+        },
+        async getAccountProjectEventsBetween(accountId, projectId, sinceMs, toMs){
+            const urlFunction = Handlebars.compile(`${BackendApi.BASE_URL}${BackendApi.API.ACCOUNT_PROJECT_EVENTS_BETWEEN}`)
+            const url = urlFunction({accountId: accountId, projectId: projectId, dateMs: sinceMs, dateToMs: toMs});
             // console.log(url);
             const response = await BackendApi._fetch(url);
             const eventsResponse = await response.json();
