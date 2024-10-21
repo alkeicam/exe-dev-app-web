@@ -296,19 +296,19 @@
                     </td>
                     <!-- {{model.projectInfo.usersStats | percentileValueFromObject 85 'avg.calsPerDay'}} x {{model.projectInfo.usersStats | percentileValueFromObject 85 'avg.calsPerDay' | lteObject item 'avg.calsPerDay'}} -->
                     <td><span class="is-size-7">{{item.avg.calsPerDay | numberRoundDecimal 2}}</span></td>
-                    <td>{{item.startDate | timeFormatMoment "DD.MM.YY"}}</td>
-                    <td>{{item.endDate | timeFormatMoment "DD.MM.YY"}}</td>
+                    <td class="is-size-7">{{item.startDate | timeFormatMoment "DD.MM.YY"}}</td>
+                    <td class="is-size-7">{{item.endDate | timeFormatMoment "DD.MM.YY"}}</td>
                     
-                    <td>{{item.time.days | numberRoundDecimal 0}}</td>
-                    <td>{{item.sum.cals | numberRoundDecimal 2}}</td>
-                    <td>{{item.sum.commits | numberRoundDecimal 2}}</td>
+                    <td class="is-size-7">{{item.time.days | numberRoundDecimal 0}}</td>
+                    <td class="is-size-7">{{item.sum.cals | numberRoundDecimal 2}}</td>
+                    <td class="is-size-7">{{item.sum.commits | numberRoundDecimal 2}}</td>
                     
-                    <td>{{item.time.workingDays | numberRoundDecimal 0}}</td>
-                    <td>{{item.time.productiveDays | numberRoundDecimal 0}}</td>
-                    <td>{{item.avg.daysBetweenCommits | numberRoundDecimal 2}}</td>
-                    <td>{{item.time.nonProductiveDays | numberRoundDecimal 0}}</td>                  
-                    <td>{{item.avg.commitsPerDay | numberRoundDecimal 2}}</td>
-                    <td>{{item.avg.calsPerCommit | numberRoundDecimal 2}}</td>                  
+                    <td class="is-size-7">{{item.time.workingDays | numberRoundDecimal 0}}</td>
+                    <td class="is-size-7">{{item.time.productiveDays | numberRoundDecimal 0}}</td>
+                    <td class="is-size-7">{{item.avg.daysBetweenCommits | numberRoundDecimal 2}}</td>
+                    <td class="is-size-7">{{item.time.nonProductiveDays | numberRoundDecimal 0}}</td>                  
+                    <td class="is-size-7">{{item.avg.commitsPerDay | numberRoundDecimal 2}}</td>
+                    <td class="is-size-7">{{item.avg.calsPerCommit | numberRoundDecimal 2}}</td>                  
                   </tr>
                 </tbody>
               </table>
@@ -331,7 +331,7 @@
                 </tfoot>
                 <tbody>
                   <tr rv-each-item="model.projectInfo.usersStats | objectToArray | objectsArraySortBy 'avg.calsPerDay'">
-                    <th ><span class="is-size-7">{{item.email}}</span></th>
+                    <td><span class="is-size-7">{{item.email}}</span></td>
                     <td>
                       <span class="tag" 
                         rv-class-is-success="model.projectInfo.usersStats | percentileLabelFromObjectAgainstObject 'avg.calsPerDay' item 'avg.calsPerDay' '85,70,50,25,0' 'A,B,C,D,E' ' '] | eq 'A'"
@@ -351,8 +351,8 @@
                       <span rv-unless="model.projectInfo.usersStats | percentileValueFromObject 45 'avg.calsPerDay' | lteObject item 'avg.calsPerDay'">E</span> -->
                     </td>
                     <!-- {{model.projectInfo.usersStats | percentileValueFromObject 85 'avg.calsPerDay'}} x {{model.projectInfo.usersStats | percentileValueFromObject 85 'avg.calsPerDay' | lteObject item 'avg.calsPerDay'}} -->
-                    <td>{{item.avg.calsPerDay | numberRoundDecimal 2}}</td>
-                    <td>{{item.endDate | timeFormatMoment "DD.MM.YY"}}</td>
+                    <td class="is-size-7">{{item.avg.calsPerDay | numberRoundDecimal 2}}</td>
+                    <td class="is-size-7">{{item.endDate | timeFormatMoment "DD.MM.YY"}}</td>
                   </tr>
                 </tbody>
               </table>
