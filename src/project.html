@@ -275,7 +275,7 @@
                 </tfoot>
                 <tbody>
                   <tr rv-each-item="model.projectInfo.usersStats | objectToArray | objectsArraySortBy 'avg.calsPerDay'">
-                    <td><span class="is-size-7">{{item.email}}</span></td>
+                    <td><span class="is-size-7"><a rv-href="item.email | hrefBuilder 'participant.html?u=@value'" target="_blank">{{item.email}}</a></span></td>
                     <td>
                       <span class="tag" 
                         rv-class-is-success="model.projectInfo.usersStats | percentileLabelFromObjectAgainstObject 'avg.calsPerDay' item 'avg.calsPerDay' '85,70,50,25,0' 'A,B,C,D,E' ' '] | eq 'A'"
