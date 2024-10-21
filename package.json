@@ -1,6 +1,6 @@
 {
   "name": "dev-workout-spa-app",
-  "version": "1.0.32",
+  "version": "1.0.33",
   "scripts": {
     "build-bulma": "sass --load-path=node_modules q247-styles.scss src/css/q247-styles.css",
     "build": "npm run build-bulma && cp -r ./src ./dist",
