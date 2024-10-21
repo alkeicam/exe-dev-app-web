@@ -296,8 +296,8 @@
                     </td>
                     <!-- {{model.projectInfo.usersStats | percentileValueFromObject 85 'avg.calsPerDay'}} x {{model.projectInfo.usersStats | percentileValueFromObject 85 'avg.calsPerDay' | lteObject item 'avg.calsPerDay'}} -->
                     <td><span class="is-size-7">{{item.avg.calsPerDay | numberRoundDecimal 2}}</span></td>
-                    <td>{{item.startDate | timeFormatMoment "YYYY-MM-DD"}}</td>
-                    <td>{{item.endDate | timeFormatMoment "YYYY-MM-DD"}}</td>
+                    <td>{{item.startDate | timeFormatMoment "DD.MM.YY"}}</td>
+                    <td>{{item.endDate | timeFormatMoment "DD.MM.YY"}}</td>
                     
                     <td>{{item.time.days | numberRoundDecimal 0}}</td>
                     <td>{{item.sum.cals | numberRoundDecimal 2}}</td>
@@ -352,7 +352,7 @@
                     </td>
                     <!-- {{model.projectInfo.usersStats | percentileValueFromObject 85 'avg.calsPerDay'}} x {{model.projectInfo.usersStats | percentileValueFromObject 85 'avg.calsPerDay' | lteObject item 'avg.calsPerDay'}} -->
                     <td>{{item.avg.calsPerDay | numberRoundDecimal 2}}</td>
-                    <td>{{item.endDate | timeFormatMoment "YYYY-MM-DD"}}</td>
+                    <td>{{item.endDate | timeFormatMoment "DD.MM.YY"}}</td>
                   </tr>
                 </tbody>
               </table>
