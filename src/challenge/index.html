@@ -59,112 +59,93 @@
               </div>
           </nav>        
         </div> 
-        <div class="container" style="min-height: 80vh;">
-          <h1 class="title is-1">Welcome to Q247 challenge page</h1>
-          <div class="content">
-            <p>On this page you will find effort and calories calculated by <a href="/">Q247</a> algorithm for top notch reference software projects.</p>
-            <p>We selected and analyzed effort and development calories for projects with the top "stars" rating among public Github repositories for each of the most popular programming languages. As a result you can 
-              compare performance and effectiveness of your team with efforts of the most commited software developers and projects.</p>
-            <p>Hope you find this usefull. Have fun. Use wisely.</p>
-            <table class="is-hidden-touch">
-              <thead>
-                <tr>
-                  <th>Project</th>
-                  <th>Programming language</th>
-                  <th>Stars</th>
-                  <th>Report</th>
-                  <th>Source code</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>React Framework</td>
-                  <td>Javascript</td>
-                  <td>230k</td>
-                  <td><a href="/challenge/github-react/" target="_blank">Q247 Effort & Calories Report</a></td>
-                  <td><a href="https://github.com/facebook/react.git">https://github.com/facebook/react.git</a></td>
-                </tr>                
-                <tr>
-                  <td>Python AI/LLM Transformers</td>
-                  <td>Python</td>
-                  <td>136k</td>
-                  <td><a href="/challenge/github-python-ai-transformers/" target="_blank">Q247 Effort & Calories Report</a></td>
-                  <td><a href="https://github.com/huggingface/transformers.git">https://github.com/huggingface/transformers.git</a></td>
-                </tr>
-                <tr>
-                  <td>The Go Programming Language</td>
-                  <td>Go</td>
-                  <td>124k</td>
-                  <td><a href="/challenge/github-go-lang/" target="_blank">Q247 Effort & Calories Report</a></td>
-                  <td><a href="https://github.com/golang/go.git">https://github.com/golang/go.git</a></td>
-                </tr>                
-                <tr>
-                  <td>Spring Framework (foundations)</td>
-                  <td>Java</td>
-                  <td>56k</td>
-                  <td><a href="/challenge/github-java-spring/" target="_blank">Q247 Effort & Calories Report</a></td>
-                  <td><a href="https://github.com/spring-projects/spring-framework.git">https://github.com/spring-projects/spring-framework.git</a></td>
-                </tr>                
-                <!-- <tr>
-                  <td>Python Algorithms</td>
-                  <td>Python</td>
-                  <td>195k</td>
-                  <td><a href="github-python-algos" target="_blank">Q247 Effort & Calories Report</a></td>
-                  <td><a href="https://github.com/TheAlgorithms/Python.git">https://github.com/TheAlgorithms/Python.git</a></td>
-                </tr>                 -->
-              </tbody>
-            </table>
-            <table class="is-hidden-desktop">
-              <thead>
-                <tr>
-                  <th>Projects</th>                  
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><strong>React Framework</strong>
-                    <br>Javascript
-                    <br>230k
-                    <br><a href="/challenge/github-react/" target="_blank">Q247 Effort & Calories Report</a>                    
-                    <br><a href="https://github.com/facebook/react.git">https://github.com/facebook/react.git</a>
-                  </td>                                    
-                </tr>                
-                <tr>
-                  <td><strong>Python AI/LLM Transformers</strong>
-                    <br>Python
-                    <br>136k
-                    <br><a href="/challenge/github-python-ai-transformers/" target="_blank">Q247 Effort & Calories Report</a>                    
-                    <br><a href="https://github.com/huggingface/transformers.git">https://github.com/huggingface/transformers.git</a>
-                  </td>                                    
-                </tr>                                                               
-                <tr>
-                  <td><strong>The Go Programming Language</strong>
-                    <br>Go
-                    <br>124k
-                    <br><a href="/challenge/github-go-lang/" target="_blank">Q247 Effort & Calories Report</a>
-                    <br><a href="https://github.com/golang/go.git">https://github.com/golang/go.git</a>
-                  </td>                   
-                </tr>                
-                <tr>
-                  <td><strong>Spring Framework (foundations)</strong>
-                    <br>Java
-                    <br>56k
-                    <br><a href="/challenge/github-java-spring/" target="_blank">Q247 Effort & Calories Report</a>
-                    <br><a href="https://github.com/spring-projects/spring-framework.git">https://github.com/spring-projects/spring-framework.git</a>
-                  </td>                   
-                </tr>                
-                <!-- <tr>
-                  <td>Python Algorithms</td>
-                  <td>Python</td>
-                  <td>195k</td>
-                  <td><a href="github-python-algos" target="_blank">Q247 Effort & Calories Report</a></td>
-                  <td><a href="https://github.com/TheAlgorithms/Python.git">https://github.com/TheAlgorithms/Python.git</a></td>
-                </tr>                 -->
-              </tbody>
-            </table>
-            <p>We will do our best to add additional reference languages and projects in the future.</p>
-          </div>
-        </div>                                               
+        <section class="section">
+          <div class="container" style="min-height: 80vh;">
+            <h1 class="title is-1">Welcome to Q247 challenge page</h1>
+            <div class="content">
+              <p>On this page you will find effort and calories calculated by <a href="/">Q247</a> algorithm for top notch reference software projects.</p>
+              <p>We analyzed effort and development calories for projects with the top "stars" rating among public Github repositories for each of the most popular programming languages. As a result you can 
+                compare performance and effectiveness of your team with efforts of the most commited software developers and projects.</p>
+              <p>Hope you find this usefull. Have fun. Use wisely.</p>
+              <table class="is-hidden-touch">
+                <thead>
+                  <tr>
+                    <th>Project</th>
+                    <th>Programming language</th>
+                    <th>Stars</th>
+                    <th>Report</th>
+                    <th>Source code</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr rv-each-item="model.projects">
+                    <td>{{item.name}}</td>
+                    <td>{{item.lang}}</td>
+                    <td>{{item.stars}}k ⭐</td>
+                    <td><a rv-href="item.path | hrefBuilder '/challenge/@value'" target="_blank">Q247 Effort & Calories Report</a></td>
+                    <td><a rv-href="item.repo">{{item.repo}}</a></td>
+                  </tr>                                               
+                  <!-- <tr>
+                    <td>Python Algorithms</td>
+                    <td>Python</td>
+                    <td>195k</td>
+                    <td><a href="github-python-algos" target="_blank">Q247 Effort & Calories Report</a></td>
+                    <td><a href="https://github.com/TheAlgorithms/Python.git">https://github.com/TheAlgorithms/Python.git</a></td>
+                  </tr>                 -->
+                </tbody>
+              </table>
+              <table class="is-hidden-desktop">
+                <thead>
+                  <tr>
+                    <th>Projects</th>                  
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr rv-each-item="model.projects">
+                    <td><strong>{{item.name}}</strong>
+                      <br>{{item.lang}}
+                      <br>{{item.stars}}k ⭐
+                      <br><a rv-href="item.path | hrefBuilder '/challenge/@value'" target="_blank">Q247 Effort & Calories Report</a>                    
+                      <br><a rv-href="item.repo">{{item.repo}}</a>
+                    </td>                                    
+                  </tr>                
+                  <tr>
+                    <td><strong>Python AI/LLM Transformers</strong>
+                      <br>Python
+                      <br>136k
+                      <br><a href="/challenge/github-python-ai-transformers/" target="_blank">Q247 Effort & Calories Report</a>                    
+                      <br><a href="https://github.com/huggingface/transformers.git">https://github.com/huggingface/transformers.git</a>
+                    </td>                                    
+                  </tr>                                                               
+                  <tr>
+                    <td><strong>The Go Programming Language</strong>
+                      <br>Go
+                      <br>124k
+                      <br><a href="/challenge/github-go-lang/" target="_blank">Q247 Effort & Calories Report</a>
+                      <br><a href="https://github.com/golang/go.git">https://github.com/golang/go.git</a>
+                    </td>                   
+                  </tr>                
+                  <tr>
+                    <td><strong>Spring Framework (foundations)</strong>
+                      <br>Java
+                      <br>56k
+                      <br><a href="/challenge/github-java-spring/" target="_blank">Q247 Effort & Calories Report</a>
+                      <br><a href="https://github.com/spring-projects/spring-framework.git">https://github.com/spring-projects/spring-framework.git</a>
+                    </td>                   
+                  </tr>                
+                  <!-- <tr>
+                    <td>Python Algorithms</td>
+                    <td>Python</td>
+                    <td>195k</td>
+                    <td><a href="github-python-algos" target="_blank">Q247 Effort & Calories Report</a></td>
+                    <td><a href="https://github.com/TheAlgorithms/Python.git">https://github.com/TheAlgorithms/Python.git</a></td>
+                  </tr>                 -->
+                </tbody>
+              </table>
+              <p>We will do our best to add additional reference languages and projects in the future.</p>
+            </div>
+          </div>     
+        </section>                                          
     </div>
     
         
@@ -188,7 +169,7 @@
     <script src="../js/state.js"></script>
     <script src="../js/event-processor.js"></script>    
     <script src="../js/api.js"></script>
-    <script src="../js/challengeController.js"></script>
+    <script src="../js/challengeHPController.js"></script>
     <!-- <script src="js/onboardingModalController.js"></script>
     <script src="js/preferencesModalController.js"></script> -->
     <script>
