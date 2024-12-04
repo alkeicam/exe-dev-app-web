@@ -178,6 +178,10 @@ class Controller {
                         //     timestamps: []
                         // }
                     }
+                },
+                teamMetrics: {
+                    value: "",
+                    filter: ".*"
                 }
             }
 
@@ -337,6 +341,11 @@ class Controller {
         window.location = "index.html";
         that.model.busy = false;
 
-    }        
+    }  
+    
+    async _handleFilter(e, that){
+        // console.log(that.model.views.teamMetrics.value, that.model.views.teamMetrics.filter)
+        that.model.views.teamMetrics.filter = that.model.views.teamMetrics.value?`.*${that.model.views.teamMetrics.value}.*`:`.*`;
+    }
 }
 

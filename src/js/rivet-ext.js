@@ -605,6 +605,15 @@
 
         return theDefault
     }
+
+    rivets.formatters.matches = function(value, pattern) {
+        var re = new RegExp(pattern,"i");
+        return re.test(value)        
+    };
+
+    rivets.formatters.not = function(value) {        
+        return !value
+    };
     
     
 
