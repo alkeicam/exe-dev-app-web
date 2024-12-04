@@ -371,6 +371,7 @@
     }
 
     rivets.formatters.numberRoundDecimal = function (value, arg) {
+        if(!value) return 0;
         return parseFloat(value.toFixed(arg))
     }
     

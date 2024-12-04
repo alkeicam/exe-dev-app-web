@@ -1,0 +1,473 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    
+    <!-- <base href="app"> -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Q247 - challange and compare with best world devs</title>
+    <meta name="description" content="Help startup founders track and measure developer's effort and engagment">
+    <meta name="author" content="grulka">
+
+    <!-- <meta property="og:title" content="Dev Workout">
+    <meta property="og:type" content="website">
+    <meta property="og:url"
+        content="https://spectator-40e33.web.app/?g=xAz4g5">
+    <meta property="og:description" content="Broadcast amateur sport event live and share with friends">
+    <meta property="og:image" content="https://spectator-40e33.web.app/assets/img_51.png.jpg"> -->
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+
+    <script src="../js/rivet.js"></script>
+    <script src="../js/rivet-ext.js"></script>
+    <script src="../js/common.js"></script>
+    <script src="../js/common-app.js"></script>
+    <script src="../js/ui-components.js"></script>
+    <script src="../js/app-ui-components.js"></script>
+
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>        
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="../js/plotly-2.24.1.min.js" charset="utf-8"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/cal-heatmap/dist/plugins/Tooltip.min.js"></script>
+    <script src="https://unpkg.com/cal-heatmap/dist/cal-heatmap.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/cal-heatmap/dist/cal-heatmap.css">
+    
+
+    
+    
+</head>
+
+<body >
+    <div id="app">         
+        <div class="container is-hidden" rv-class-is-hidden="model.busy">
+            <nav class="navbar" role="navigation" aria-label="main navigation">
+              
+                <div class="navbar-brand">
+                    <!-- <a class="navbar-item" href="https://bulma.io">
+                      <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28">
+                    </a> -->
+                
+                    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample" rv-on-click="_handleToggleMobileMenu" rv-class-is-active="model.menu.active">
+                      <span aria-hidden="true"></span>
+                      <span aria-hidden="true"></span>
+                      <span aria-hidden="true"></span>
+                    </a>
+                </div>
+                <div id="navbarBasicExample" class="navbar-menu" rv-class-is-active="model.menu.active">
+                  <div class="navbar-start">
+                    <a class="navbar-item" href="index.html">
+                      Team Overview
+                    </a>
+                    <a class="navbar-item is-hidden" href="onboarding.html" rv-class-is-hidden="model.isManager | eq false">
+                        Projects (Onboarding)
+                    </a>
+<!--               
+                    <a class="navbar-item">
+                      Documentation
+                    </a>
+              
+                    <div class="navbar-item has-dropdown is-hoverable">
+                      <a class="navbar-link">
+                        More
+                      </a>
+              
+                      <div class="navbar-dropdown">
+                        <a class="navbar-item">
+                          About
+                        </a>
+                        <a class="navbar-item">
+                          Jobs
+                        </a>
+                        <a class="navbar-item">
+                          Contact
+                        </a>
+                        <hr class="navbar-divider">
+                        <a class="navbar-item">
+                          Report an issue
+                        </a>
+                      </div>
+                    </div> -->
+                  </div>
+              
+                  <div class="navbar-end">
+                    <a class="navbar-item">
+                      {{model.user.id}}
+                    </a>
+                    <div class="navbar-item has-dropdown is-hoverable">
+                      <a class="navbar-link">
+                        @{{model.account.name}}
+                      </a>
+              
+                      <div class="navbar-dropdown">
+                        <a class="navbar-item" rv-on-click="model.handlers._handleSwitchAccount" rv-each-item="model.accounts">
+                          {{item.name}}
+                        </a>                        
+                      </div>
+                    </div>
+                    <div class="navbar-item">
+                      <div class="buttons">
+                        <a class="button is-primary" rv-on-click="_handleSignOut">
+                          <strong>Sign out</strong>
+                        </a>
+                        <!-- <a class="button is-light">
+                          Log in
+                        </a> -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </nav>
+            <h3 class="title is-3">{{model.projectInfo.project.name}}<span class="is-size-7 is-hidden ml-2" rv-class-is-hidden="model.account | empty">@{{model.account.name}}</span></h3>                                                                      
+        </div>  
+        <!-- <div class="container" style="padding-top: 40vh; padding-bottom: 40vh;" rv-class-is-hidden="model.busy | eq false">
+            <progress class="progress is-danger" max="100">30%</progress>
+        </div>      -->
+        <div class="container is-hidden" rv-class-is-hidden="model.busy">
+          <section rv-each-projectInfo="model.projects" class="section mt-6" style="padding: 0.5rem 0.5rem;">
+            <h3 class="title is-5">Project Metrics {{projectInfo.projectId}}{{projectInfo.accountId}}</h3>      
+            <div class="box">
+              <nav class="level">
+                <div class="level-item has-text-centered">
+                  <div>
+                    <p class="heading">First increment date</p>
+                    <p class="title">{{projectInfo.stats.project.time.startDate | timeFormatMoment "YYYY-MM-DD"}}</p>
+                  </div>
+                </div>
+                <div class="level-item has-text-centered">
+                  <div>
+                    <p class="heading">Last increment date</p>
+                    <p class="title">{{projectInfo.stats.project.time.endDate | timeFormatMoment "YYYY-MM-DD"}}</p>
+                  </div>
+                </div>
+                <div class="level-item has-text-centered">
+                  <div>
+                    <p class="heading">Duration</p>
+                    <p class="title">{{projectInfo.stats.project.time.durationDays | numberRoundDecimal 2}} <span class="is-size-6">days</span></p>
+                  </div>
+                </div>
+                <div class="level-item has-text-centered">
+                  <div>
+                    <p class="heading">Duration (working days)</p>
+                    <p class="title">{{projectInfo.stats.project.time.durationWorkingDays | numberRoundDecimal 2}} <span class="is-size-6">days</span></p>
+                  </div>
+                </div>
+                <div class="level-item has-text-centered">
+                  <div>
+                    <p class="heading">Calories per day</p>
+                    <p class="title">{{projectInfo.stats.project.avg.calsPerDay | numberRoundDecimal 2}}</p>
+                  </div>
+                </div>
+                <div class="level-item has-text-centered">
+                  <div>
+                    <p class="heading">Increments per day</p>
+                    <p class="title">{{projectInfo.stats.project.avg.commitsPerDay | numberRoundDecimal 2}}</p>
+                  </div>
+                </div>
+              </nav>
+            </div>
+            <div class="box">
+              <nav class="level">
+                <div class="level-item has-text-centered">
+                  <div>
+                    <p class="heading">Calories</p>
+                    <p class="title">{{projectInfo.stats.project.sum.cals | numberRoundDecimal 2}}</p>
+                  </div>
+                </div>
+                <div class="level-item has-text-centered">
+                  <div>
+                    <p class="heading">Increments</p>
+                    <p class="title">{{projectInfo.stats.project.sum.commits | numberRoundDecimal 2}}</p>
+                  </div>
+                </div>
+                <div class="level-item has-text-centered">
+                  <div>
+                    <p class="heading">Calories per increment</p>
+                    <p class="title">{{projectInfo.stats.project.avg.calsPerCommit | numberRoundDecimal 2}}</p>
+                  </div>
+                </div>                
+                <div class="level-item has-text-centered">
+                  <div>
+                    <p class="heading">Calories per person</p>
+                    <p class="title">{{projectInfo.stats.project.avg.calsPerUserPerDay | numberRoundDecimal 2}} <span class="is-size-6">a day</span></p>
+                  </div>
+                </div>                
+                <div class="level-item has-text-centered">
+                  <div>
+                    <p class="heading">Increments per person</p>
+                    <p class="title">{{projectInfo.stats.project.avg.commitsPerUserPerDay | numberRoundDecimal 2}} <span class="is-size-6">a day</span></p>
+                  </div>
+                </div>                
+              </nav> 
+            </div> 
+            <div class="box">
+              <nav class="level">
+                <div class="level-item has-text-centered">
+                  <div>
+                    <p class="heading">Team capacity</p>
+                    <p class="title">{{projectInfo.stats.project.teamSize | numberRoundDecimal 2}} <span class="is-size-6">people</span></p>
+                  </div>
+                </div>
+                <div class="level-item has-text-centered">
+                  <div>
+                    <p class="heading">Effective team capacity</p>
+                    <p class="title">{{projectInfo.stats.project.avg.ftePerDay | numberRoundDecimal 2}} <span class="is-size-6">people</span></p>
+                  </div>
+                </div>
+                <div class="level-item has-text-centered">
+                  <div>
+                    <p class="heading">Calories per person</p>
+                    <p class="title">{{projectInfo.stats.project.avg.calsPerUser | numberRoundDecimal 2}}</p>
+                  </div>
+                </div>
+                <div class="level-item has-text-centered">
+                  <div>
+                    <p class="heading">Increments per person</p>
+                    <p class="title">{{projectInfo.stats.project.avg.commitsPerUser | numberRoundDecimal 2}}</p>
+                  </div>
+                </div>                                
+              </nav>   
+            </div>  
+
+            <h3 class="title is-5">Team Metrics</h3> 
+            <div class="table-container ">
+              <table class="table is-hidden-touch">
+                <thead>
+                  <tr>
+                    <th class="is-size-7">Person</th>
+                    <th class="is-size-7">Grade</th>
+                    <th class="is-size-7">Daily Calories</th>
+                    <th class="is-size-7">Joined</th>
+                    <th class="is-size-7">Last incr</th>
+                    <th class="is-size-7">Days on project</th>
+                    <th class="is-size-7">Calories (Total)</th>
+                    <th class="is-size-7">Increments (Total)</th>                    
+                    <th class="is-size-7">Working days</th>
+                    <th class="is-size-7">Productive days</th>
+                    <th class="is-size-7">Days between increments</th>
+                    <th class="is-size-7">Non productive days</th>                    
+                    <th class="is-size-7">Daily Increments</th>
+                    <th class="is-size-7">Calories per increment</th>
+                  </tr>
+                </thead>
+                <tfoot>
+                  <tr>
+                    <th class="is-size-7">Person</th>
+                    <th class="is-size-7">Grade</th>
+                    <th class="is-size-7">Daily Calories</th>
+                    <th class="is-size-7">Joined</th>
+                    <th class="is-size-7">Last incr</th>
+                    <th class="is-size-7">Days on project</th>                    
+                    <th class="is-size-7">Calories (Total)</th>
+                    <th class="is-size-7">Increments (Total)</th>                    
+                    <th class="is-size-7">Working days</th>
+                    <th class="is-size-7">Productive days</th>
+                    <th class="is-size-7">Days between increments</th>
+                    <th class="is-size-7">Non productive days</th>                    
+                    <th class="is-size-7">Daily Increments</th>
+                    <th class="is-size-7">Calories per increment</th>
+                  </tr>
+                </tfoot>
+                <tbody>
+                  <tr rv-each-item="projectInfo.stats.users | objectToArray | objectsArraySortBy 'avg.calsPerDay'">
+                    <td><span class="is-size-7"><a rv-href="item.email | hrefBuilder 'participant.html?u=@value'" target="_blank">{{item.email}}</a></span></td>
+                    <td>
+                      <span class="tag" 
+                        rv-class-is-success="projectInfo.stats.users | percentileLabelFromObjectAgainstObject 'avg.calsPerDay' item 'avg.calsPerDay' '85,70,50,25,0' 'A,B,C,D,E' ' '] | eq 'A'"
+                        rv-class-is-primary="projectInfo.stats.users | percentileLabelFromObjectAgainstObject 'avg.calsPerDay' item 'avg.calsPerDay' '85,70,50,25,0' 'A,B,C,D,E' ' '] | eq 'B'"
+                        rv-class-is-info="projectInfo.stats.users | percentileLabelFromObjectAgainstObject 'avg.calsPerDay' item 'avg.calsPerDay' '85,70,50,25,0' 'A,B,C,D,E' ' '] | eq 'C'"                      
+                        rv-class-is-warning="projectInfo.stats.users | percentileLabelFromObjectAgainstObject 'avg.calsPerDay' item 'avg.calsPerDay' '85,70,50,25,0' 'A,B,C,D,E' ' '] | eq 'D'"
+                        rv-class-is-danger="projectInfo.stats.users | percentileLabelFromObjectAgainstObject 'avg.calsPerDay' item 'avg.calsPerDay' '85,70,50,25,0' 'A,B,C,D,E' ' '] | eq 'E'"                      
+                      >
+                        {{projectInfo.stats.users | percentileLabelFromObjectAgainstObject 'avg.calsPerDay' item 'avg.calsPerDay' '85,70,50,25,0' 'A,B,C,D,E' 'X']}}
+                      </span>
+                      
+                      <!-- <span rv-if="projectInfo.stats.users | percentileValueFromObjectAgainstObject 'avg.calsPerDay' 85 item 'avg.calsPerDay'">A</span>
+                      <span rv-if="projectInfo.stats.users | percentileValueFromObjectAgainstObject 'avg.calsPerDay' 75 item 'avg.calsPerDay'">B</span> -->
+                      <!-- <span rv-unless="projectInfo.stats.users | percentileValueFromObject 75 'avg.calsPerDay' | lteObject item 'avg.calsPerDay'">B</span>
+                      <span rv-unless="projectInfo.stats.users | percentileValueFromObject 65 'avg.calsPerDay' | lteObject item 'avg.calsPerDay'">C</span>
+                      <span rv-unless="projectInfo.stats.users | percentileValueFromObject 55 'avg.calsPerDay' | lteObject item 'avg.calsPerDay'">D</span>
+                      <span rv-unless="projectInfo.stats.users | percentileValueFromObject 45 'avg.calsPerDay' | lteObject item 'avg.calsPerDay'">E</span> -->
+                    </td>
+                    <!-- {{projectInfo.stats.users | percentileValueFromObject 85 'avg.calsPerDay'}} x {{projectInfo.stats.users | percentileValueFromObject 85 'avg.calsPerDay' | lteObject item 'avg.calsPerDay'}} -->
+                    <td><span class="is-size-7">{{item.avg.calsPerDay | numberRoundDecimal 2}}</span></td>
+                    <td class="is-size-7">{{item.startDate | timeFormatMoment "DD.MM.YY"}}</td>
+                    <td class="is-size-7">{{item.endDate | timeFormatMoment "DD.MM.YY"}}</td>
+                    
+                    <td class="is-size-7">{{item.time.days | numberRoundDecimal 0}}</td>
+                    <td class="is-size-7">{{item.sum.cals | numberRoundDecimal 2}}</td>
+                    <td class="is-size-7">{{item.sum.commits | numberRoundDecimal 2}}</td>
+                    
+                    <td class="is-size-7">{{item.time.workingDays | numberRoundDecimal 0}}</td>
+                    <td class="is-size-7">{{item.time.productiveDays | numberRoundDecimal 0}}</td>
+                    <td class="is-size-7">{{item.avg.daysBetweenCommits | numberRoundDecimal 2}}</td>
+                    <td class="is-size-7">{{item.time.nonProductiveDays | numberRoundDecimal 0}}</td>                  
+                    <td class="is-size-7">{{item.avg.commitsPerDay | numberRoundDecimal 2}}</td>
+                    <td class="is-size-7">{{item.avg.calsPerCommit | numberRoundDecimal 2}}</td>                  
+                  </tr>
+                </tbody>
+              </table>
+              <table class="table is-hidden-desktop">
+                <thead>
+                  <tr>
+                    <th class="is-size-7">Person</th>
+                    <th class="is-size-7">Grade</th>
+                    <th class="is-size-7">Daily Calories</th>
+                    <th class="is-size-7">Last incr</th>
+                  </tr>
+                </thead>
+                <tfoot>
+                  <tr>
+                    <th class="is-size-7">Person</th>
+                    <th class="is-size-7">Grade</th>
+                    <th class="is-size-7">Daily Calories</th>
+                    <th class="is-size-7">Last incr</th>
+                  </tr>
+                </tfoot>
+                <tbody>
+                  <tr rv-each-item="projectInfo.stats.users | objectToArray | objectsArraySortBy 'avg.calsPerDay'">
+                    <td><span class="is-size-7">{{item.email}}</span></td>
+                    <td>
+                      <span class="tag" 
+                        rv-class-is-success="projectInfo.stats.users | percentileLabelFromObjectAgainstObject 'avg.calsPerDay' item 'avg.calsPerDay' '85,70,50,25,0' 'A,B,C,D,E' ' '] | eq 'A'"
+                        rv-class-is-primary="projectInfo.stats.users | percentileLabelFromObjectAgainstObject 'avg.calsPerDay' item 'avg.calsPerDay' '85,70,50,25,0' 'A,B,C,D,E' ' '] | eq 'B'"
+                        rv-class-is-info="projectInfo.stats.users | percentileLabelFromObjectAgainstObject 'avg.calsPerDay' item 'avg.calsPerDay' '85,70,50,25,0' 'A,B,C,D,E' ' '] | eq 'C'"                      
+                        rv-class-is-warning="projectInfo.stats.users | percentileLabelFromObjectAgainstObject 'avg.calsPerDay' item 'avg.calsPerDay' '85,70,50,25,0' 'A,B,C,D,E' ' '] | eq 'D'"
+                        rv-class-is-danger="projectInfo.stats.users | percentileLabelFromObjectAgainstObject 'avg.calsPerDay' item 'avg.calsPerDay' '85,70,50,25,0' 'A,B,C,D,E' ' '] | eq 'E'"                      
+                      >
+                        {{projectInfo.stats.users | percentileLabelFromObjectAgainstObject 'avg.calsPerDay' item 'avg.calsPerDay' '85,70,50,25,0' 'A,B,C,D,E' 'X']}}
+                      </span>
+                      
+                      <!-- <span rv-if="projectInfo.stats.users | percentileValueFromObjectAgainstObject 'avg.calsPerDay' 85 item 'avg.calsPerDay'">A</span>
+                      <span rv-if="projectInfo.stats.users | percentileValueFromObjectAgainstObject 'avg.calsPerDay' 75 item 'avg.calsPerDay'">B</span> -->
+                      <!-- <span rv-unless="projectInfo.stats.users | percentileValueFromObject 75 'avg.calsPerDay' | lteObject item 'avg.calsPerDay'">B</span>
+                      <span rv-unless="projectInfo.stats.users | percentileValueFromObject 65 'avg.calsPerDay' | lteObject item 'avg.calsPerDay'">C</span>
+                      <span rv-unless="projectInfo.stats.users | percentileValueFromObject 55 'avg.calsPerDay' | lteObject item 'avg.calsPerDay'">D</span>
+                      <span rv-unless="projectInfo.stats.users | percentileValueFromObject 45 'avg.calsPerDay' | lteObject item 'avg.calsPerDay'">E</span> -->
+                    </td>
+                    <!-- {{projectInfo.stats.users | percentileValueFromObject 85 'avg.calsPerDay'}} x {{projectInfo.stats.users | percentileValueFromObject 85 'avg.calsPerDay' | lteObject item 'avg.calsPerDay'}} -->
+                    <td class="is-size-7">{{item.avg.calsPerDay | numberRoundDecimal 2}}</td>
+                    <td class="is-size-7">{{item.endDate | timeFormatMoment "DD.MM.YY"}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            
+            
+
+            <plot-ts-vals dto="model.views.weeklyGraph"></plot-ts-vals>
+            <nav class="level px-6">
+              <div class="level-left"></div>
+              <div class="level-right">
+                <p class="level-item"><button class="button is-primary" rv-data-dir="'prev'" rv-on-click="_handleChangeWeeklyCalories"><i class="fas fa-chevron-left mr-4"></i> Prev</button></p>
+                <p class="level-item"><button class="button is-primary" rv-data-dir="'next'" rv-on-click="_handleChangeWeeklyCalories">Next <i class="fas fa-chevron-right ml-4"></i></button></p>
+              </div>
+            </nav>
+
+            
+                            
+            <!-- <heat-map-events title="Today's Effort" events="model.rawEvents" range="14" start-hour="7" domain="hour" sub-domain="minute"></heat-map-events>
+            <user-projects-stats stats="model.userProjectsStatsToday" user="model.participant.id"></user-projects-stats>            
+            <heat-map-events title="Historical Activity" events="model.rawEvents" range="-12" domain="month" sub-domain="day"></heat-map-events>            
+            <user-projects-stats stats="model.userProjectsStats" user="model.participant.id"></user-projects-stats>
+            <plot-stats title="Effort (trending)" kind="usersMa" effort-key="cals" stats="model.trends.l_60d"></plot-stats>
+            <plot-stats title="Commits (trending)" kind="usersMa" effort-key="commits" stats="model.trends.l_60d"></plot-stats> -->
+            
+            <!-- <plot-stats title="Entropy (trending)" kind="usersMa" effort-key="entropy" stats="model.trends.l_60d"></plot-stats> -->
+            
+          </section>          
+        </div>
+                
+        
+    </div>
+    
+        
+    <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    <script src="../js/version.js"></script>
+    <footer class="footer">
+        <div class="content has-text-centered">
+            <p>
+                Made with <span style="color: #e25555;">&#9829;</span> in EU<br>
+                &copy;
+                <span id="copyright">
+                    <script>document.getElementById('copyright').appendChild(document.createTextNode(new Date().getFullYear()))</script>
+                </span>
+                Dev Workout powered by LaaS Cloud (ver. <script>document.write(X_APP_VERSION)</script>)                
+            </p>
+        </div>
+    </footer>   
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.8/handlebars.min.js" integrity="sha512-E1dSFxg+wsfJ4HKjutk/WaCzK7S2wv1POn1RRPGh8ZK+ag9l244Vqxji3r6wgz9YBf6+vhQEYJZpSjqWFPg9gg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="../js/state.js"></script>
+    <script src="../js/event-processor.js"></script>    
+    <script src="../js/api.js"></script>
+    <script src="../js/challengeController.js"></script>
+    <!-- <script src="js/onboardingModalController.js"></script>
+    <script src="js/preferencesModalController.js"></script> -->
+    <script>
+
+        
+
+
+        class EventEmitter {
+            constructor() {
+                this.listeners = {};
+            }
+
+            static getInstance() {
+                return new EventEmitter();
+            }
+
+            on(event, callback) {
+                if (!this.listeners.hasOwnProperty(event)) {
+                    this.listeners[event] = [];
+                }
+
+                this.listeners[event].push(callback);
+
+                return this;
+            }
+
+            emit(event, ...data) {
+                if (!this.listeners.hasOwnProperty(event)) {
+                    return null;
+                }
+
+                for (let i = 0; i < this.listeners[event].length; i++) {
+                    const callback = this.listeners[event][i];
+
+                    callback.call(this, ...data);
+                }
+            }
+        }
+        const emitter = EventEmitter.getInstance();
+        const mapCanvas = document.getElementById("map");
+
+        const emitter2 = EventEmitter.getInstance();
+        const mapCanvas2 = document.getElementById("map2");
+
+        rivets.templateDelimiters = ["{{", "}}"]
+
+        Controller.getInstance(emitter, "userGraph").then((app)=>{            
+            rivets.bind(document.getElementById('app'), app);            
+        })
+        // OnboardingModalController.getInstance(emitter).then((controller)=>{
+        //     rivets.bind(document.getElementById('onboardingModal'),controller);
+        // })
+
+        // PreferencesModalController.getInstance(emitter).then((controller)=>{
+        //     rivets.bind(document.getElementById('preferencesModal'),controller);
+        // })
+        // console.log(window.location.href);
+
+        window.appEmiter = emitter;
+    </script>
+</body>
+
+</html>
