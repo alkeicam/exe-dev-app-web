@@ -180,8 +180,8 @@ class Controller {
                     }
                 },
                 teamMetrics: {
-                    value: "",
-                    filter: ".*"
+                    value: Commons.getQueryParam("f") || "",
+                    filter: Commons.getQueryParam("f") || ".*"
                 }
             }
 
@@ -346,6 +346,15 @@ class Controller {
     async _handleFilter(e, that){
         // console.log(that.model.views.teamMetrics.value, that.model.views.teamMetrics.filter)
         that.model.views.teamMetrics.filter = that.model.views.teamMetrics.value?`.*${that.model.views.teamMetrics.value}.*`:`.*`;
+    }
+
+    async _handleShare(e, that){
+        const pp = Commons.getCurrentPathAndParams().replace(/&f=[^&]*/gi, '');
+        const url = `${window.location.origin}${pp}&f=${that.model.views.teamMetrics.value}`;        
+        navigator.clipboard.writeText(url);
+
+        console.log(pp, url);
+        
     }
 }
 

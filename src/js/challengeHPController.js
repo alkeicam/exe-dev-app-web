@@ -60,6 +60,13 @@ class Controller {
                     repo: "https://github.com/spring-projects/spring-framework.git"
                 },
                 {
+                    name: "Remix Full Stack Web framework",
+                    lang: "Typescript",
+                    stars: 30,
+                    path: "github-typescript-remix/",
+                    repo: "https://github.com/remix-run/remix.git"
+                },
+                {
                     name: "The Symfony PHP framework",
                     lang: "PHP",
                     stars: 29,
