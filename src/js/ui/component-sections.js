@@ -362,20 +362,16 @@ rivets.components['form-section'] = {
                             <span class="icon">
                                 <i rv-class="model.item.iconClass"></i>
                             </span>
-                            {model.item.title}</p>
+                            {{model.item.title}}</p>
                     </header>
                     <div class="card-content">
                         <div class="content">
-                            <span rv-unless="model.item.selected">{model.item.noData}</span>
+                            <span rv-unless="model.item.selected">{{model.item.noData}}</span>
                             <form-root form="model.item.form" auth="model.auth" rv-if="model.item.selected"></form-root> 
-                            
-                                <!-- <prop rv-each-itemprop="model.item.props" prop="itemprop" rv-class-is-hidden="itemprop.visible | eq false"></prop> -->
-                            
-                            
                         </div>
                     </div>
                     <footer class="card-footer" rv-if="model.item.selected">
-                        <a class="card-footer-item" rv-each-item="model.item.actions" rv-on-click="handleAction">{item.label}</a>                        
+                        <a class="card-footer-item" rv-each-item="model.item.actions" rv-on-click="handleAction">{{item.label}}</a>                        
                     </footer>
                 </div>              
                 `
@@ -402,38 +398,11 @@ rivets.components['form-section'] = {
                     if(that.item){
                         that.item.onClick.call(undefined, controller.model.item)
                     }
-                    // else{
-                    //     that.model.action.executor.call()
-                    // }
+
                 }
                     
-                // },
-                // handleClick:  async function(e, that){                    
-                //     that.model.clickProvider(that.item);                    
-                // },
-                // handleFilter: async function(e, that){
-                //     that.model.entities.list = JSON.parse(JSON.stringify(that.model.entities.original))
-                //     that.model.entities.list = that.model.entities.list.filter(item=>{
-                //         let match = false;
-                //         if(that.model.entities.filter.toLowerCase().startsWith("#")){
-                //             // search by id
-                //             match = that.model.idProvider(item).toLowerCase().startsWith(that.model.entities.filter.toLowerCase().substring(1))?true:false;
-                //         }else{
-                //             Object.keys(item).forEach(key=>{
-                //                 match = JSON.stringify(item[key]).toLowerCase().includes(that.model.entities.filter.toLowerCase())?true:match;
-                //             })
-                //         }
-                        
-                        
-                //         return match;
-                //     });
-                // }                                
+                             
             }
-
-            // data.entities.forEach(item=>{
-            //     controller.model.entities.original.push(item);
-            //     controller.model.entities.list.push(item);
-            // })            
 
             return controller;
         }
@@ -445,7 +414,7 @@ rivets.components['form-section'] = {
             const template = `
     
           <div class="notification is-danger is-hidden" rv-class-is-hidden="model.error.message | empty">
-            {model.error.message}
+            {{model.error.message}}
           </div>
           <form class="box">
             <div class="field">
@@ -659,10 +628,6 @@ rivets.components['form-section'] = {
                             <li class="mt-2 mb-2"><button class="button is-small" style="margin: 0 auto;" rv-on-click="handleAddSelected"><i class="fas fa-angle-right"></i></button></li>                            
                             <li class="mt-2 mb-2"><button class="button is-small" style="margin: 0 auto;" rv-on-click="handleRemoveSelected"><i class="fas fa-angle-left"></i></button></li>                            
                         </ul>
-                        
-                        
-                        
-                        
                     </div>
                     <div class="cell is-col-span-5">                        
                         <items-view entities="model.target.items" title="model.target.title" label-provider="model.labelProvider" id-provider="model.idProvider" click-provider="model.clickProvider" multi-select="true"></items-view>
@@ -732,36 +697,8 @@ rivets.components['form-section'] = {
                 },
                 handleAddVisible: async function(e, that){
 
-                }
-                    
-                // },
-                // handleClick:  async function(e, that){                    
-                //     that.model.clickProvider(that.item);                    
-                // },
-                // handleFilter: async function(e, that){
-                //     that.model.entities.list = JSON.parse(JSON.stringify(that.model.entities.original))
-                //     that.model.entities.list = that.model.entities.list.filter(item=>{
-                //         let match = false;
-                //         if(that.model.entities.filter.toLowerCase().startsWith("#")){
-                //             // search by id
-                //             match = that.model.idProvider(item).toLowerCase().startsWith(that.model.entities.filter.toLowerCase().substring(1))?true:false;
-                //         }else{
-                //             Object.keys(item).forEach(key=>{
-                //                 match = JSON.stringify(item[key]).toLowerCase().includes(that.model.entities.filter.toLowerCase())?true:match;
-                //             })
-                //         }
-                        
-                        
-                //         return match;
-                //     });
-                // }                                
+                }                                                                                 
             }
-
-            // data.entities.forEach(item=>{
-            //     controller.model.entities.original.push(item);
-            //     controller.model.entities.list.push(item);
-            // })            
-
             return controller;
         }
     }
@@ -770,7 +707,7 @@ rivets.components['form-section'] = {
         template: function(item) {            
             const template = `            
         <div class="my-4" rv-class-is-hidden="model.traces.hidden">            
-            <h5 class="title is-5">{model.entity.title}</h5>     
+            <h5 class="title is-5">{{model.entity.title}}</h5>     
             <div class="dropdown" rv-class-is-active="model.timeFilter.isActive" rv-class-is-hidden="model.timeFilter.isHidden">
                 <div class="dropdown-trigger" rv-on-click="_toggleTimeFilter">
                     <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
@@ -799,7 +736,7 @@ rivets.components['form-section'] = {
                 </div>
             </div>     
             <div class="here-plot"></div>       
-            <span class="is-hidden">{redraw | call model.traces.updated}</span>                
+            <span class="is-hidden">{{redraw | call model.traces.updated}}</span>                
         </div>
       `
               return template;

@@ -79,7 +79,7 @@ const template = `
         template: function() {
           const template = `
     <div class="field">        
-        <label class="label">{model.prop.label} <span rv-if="model.prop.obligatory">*</span></label>
+        <label class="label">{{{model.prop.label}}} <span rv-if="model.prop.obligatory">*</span></label>
         <div class="control" rv-unless="model.prop.editable | eq false">        
             <label class="radio">
                 <input type="radio" rv-name="model.prop.unique_name" value="true" rv-checked="model.prop.value" rv-on-change="handleOnChange">
@@ -93,7 +93,7 @@ const template = `
         <div class="control" rv-unless="model.prop.editable">        
             <input class="input" type="text" placeholder="" rv-value="model.prop.value" disabled>            
         </div>
-        <p class="help is-danger is-hidden" rv-class-is-hidden="model.error.message | empty">{model.error.message}</p>
+        <p class="help is-danger is-hidden" rv-class-is-hidden="model.error.message | empty">{{model.error.message}}</p>
     </div>   
     `
             return template;
@@ -142,14 +142,14 @@ const template = `
         template: function() {
           const template = `
     <div class="field">        
-        <label class="label">{model.prop.label} <span rv-if="model.prop.obligatory">*</span></label>
+        <label class="label">{{model.prop.label}} <span rv-if="model.prop.obligatory">*</span></label>
         <div class="control has-icons-right">
             <input class="input" type="text" rv-placeholder="model.prop.placeholder" rv-value="model.prop.value" rv-on-change="handleOnChange" rv-on-blur="handleOnChange" rv-class-is-danger="model.error.message | notEmpty">        
             <span class="icon is-small is-right is-hidden" rv-class-is-hidden="model.error.message | empty">
                 <i class="fas fa-exclamation-triangle"></i>
             </span>
         </div>
-        <p class="help is-danger is-hidden" rv-class-is-hidden="model.error.message | empty">{model.error.message}</p>
+        <p class="help is-danger is-hidden" rv-class-is-hidden="model.error.message | empty">{{model.error.message}}</p>
     </div>      
     `
             return template;
@@ -211,14 +211,14 @@ const template = `
         template: function() {
           const template = `
     <div class="field">        
-        <label class="label">{model.prop.label} <span rv-if="model.prop.obligatory">*</span></label>
+        <label class="label">{{model.prop.label}} <span rv-if="model.prop.obligatory">*</span></label>
         <div class="control has-icons-right">
             <input class="input" type="password" rv-value="model.prop.value" rv-on-change="handleOnChange" rv-on-blur="handleOnChange" rv-class-is-danger="model.error.message | notEmpty">        
             <span class="icon is-small is-right is-hidden" rv-class-is-hidden="model.error.message | empty">
                 <i class="fas fa-exclamation-triangle"></i>
             </span>
         </div>
-        <p class="help is-danger is-hidden" rv-class-is-hidden="model.error.message | empty">{model.error.message}</p>
+        <p class="help is-danger is-hidden" rv-class-is-hidden="model.error.message | empty">{{model.error.message}}</p>
     </div>      
     `
             return template;
@@ -281,17 +281,14 @@ const template = `
         template: function() {
           const template = `
     <div class="field">    
-        <label class="label">{model.prop.label} <span rv-if="model.prop.obligatory">*</span></label>
+        <label class="label">{{model.prop.label}} <span rv-if="model.prop.obligatory">*</span></label>
         <div class="control has-icons-right">
-            
-            <!-- <input readonly class="input" rv-name="model.prop.unique_name | prefix 'date-'" type="text" rv-placeholder="model.prop.placeholder" rv-value="model.prop.displayValue" rv-on-blur="handleOnChangeManual" rv-on-change="handleOnChangeManual" rv-class-is-danger="model.error.message | notEmpty">        -->
-
             <input readonly class="input" type="text" rv-value="model.prop.display_value" rv-class-is-danger="model.error.message | notEmpty">
             <span class="icon is-small is-right is-hidden" rv-class-is-hidden="model.error.message | empty">
                 <i class="fas fa-exclamation-triangle"></i>
             </span>
         </div>
-        <p class="help is-danger is-hidden" rv-class-is-hidden="model.error.message | empty">{model.error.message}</p>
+        <p class="help is-danger is-hidden" rv-class-is-hidden="model.error.message | empty">{{model.error.message}}</p>
     </div>      
     `
             return template;
@@ -363,14 +360,14 @@ const template = `
         template: function() {
           const template = `
     <div class="field">
-        <label class="label">{model.prop.label} <span rv-if="model.prop.obligatory">*</span></label>
+        <label class="label">{{model.prop.label}} <span rv-if="model.prop.obligatory">*</span></label>
         <div class="control has-icons-right">
             <textarea class="textarea is-size-7" rv-placeholder="model.prop.placeholder" rv-value="model.prop.value" rv-on-change="handleOnChange" rv-on-blur="handleOnChange" rv-class-is-danger="model.error.message | notEmpty"></textarea>        
             <span class="icon is-small is-right is-hidden" rv-class-is-hidden="model.error.message | empty">
                 <i class="fas fa-exclamation-triangle"></i>
             </span>
         </div>
-        <p class="help is-danger is-hidden" rv-class-is-hidden="model.error.message | empty">{model.error.message}</p>
+        <p class="help is-danger is-hidden" rv-class-is-hidden="model.error.message | empty">{{model.error.message}}</p>
     </div>      
     `
             return template;
@@ -429,14 +426,14 @@ const template = `
         template: function() {
           const template = `
     <div class="field">
-        <label class="label">{model.prop.label} <span rv-if="model.prop.obligatory">*</span></label>
+        <label class="label">{{model.prop.label}} <span rv-if="model.prop.obligatory">*</span></label>
         <div class="control has-icons-right">
             <input class="input" type="number" rv-placeholder="model.prop.placeholder" rv-value="model.prop.value" rv-on-change="handleOnChange" rv-on-blur="handleOnChange" rv-class-is-danger="model.error.message | notEmpty">        
             <span class="icon is-small is-right is-hidden" rv-class-is-hidden="model.error.message | empty">
                 <i class="fas fa-exclamation-triangle"></i>
             </span>
         </div>
-        <p class="help is-danger is-hidden" rv-class-is-hidden="model.error.message | empty">{model.error.message}</p>
+        <p class="help is-danger is-hidden" rv-class-is-hidden="model.error.message | empty">{{model.error.message}}</p>
     </div>      
     `
             return template;
@@ -495,14 +492,14 @@ const template = `
         template: function() {
           const template = `
     <div class="field">
-        <label class="label">{model.prop.label} <span rv-if="model.prop.obligatory">*</span></label>
+        <label class="label">{{model.prop.label}} <span rv-if="model.prop.obligatory">*</span></label>
         <div class="control has-icons-right">
             <input class="input" type="number" rv-placeholder="model.prop.placeholder" rv-value="model.prop.value" rv-on-change="handleOnChange" rv-on-blur="handleOnChange" rv-class-is-danger="model.error.message | notEmpty">        
             <span class="icon is-small is-right is-hidden" rv-class-is-hidden="model.error.message | empty">
                 <i class="fas fa-exclamation-triangle"></i>
             </span>
         </div>
-        <p class="help is-danger is-hidden" rv-class-is-hidden="model.error.message | empty">{model.error.message}</p>
+        <p class="help is-danger is-hidden" rv-class-is-hidden="model.error.message | empty">{{model.error.message}}</p>
     </div>      
     `
             return template;
@@ -561,16 +558,16 @@ const template = `
         template: function() {
           const template = `
             <div class="field">
-                <label class="label">{model.prop.label} <span rv-if="model.prop.obligatory">*</span></label>
+                <label class="label">{{model.prop.label}} <span rv-if="model.prop.obligatory">*</span></label>
                 <div class="control">
                     <div class="select">
                         <select rv-on-change="handleOnChange" rv-on-blur="handleOnChange" rv-value="model.prop.value">                       
                             <option value="-1">------------------</option>
-                            <option rv-each-option="model.prop.dict" rv-value="deriveId | call option">{deriveDisplay | call option}</option>                
+                            <option rv-each-option="model.prop.dict" rv-value="deriveId | call option">{{deriveDisplay | call option}}</option>                
                         </select>
                     </div>
                 </div>
-                <p class="help is-danger is-hidden" rv-class-is-hidden="model.error.message | empty">{model.error.message}</p>
+                <p class="help is-danger is-hidden" rv-class-is-hidden="model.error.message | empty">{{model.error.message}}</p>
             </div>      
             `
             return template;
@@ -635,16 +632,15 @@ const template = `
         template: function() {
           const template = `          
     <div class="field">
-        <label class="label">{model.prop.label} <span rv-if="model.prop.obligatory">*</span></label>
-        <div class="control has-icons-right">
-            <!-- rv-on-change="handleOnChange" rv-on-blur="handleOnChange" -->
+        <label class="label">{{model.prop.label}} <span rv-if="model.prop.obligatory">*</span></label>
+        <div class="control has-icons-right">        
             <input class="input" type="text" rv-placeholder="model.prop.placeholder" rv-value="model.prop.display_value"  rv-class-is-danger="model.error.message | notEmpty">        
             <span class="icon is-small is-right is-hidden" rv-class-is-hidden="model.error.message | empty">
                 <i class="fas fa-exclamation-triangle"></i>
             </span>
         </div>
-        <p class="help is-hidden" rv-class-is-hidden="model.prop.latlng | empty">({model.prop.latlng}) <a target="_blank" rv-href="model.prop.latlng | hrefBuilder 'https://maps.google.com/?q=@value'">See on map</a></p>
-        <p class="help is-danger is-hidden" rv-class-is-hidden="model.error.message | empty">{model.error.message}</p>
+        <p class="help is-hidden" rv-class-is-hidden="model.prop.latlng | empty">({{model.prop.latlng}}) <a target="_blank" rv-href="model.prop.latlng | hrefBuilder 'https://maps.google.com/?q=@value'">See on map</a></p>
+        <p class="help is-danger is-hidden" rv-class-is-hidden="model.error.message | empty">{{model.error.message}}</p>
     </div>      
     `
             return template;
@@ -723,7 +719,7 @@ const template = `
         template: function() {
           const template = `
     <div class="field mb-2">
-        <label class="label">{model.prop.label} <span rv-if="model.prop.obligatory">*</span></label>
+        <label class="label">{{model.prop.label}} <span rv-if="model.prop.obligatory">*</span></label>
     </div>
     <div class="field has-addons" style>
         <div class="control is-expanded">
@@ -757,7 +753,7 @@ const template = `
                     <span class="panel-icon">
                     <i class="fas fa-book" aria-hidden="true"></i>
                     </span>
-                    {entity.name}
+                    {{entity.name}}
                 </a>
                 
                 <a class="panel-block" rv-unless="model.modal.notBusy">
@@ -870,14 +866,14 @@ const template = `
         template: function() {
           const template = `
     <div class="field">
-        <label class="label">{model.prop.label} <span rv-if="model.prop.obligatory">*</span></label>
+        <label class="label">{{model.prop.label}} <span rv-if="model.prop.obligatory">*</span></label>
         <div class="control has-icons-right">
             <input class="input" readonly type="text" rv-value="model.prop.default_value" >        
             <span class="icon is-small is-right is-hidden" rv-class-is-hidden="model.error.message | empty">
                 <i class="fas fa-exclamation-triangle"></i>
             </span>
         </div>
-        <p class="help" >{model.prop.label} is autogenerated.</p>
+        <p class="help" >{{model.prop.label}} is autogenerated.</p>
     </div>      
     `
             return template;
@@ -907,7 +903,7 @@ const template = `
         template: function() {
         const template = `
             <div class="field">
-                <label class="label">{model.prop.label} <span rv-if="model.prop.obligatory">*</span></label>
+                <label class="label">{{model.prop.label}} <span rv-if="model.prop.obligatory">*</span></label>
                 <div class="field has-addons is-hidden" rv-class-is-hidden="model._isEditMode">
                     <div class="control is-expanded">
                         <input readonly type="text" class="input" rv-value="model.prop.display_value" rv-class-is-danger="model.error.message | notEmpty">        
@@ -924,7 +920,7 @@ const template = `
                     <grm-branches-view organization-id="model.auth.user.organization_id" click-provider="handleOnChange"></grm-branches-view>    
                 </div>                
             </div>                
-            <p class="help is-danger is-hidden" rv-class-is-hidden="model.error.message | empty">{model.error.message}</p>                
+            <p class="help is-danger is-hidden" rv-class-is-hidden="model.error.message | empty">{{model.error.message}}</p>                
             `
             return template;
         },
@@ -997,16 +993,16 @@ const template = `
         template: function() {
           const template = `
             <div class="field">
-                <label class="label">{model.prop.label} <span rv-if="model.prop.obligatory">*</span></label>
+                <label class="label">{{model.prop.label}} <span rv-if="model.prop.obligatory">*</span></label>
                 <label class="checkbox" rv-if="model.prop.editable">
                     <input value="true" type="checkbox" rv-name="model.prop.unique_name" rv-checked="model.prop.value" rv-on-change="handleOnChange" rv-class-is-danger="model.error.message | notEmpty"/>
-                    {model.prop.label} <span rv-if="model.prop.obligatory">*</span>
+                    {{model.prop.label}} <span rv-if="model.prop.obligatory">*</span>
                 </label>        
                 <label class="checkbox" rv-unless="model.prop.editable">
                     <input value="true" type="checkbox" rv-name="model.prop.unique_name" rv-checked="model.prop.value" disabled/>
-                    {model.prop.label} <span rv-if="model.prop.obligatory">*</span>
+                    {{model.prop.label}} <span rv-if="model.prop.obligatory">*</span>
                 </label>                        
-                <p class="help is-danger is-hidden" rv-class-is-hidden="model.error.message | empty">{model.error.message}</p>
+                <p class="help is-danger is-hidden" rv-class-is-hidden="model.error.message | empty">{{model.error.message}}</p>
             </div>   
         `
             return template;
@@ -1054,13 +1050,13 @@ const template = `
         template: function() {
           const template = `
             <div class="field">
-                <label class="label">{model.prop.label} <span rv-if="model.prop.obligatory">*</span></label>
+                <label class="label">{{model.prop.label}} <span rv-if="model.prop.obligatory">*</span></label>
                 <label class="checkbox is-block" rv-each-item="model.prop.dict">
                     <input type="checkbox" rv-if="model.prop.editable" rv-name="item.id" rv-checked="item._checked" rv-on-change="handleOnChange" rv-class-is-danger="model.error.message | notEmpty"/>
                     <input rv-unless="model.prop.editable" rv-name="item.id" type="checkbox" rv-checked="item._checked" disabled/>
-                    {item.value} 
+                    {{item.value}}
                 </label>
-                <p class="help is-danger is-hidden" rv-class-is-hidden="model.error.message | empty">{model.error.message}</p>
+                <p class="help is-danger is-hidden" rv-class-is-hidden="model.error.message | empty">{{model.error.message}}</p>
             </div>   
         `
             return template;
@@ -1126,7 +1122,7 @@ const template = `
         template: function() {
             const template = `
             <div class="field mb-2">
-                <label class="label">{model.prop.label} <span rv-if="model.prop.obligatory">*</span></label>
+                <label class="label">{{model.prop.label}} <span rv-if="model.prop.obligatory">*</span></label>
             </div>
             <div class="field has-addons" style>
                 <div class="control is-expanded">
@@ -1160,7 +1156,7 @@ const template = `
                             <span class="panel-icon">
                             <i class="fas fa-book" aria-hidden="true"></i>
                             </span>
-                            {entity.name}
+                            {{entity.name}}
                         </a>
                         
                         <a class="panel-block" rv-unless="model.modal.notBusy">
@@ -1292,7 +1288,7 @@ const template = `
         template: function() {
           const template = `
             <div class="field">
-                <label class="label">{model.prop.label} <span rv-if="model.prop.obligatory">*</span></label>
+                <label class="label">{{model.prop.label}} <span rv-if="model.prop.obligatory">*</span></label>
                 <div class="control has-icons-right" rv-if="model.prop.editable">
                     <input class="input" type="text" rv-placeholder="model.prop.placeholder" rv-value="model.prop.value" rv-on-change="handleOnChange" rv-on-blur="handleOnChange" rv-class-is-danger="model.error.message | notEmpty">        
                     <span class="icon is-small is-right is-hidden" rv-class-is-hidden="model.error.message | empty">
@@ -1300,10 +1296,10 @@ const template = `
                     </span>
                 </div>
                 <div class="control py-1" rv-unless="model.prop.editable">
-                    <span class="tag mr-1" rv-each-item="model.prop.value | split">{item}</span>
+                    <span class="tag mr-1" rv-each-item="model.prop.value | split">{{item}}</span>
                 </div>
 
-                <p class="help is-danger is-hidden" rv-class-is-hidden="model.error.message | empty">{model.error.message}</p>
+                <p class="help is-danger is-hidden" rv-class-is-hidden="model.error.message | empty">{{model.error.message}}</p>
             </div>      
             `
             return template;
@@ -1351,7 +1347,7 @@ const template = `
           const template = `
             <div class="field">
                 
-                <label class="label">{model.prop.label} <span rv-if="model.prop.obligatory">*</span></label>
+                <label class="label">{{model.prop.label}} <span rv-if="model.prop.obligatory">*</span></label>
                 <div class="file has-name is-boxed" rv-class-is-hidden="model.prop.editable | eq false" rv-x="updateDisplay | call model.prop.value model.prop">
                     <label class="file-label">
                     <input class="file-input" type="file" rv-on-change="handleOnChange"/>
@@ -1361,7 +1357,7 @@ const template = `
                         </span>
                         <span class="file-label"> Choose a file… </span>
                     </span>
-                    <span class="file-name" rv-class-is-hidden="model.prop.display_value | empty">{model.prop.display_value}</span>
+                    <span class="file-name" rv-class-is-hidden="model.prop.display_value | empty">{{model.prop.display_value}}</span>
                     </label>
                 </div>
                 <div class="control">
@@ -1369,7 +1365,7 @@ const template = `
                 </div>
 
 
-                <p class="help is-danger is-hidden" rv-class-is-hidden="model.error.message | empty">{model.error.message}</p>
+                <p class="help is-danger is-hidden" rv-class-is-hidden="model.error.message | empty">{{model.error.message}}</p>
             </div>      
             `
             return template;
@@ -1453,14 +1449,14 @@ const template = `
         template: function() {
           const template = `
             <div class="field">
-                <label class="label">{model.prop.label} <span rv-if="model.prop.obligatory">*</span></label>
+                <label class="label">{{model.prop.label}} <span rv-if="model.prop.obligatory">*</span></label>
                 <div class="control">
                     <canvas></canvas>
                 </div>
                 <div class="control">
                     <a class="button is-fullwidth" rv-on-click="handleClear">Clear</a>
                 </div>
-                <p class="help is-danger is-hidden" rv-class-is-hidden="model.error.message | empty">{model.error.message}</p>
+                <p class="help is-danger is-hidden" rv-class-is-hidden="model.error.message | empty">{{model.error.message}}</p>
             </div>      
             `
             return template;
@@ -1526,7 +1522,7 @@ const template = `
         template: function() {
           const template = `
             <div class="field">        
-                <label class="label">{model.prop.label} <span rv-if="model.prop.obligatory">*</span></label>
+                <label class="label">{{model.prop.label}} <span rv-if="model.prop.obligatory">*</span></label>
                 <div class="is-hidden" rv-class-is-hidden="model.prop.editable | eq false">
                     <video></video>
                 </div>
@@ -1537,7 +1533,7 @@ const template = `
                 <div class="control">        
                     <input class="input" type="text" placeholder="" rv-value="model.prop.value" disabled>            
                 </div>
-                <p class="help is-danger is-hidden" rv-class-is-hidden="model.error.message | empty">{model.error.message}</p>
+                <p class="help is-danger is-hidden" rv-class-is-hidden="model.error.message | empty">{{model.error.message}}</p>
             </div>   
             `
             return template;
@@ -1638,7 +1634,7 @@ const template = `
                 <table class="table mt-6 is-fullwidth" >
                     <thead>
                         <tr>                        
-                        <th rv-each-item="model._columns" >{item.label}</th>
+                        <th rv-each-item="model._columns" >{{item.label}}</th>
                         </tr>
                     </thead>                    
                     <tbody rv-if="model.prop.editable" rv-data-x="reload | call model model.prop.columns model.prop.rows">                    
@@ -1651,7 +1647,7 @@ const template = `
                                 <!--<span rv-if="col.interactive" rv-class-tag="col.isId">
                                     <a rv-on-click="handleOnClick">{col.v}</a>
                                 </span>-->
-                                <span rv-unless="col.datatype | eq 'checkbox'" style="font-size: 0.9rem" rv-class-tag="col.isId" >{row | property col.key}</span>
+                                <span rv-unless="col.datatype | eq 'checkbox'" style="font-size: 0.9rem" rv-class-tag="col.isId" >{{row | property col.key}}</span>
                             </td>
                         </tr>
                         
@@ -1670,7 +1666,7 @@ const template = `
                                 <!--<span rv-if="col.interactive" rv-class-tag="col.isId">
                                     <a rv-on-click="handleOnClick">{col.v}</a>
                                 </span>-->
-                                <span style="font-size: 0.9rem" rv-class-tag="col.isId" >{row | property col.key}</span>
+                                <span style="font-size: 0.9rem" rv-class-tag="col.isId" >{{row | property col.key}}</span>
                             </td>
                         </tr>
                         
