@@ -16,6 +16,7 @@ class BackendApi {
         USER: "/user/{{userId}}",
         ACCOUNT: "/account/{{accountId}}",
         AUTH_SIGNIN: "/auth/signin",
+        AUTH_MFA_CHECK: "/auth/mfa/check/{{login}}",
         PROJECTS_CREATE: "/account/{{accountId}}/projects"
     }
 
@@ -31,7 +32,7 @@ class BackendApi {
     }
 
     static AUTH = {
-        async signin(login, pass){
+        async signin(login, pass, token){
             const urlFunction = Handlebars.compile(`${BackendApi.BASE_URL}${BackendApi.API.AUTH_SIGNIN}`)
             const url = urlFunction({});
             // console.log(url);
@@ -40,7 +41,7 @@ class BackendApi {
                 headers: {
                   "Content-Type": "application/json",
                 },
-                body: JSON.stringify({login: login, pass: pass}),
+                body: JSON.stringify({login: login, pass: pass, token}),
             });
             const responseJson = await response.json();
             localStorage.setItem("Auth:token", responseJson.token);
@@ -58,6 +59,21 @@ class BackendApi {
         async signOut(){
             localStorage.setItem("Auth:token", "");
             localStorage.setItem("Auth:user",JSON.stringify({}));
+        },
+        async isMFARequired(login){
+            const urlFunction = Handlebars.compile(`${BackendApi.BASE_URL}${BackendApi.API.AUTH_MFA_CHECK}`)
+            const url = urlFunction({
+                login
+            });
+            // console.log(url);
+            const response = await fetch(url,{
+                method: "GET", 
+                headers: {
+                  "Content-Type": "application/json",
+                }                
+            });
+            const responseJson = await response.json();
+            return responseJson;
         }
     }
 

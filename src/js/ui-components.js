@@ -409,6 +409,214 @@
             return controller;
         }
     }
+
+    rivets.components['g-sign-in-email-pass-mfa'] = {
+        template: function() {
+            const template = `
+        <div class="box" style="padding-bottom: 30%; margin-top: 10vh;">                                                
+            <div class="columns">
+                <div class="column is-offset-4 is-one-third">
+                    <p class="heading">{{model.entity.heading}}</p>
+                    <p class="title"><i rv-class="model.entity.titleIconClasses"></i>&nbsp;{{model.entity.title}}</p>
+                    <p class="help has-text-danger" rv-class-is-hidden="model.error.code | eq 0"><strong><i class="fas fa-exclamation-triangle"></i> {{model.entity.failedMsg}}.</strong> {{model.error.message}}</a></p>                    
+                    <div class="field">
+                        <label class="label">{{model.entity.loginLabel}}</label>
+                        <div class="control has-icons-left has-icons-right">
+                            <input class="input" type="text" placeholder="" rv-value="model.forms.f1.v" rv-class-is-danger="model.forms.f1.e.code | neq 0" data-field-id="f1" rv-on-input="handleInput">
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-paper-plane"></i>
+                            </span>
+                            <span class="icon is-small is-right is-hidden" rv-class-is-hidden="model.forms.f1.e.code | eq 0">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </span>
+                        </div>
+                        <p class="help is-danger is-hidden" rv-class-is-hidden="model.forms.f1.e.code | eq 0">{{model.forms.f1.e.message}}</p>
+                    </div>
+                    <div class="field">
+                        <label class="label">{{model.entity.passLabel}}</label>
+                        <div class="control has-icons-left has-icons-right">
+                            <input class="input" type="password" placeholder="" rv-value="model.forms.f2.v" rv-class-is-danger="model.forms.f2.e.code | neq 0" data-field-id="f2" rv-on-input="handleInput">
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-key"></i>
+                            </span>
+                            <span class="icon is-small is-right is-hidden" rv-class-is-hidden="model.forms.f2.e.code | eq 0">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </span>
+                        </div>
+                        <p class="help is-danger is-hidden" rv-class-is-hidden="model.forms.f2.e.code | eq 0">{{model.forms.f2.e.message}}</p>
+                    </div>
+                    <div class="field is-grouped">
+                        <div class="control">
+                        <button class="button is-link" rv-on-click="handleLogin">{{model.entity.signCtaLabel}}</button>
+                        </div>
+                        <!-- <div class="control">
+                        <button class="button is-link is-light">{{model.entity.cancelCtaLabel}}</button>
+                        </div> -->
+                    </div>
+                    <p class="help" rv-html="model.entity.helpMsg"></p>
+                </div>
+                
+            </div>                          
+        </div>   
+        <modal modal="model.views.mfa" auth=""></modal>   
+      `
+              return template;
+          },
+        static: ['heading','title','titleIconClasses','failedMsg', 'loginLabel', 'passLabel', 'signCtaLabel', 'cancelCtaLabel', 'helpMsg', 'successUrl'],
+        // dynamic bound: 'errorMsg','emitter'
+        initialize: function(el, data) {
+            
+            const controller = {
+                emitter: data.emitter,            
+                model: {
+                    entity: data, // heading, title, titleIconClasses, failedMsg, errorMsg, loginLabel, passLabel, signCtaLabel, cancelCtaLabel, helpMsg, successURL, mfaEnabled (boolean)                                          
+                    forms:{
+                        f1: {
+                            v: "",
+                            e: {
+                                code: 0,
+                                message: "OK"
+                            }
+                        },
+                        f2: {
+                            v: "",
+                            e: {
+                                code: 0,
+                                message: "OK"
+                            }
+                        },
+                        f3: { // MFA Code
+                            v: "",
+                            e: {
+                                code: 0,
+                                message: "OK"
+                            }
+                        }
+                    },
+                    views: {
+                        mfa: {
+                            // title: "MFA Code",
+                            active: false,
+                            onSave: async (form)=>{                                
+                                const item = Commons.objectFromFormWithProps(form);
+                                await controller.handleLoginWithMFA(item.mfaToken);
+                            },
+                            form: {
+                                visible: true,
+                                sections: [
+                                    {
+                                        layout: "is-full",
+                                        section_name:"",
+                                        props: [
+                                            {
+                                                label: "MFA Code",
+                                                datatype: "number",
+                                                value: "",
+                                                placeholder: "6 digits from your MFA app",
+                                                editable: true,
+                                                obligatory: true,
+                                                unique_name: "mfaToken"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    error:{
+                        code: 0,
+                        message: "OK"
+                    }
+                },
+                async handleLogin(e, that){
+                    try{
+                        if(!that._validateField("f1")||!that._validateField("f2"))
+                            return;            
+                        // check that user requires MFA
+                        if(that.model.entity.mfaChecker){
+                            const isMFARequired = await that.model.entity.mfaChecker(that.model.forms.f1.v);
+                            if(isMFARequired){
+                                controller.model.views.mfa.active = true;
+                            return;
+                            }
+
+                        }
+                        if(that.model.entity.mfaEnabled){
+                            controller.model.views.mfa.active = true;
+                            return;    
+                        }
+                        that.emitter?.emit("ui:busy");                                                
+                        // const {token, user} = await BackendApi.AUTH.signin(that.model.forms.f1.v, that.model.forms.f2.v)            
+                        // window.location = that.model.entity.successUrl;
+                        await that._processLogin(that.model.forms.f1.v, that.model.forms.f2.v)
+                    }catch(error){
+                        that.emitter?.emit("ui:notBusy");    
+                        that.model.error.code = 1;
+                        that.model.error.message = "Please check your email or password."        
+                    }
+                    
+                },
+                async handleLoginWithMFA(mfaCode){
+                    try{                        
+                        controller.emitter?.emit("ui:busy");                                                
+                        // const {token, user} = await BackendApi.AUTH.signin(that.model.forms.f1.v, that.model.forms.f2.v)            
+                        // window.location = that.model.entity.successUrl;
+                        await controller._processLogin(controller.model.forms.f1.v, controller.model.forms.f2.v, mfaCode)
+                    }catch(error){
+                        controller.emitter?.emit("ui:notBusy");    
+                        controller.model.error.code = 1;
+                        controller.model.error.message = "Please check your email, password or mfa token"        
+                    }
+                    
+                },
+                async _processLogin(login, pass, mfaToken){                    
+                    const {token, user} = await BackendApi.AUTH.signin(login, pass, mfaToken);            
+                    window.location = controller.model.entity.successUrl;                    
+                },
+                async _validateField(field){
+                    let result = true;
+                    switch(field){
+                        case "f1":
+                            if(this.model.forms[field].v.match(/(?:[a-z0-9+!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/gi)){
+                                this.model.forms[field].e.code=0
+                                this.model.forms[field].e.message="OK"
+                            }else{
+                                this.model.forms[field].e.code=1
+                                this.model.forms[field].e.message="Please provide valid email address"
+                                result = false;
+                            }
+            
+                            break;
+                        case "f2":
+                            if(this.model.forms[field].v && this.model.forms[field].v.length>=1){
+                                this.model.forms[field].e.code=0
+                                this.model.forms[field].e.message="OK"
+                            }else{
+                                this.model.forms[field].e.code=1
+                                this.model.forms[field].e.message="Please provide password"
+                                result = false;
+                            }
+                            break;
+                    }
+                    return result;
+                },
+                async handleInput(e, that){
+                    const field = e.target.dataset.fieldId;                    
+                    await that._validateField(field)                                                     
+                }                
+            }
+    
+            // // setup calendar controll
+            // const elem = el.querySelector(`input`);
+            // const datepicker = new Datepicker(elem, {
+            //     format: "yyyy-mm-dd"
+            // });
+    
+            // elem.addEventListener("changeDate",controller.handleOnChange.bind(controller));
+    
+            return controller;
+        }
+    }
     
        
     

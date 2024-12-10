@@ -24,7 +24,11 @@
 
     <script src="js/rivet.js"></script>
     <script src="js/rivet-ext.js"></script>
+    <script src="js/ui/common.js"></script>
+    <script src="js/ui/component-props.js"></script>
+    <script src="js/ui/component-sections.js"></script>
     <script src="js/ui-components.js"></script>
+
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>        
     
     
@@ -44,7 +48,7 @@
             <section class="section" style="padding: 0.5rem 0.5rem;">                    
                 <article class="message is-hidden" rv-class-is-hidden="model.process.step | neq 'ONBOARDING'">                    
                     <!-- heading, title, titleIconClasses, failedMsg, errorMsg, loginLabel, passLabel, signCtaLabel, cancelCtaLabel, helpMsg, successURL                       -->
-                    <g-sign-in-email-pass 
+                    <g-sign-in-email-pass-mfa 
                         heading="Founder's Assistant @" 
                         title="Welcome to Dev Workout" 
                         title-icon-classes="fas fa-frog"
@@ -55,8 +59,9 @@
                         cancel-cta-label="Cancel"
                         success-url="index.html"
                         help-msg='We are in early beta, access by invitations only. Contact us to claim account in the early access programme: <a href="mailto:contact@laascloud.ee">contact@laascloud.ee</a>'
-                        emitter="emitter">
-                    </g-sign-in-email-pass>
+                        emitter="emitter"                        
+                        mfa-checker="model.views.login.isMFARequired">
+                    </g-sign-in-email-pass-mfa>
                 </article>
             </section>            
         </div>  

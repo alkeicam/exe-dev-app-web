@@ -37,6 +37,19 @@ class HelloController {
             error:{
                 code: 0,
                 message: "OK"
+            },
+            views: {
+                login: {
+                    isMFARequired: async (login) => {
+                        console.log(`checking ${login}`)
+                        try{
+                            const {enabled} = await BackendApi.AUTH.isMFARequired(login);           
+                            return enabled;
+                        }catch(error){
+                            return true;
+                        }                                                
+                    }
+                }
             }
         }
     }
