@@ -98,11 +98,13 @@ class HelloController {
     
 
     async _handleOnboarding(login, successURL){
+        this.model.notBusy = false;
         const {enabled} = await BackendApi.AUTH.isMFARequired(login);
         if(!enabled){
             this.model.views.mfaOnboarding.login = login
             this.model.views.mfaOnboarding.successURL = successURL
             this.model.views.mfaOnboarding.active = true
+            this.model.notBusy = true
         }else{
             window.location = successURL
         }
