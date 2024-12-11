@@ -104,6 +104,7 @@ class BackendApi {
                   "Content-Type": "application/json",
                 }                
             });
+            if(!response.ok) throw new Error(`Failed mfa verification`);
             // const responseJson = await response.json();
             // return responseJson;
             return;

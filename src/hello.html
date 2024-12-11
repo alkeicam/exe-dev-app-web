@@ -49,8 +49,8 @@
                 <article class="message is-hidden" rv-class-is-hidden="model.process.step | neq 'ONBOARDING'">                    
                     <!-- heading, title, titleIconClasses, failedMsg, errorMsg, loginLabel, passLabel, signCtaLabel, cancelCtaLabel, helpMsg, successURL                       -->
                     <g-sign-in-email-pass-mfa 
-                        heading="Founder's Assistant @" 
-                        title="Welcome to Dev Workout" 
+                        heading="Team Assistant @" 
+                        title="Welcome to Q247" 
                         title-icon-classes="fas fa-frog"
                         failed-msg="Invalid login attempt"
                         login-label="Email"
@@ -59,7 +59,7 @@
                         cancel-cta-label="Cancel"
                         success-url="index.html"
                         post-login-success="model.views.login.postLoginSuccess"
-                        help-msg='We are in early beta, access by invitations only. Contact us to claim account in the early access programme: <a href="mailto:contact@laascloud.ee">contact@laascloud.ee</a>'
+                        help-msg='Access by invitations only. Contact us to claim account in the early access programme: <a href="mailto:contact@laascloud.ee">contact@laascloud.ee</a>'
                         emitter="emitter"                        
                         mfa-checker="model.views.login.isMFARequired">
                     </g-sign-in-email-pass-mfa>

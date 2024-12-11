@@ -889,7 +889,7 @@
     rivets.components['auth-mfa-onboarding'] = {
         template: function() {
             const template = `            
-            {{_handleShow | call model.data.view.active}}
+            <span class="is-hidden">{{_handleShow | call model.data.view.active}}</span>
 
             <modal modal="model.views.mfaStep1" title="'Sync with authenticator app'" auth=""></modal>
             <modal modal="model.views.mfaStep2" title="'Provide authenticator code'" auth=""></modal>          
@@ -921,7 +921,7 @@
                             },
                             form: {
                                 intro: `
-                                <strong>Step #1</strong><p><strong>Welcome!</strong> As this is your first login you are kindly asked to configure MFA authentication for secure access to Q247</p><p>Open you authenticator app (i.e. Google Authenticator or Microsoft Authenticator) and either scan the qr code or enter code manually. Then proceed to next step.</p>
+                                <p class="my-1"><strong>Welcome!</strong><br>As this is your first visit you are kindly asked to configure MFA authentication for secure access to Q247</p><p class="my-1">Open you authenticator app (i.e. Google Authenticator or Microsoft Authenticator) and either scan the qr code or enter code manually. Then proceed to next step.</p><p class="my-1">⚠️ Please remove any previous Q247 records from authenticator app (if any).</p>
                                 `,
                                 visible: true,
                                 sections: [
@@ -934,7 +934,7 @@
                                                 datatype: "string",
                                                 value: "",                                        
                                                 editable: false,
-                                                obligatory: true,
+                                                obligatory: false,
                                                 unique_name: "code"
                                             },
                                             {
@@ -942,7 +942,7 @@
                                                 datatype: "image",
                                                 value: "",                                        
                                                 editable: false,
-                                                obligatory: true,
+                                                obligatory: false,
                                                 unique_name: "qrcode"
                                             }
                                         ]
@@ -957,7 +957,7 @@
                             onCancel: async () => {
                                 // when user cancels onboarding - do we force to log him out to start again?
                                 // right now we do not log him out, just redirect to login page
-                                window.location = `hello.html?message=MFA Onboarding failed. Try loggin in and setting up MFA again&url=${Commons.getCurrentPathAndParams()}`;
+                                window.location = `hello.html?message=MFA Onboarding failed. Try loggin in and setting up MFA again`;
                             },
                             onSave: async (form)=>{                                
                                 const item = Commons.objectFromFormWithProps(form);
@@ -967,14 +967,15 @@
                                     await BackendApi.AUTH.mfaVerify(controller.model.data.view.login, item.mfaToken);     
                                     window.location = controller.model.data.view.successURL;                                                      
                                 }
-                                catch(error){
-                                    window.alert("Invalid token. Try again.")                            
+                                catch(error){                                    
+                                    // need to reload page as modal active is lost on modal closing
+                                    window.location = `hello.html?message=MFA Onboarding failed - invalid token. Try logging in and setting up MFA again`;                                      
                                 }                                                 
                             },
                             form: {
                                 visible: true,
                                 intro: `
-                                <strong>Step #2</strong><p>Good, now enter Q247 token from the authenticator app to verify that everything went fine and to complete the process.</p>
+                                <p><strong>Good</strong>, now enter Q247 token from the authenticator app to verify that everything went fine and to complete the process.</p>
                                 `,
                                 sections: [
                                     {
