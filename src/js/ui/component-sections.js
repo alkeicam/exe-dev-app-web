@@ -114,10 +114,11 @@ rivets.components['form-section'] = {
                     auth: data.auth
 
                 },
-                hide: function(e, that){
+                hide: async function(e, that){
                     
                     that._reset();                                        
                     that.model.modal.active = false;
+                    if(that.model.modal.onCancel) await that.model.modal.onCancel();
                 },
                 save: async function(e, that){
                     // validate form

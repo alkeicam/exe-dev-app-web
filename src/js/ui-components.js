@@ -570,8 +570,14 @@
                     
                 },
                 async _processLogin(login, pass, mfaToken){                    
-                    const {token, user} = await BackendApi.AUTH.signin(login, pass, mfaToken);            
-                    window.location = controller.model.entity.successUrl;                    
+                    const {token, user} = await BackendApi.AUTH.signin(login, pass, mfaToken);   
+                    if(controller.model.entity.postLoginSuccess){
+                        controller.emitter?.emit("ui:notBusy");
+                        await controller.model.entity.postLoginSuccess(login, controller.model.entity.successUrl);
+                    }else{
+                        window.location = controller.model.entity.successUrl;                    
+                    }      
+                    
                 },
                 async _validateField(field){
                     let result = true;
@@ -877,6 +883,146 @@
                     }
                 }                
             }
+        }
+    }
+
+    rivets.components['auth-mfa-onboarding'] = {
+        template: function() {
+            const template = `            
+            {{_handleShow | call model.data.view.active}}
+
+            <modal modal="model.views.mfaStep1" title="'Sync with authenticator app'" auth=""></modal>
+            <modal modal="model.views.mfaStep2" title="'Provide authenticator code'" auth=""></modal>          
+      `
+              return template;
+          },
+        // static: ['heading','title','titleIconClasses','failedMsg', 'loginLabel', 'passLabel', 'signCtaLabel', 'cancelCtaLabel', 'helpMsg', 'successUrl'],
+        // dynamic bound: 'errorMsg','emitter'
+        initialize: function(el, data) {
+            
+            const controller = {
+                emitter: data.emitter,            
+                model: {
+                    data: data,                     
+                    views: {
+                        mfaStep1: {
+                            // title: "MFA Code",
+                            active: false,
+                            saveLabel: "Proceed",
+                            onCancel: async () => {
+                                // when user cancels onboarding - do we force to log him out to start again?
+                                // right now we do not log him out, just redirect to login page
+                                window.location = `hello.html?message=MFA Onboarding failed. Try loggin in and setting up MFA again`;
+                            },
+                            onSave: async (form)=>{                                
+                                // const item = Commons.objectFromFormWithProps(form);
+                                // await controller.handleLoginWithMFA(item.mfaToken);
+                                controller.model.views.mfaStep2.active = true
+                            },
+                            form: {
+                                intro: `
+                                <strong>Step #1</strong><p><strong>Welcome!</strong> As this is your first login you are kindly asked to configure MFA authentication for secure access to Q247</p><p>Open you authenticator app (i.e. Google Authenticator or Microsoft Authenticator) and either scan the qr code or enter code manually. Then proceed to next step.</p>
+                                `,
+                                visible: true,
+                                sections: [
+                                    {
+                                        layout: "is-full",
+                                        section_name:"",
+                                        props: [
+                                            {
+                                                label: "Code",
+                                                datatype: "string",
+                                                value: "",                                        
+                                                editable: false,
+                                                obligatory: true,
+                                                unique_name: "code"
+                                            },
+                                            {
+                                                label: "QRCode",
+                                                datatype: "image",
+                                                value: "",                                        
+                                                editable: false,
+                                                obligatory: true,
+                                                unique_name: "qrcode"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        },
+                        mfaStep2: {
+                            // title: "MFA Code",
+                            active: false,
+                            saveLabel: "Verify",
+                            onCancel: async () => {
+                                // when user cancels onboarding - do we force to log him out to start again?
+                                // right now we do not log him out, just redirect to login page
+                                window.location = `hello.html?message=MFA Onboarding failed. Try loggin in and setting up MFA again&url=${Commons.getCurrentPathAndParams()}`;
+                            },
+                            onSave: async (form)=>{                                
+                                const item = Commons.objectFromFormWithProps(form);
+                                // await controller.handleLoginWithMFA(item.mfaToken);
+        
+                                try{
+                                    await BackendApi.AUTH.mfaVerify(controller.model.data.view.login, item.mfaToken);     
+                                    window.location = controller.model.data.view.successURL;                                                      
+                                }
+                                catch(error){
+                                    window.alert("Invalid token. Try again.")                            
+                                }                                                 
+                            },
+                            form: {
+                                visible: true,
+                                intro: `
+                                <strong>Step #2</strong><p>Good, now enter Q247 token from the authenticator app to verify that everything went fine and to complete the process.</p>
+                                `,
+                                sections: [
+                                    {
+                                        layout: "is-full",
+                                        section_name:"",
+                                        props: [
+                                            {
+                                                label: "MFA Code",
+                                                datatype: "number",
+                                                value: "",
+                                                placeholder: "Code from your MFA app",
+                                                editable: true,
+                                                obligatory: true,
+                                                unique_name: "mfaToken"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    error:{
+                        code: 0,
+                        message: "OK"
+                    }
+                },
+                _handleShow: async (active) => {
+                    if(active){
+                        const {codes} = await BackendApi.AUTH.mfaRegister(data.view.login);
+                        controller.model.views.mfaStep1.form.sections[0].props.find(item=>item.unique_name == "code").value = codes.secret
+                        
+                        const imageInfo = {
+                            name: `code.png`,
+                            size: 100,
+                            src: codes.qr_code,
+                            mimetype: ""
+                        }
+                        
+                        // `name:code.png;size:100;data:${codes.qr_code}`
+                        controller.model.views.mfaStep1.form.sections[0].props.find(item=>item.unique_name == "qrcode").value = Commons.imageInfo2ImagePropValue(imageInfo).value;
+                        controller.model.views.mfaStep1.form.sections[0].props.find(item=>item.unique_name == "qrcode").display_value = Commons.imageInfo2ImagePropValue(imageInfo).display_value;
+
+                        controller.model.views.mfaStep1.active = true
+                    } 
+                }                            
+            }    
+            // controller.model.views.mfaStep1.active = data.view.active
+            return controller;
         }
     }
     

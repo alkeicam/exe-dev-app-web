@@ -104,8 +104,9 @@ class BackendApi {
                   "Content-Type": "application/json",
                 }                
             });
-            const responseJson = await response.json();
-            return responseJson;
+            // const responseJson = await response.json();
+            // return responseJson;
+            return;
         }
     }
 

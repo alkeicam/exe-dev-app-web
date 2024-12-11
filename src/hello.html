@@ -58,12 +58,16 @@
                         sign-cta-label="Sign in"
                         cancel-cta-label="Cancel"
                         success-url="index.html"
+                        post-login-success="model.views.login.postLoginSuccess"
                         help-msg='We are in early beta, access by invitations only. Contact us to claim account in the early access programme: <a href="mailto:contact@laascloud.ee">contact@laascloud.ee</a>'
                         emitter="emitter"                        
                         mfa-checker="model.views.login.isMFARequired">
                     </g-sign-in-email-pass-mfa>
                 </article>
-            </section>            
+            </section>     
+            <section class="section" style="padding: 0.5rem 0.5rem;">
+                <auth-mfa-onboarding view="model.views.mfaOnboarding"></auth-mfa-onboarding>
+            </section>       
         </div>  
         <div class="busyModal is-hidden" rv-class-is-hidden="model.notBusy">
             <div class="modal-background"></div>
