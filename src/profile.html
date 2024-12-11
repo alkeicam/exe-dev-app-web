@@ -24,6 +24,11 @@
 
     <script src="js/rivet.js"></script>
     <script src="js/rivet-ext.js"></script>
+
+    <script src="js/ui/common.js"></script>
+    <script src="js/ui/component-props.js"></script>
+    <script src="js/ui/component-sections.js"></script>
+
     <script src="js/ui-components.js"></script>
     <script src="js/app-ui-components.js"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>        
@@ -119,36 +124,21 @@
                     </div>
                   </div>
                 </div>
-            </nav>
-            <h3 class="title is-3">{{model.participant.name}}<span class="is-size-7 ml-2">{{model.participant.email}}</span><span class="is-size-7 is-hidden ml-2" rv-class-is-hidden="model.account | empty">@{{model.account.name}}</span></h3>                                                                      
+            </nav>            
         </div>  
         <div class="container" style="padding-top: 40vh; padding-bottom: 40vh;" rv-class-is-hidden="model.busy | eq false">
             <progress class="progress is-danger" max="100">30%</progress>
         </div>     
         <div class="container is-hidden" rv-class-is-hidden="model.busy">
-          <section class="section mt-6" style="padding: 0.5rem 0.5rem;">
-                         
-            <div class="box">
-              <heat-map-events title="Today's Effort" events="model.rawEvents" range="14" start-hour="7" domain="hour" sub-domain="minute"></heat-map-events>
-            </div>
-            <user-projects-stats stats="model.userProjectsStatsToday" user="model.participant.id"></user-projects-stats>            
-            <heat-map-events title="Historical Activity" events="model.rawEvents" range="-12" domain="month" sub-domain="day"></heat-map-events>            
-            <user-projects-stats stats="model.userProjectsStats" user="model.participant.id"></user-projects-stats>
-            <div class="box">
-              <plot-stats title="Effort (trending)" kind="usersMa" effort-key="cals" stats="model.trends.l_60d"></plot-stats>
-            </div>
-            <div class="box">
-              <plot-stats title="Commits (trending)" kind="usersMa" effort-key="commits" stats="model.trends.l_60d"></plot-stats>
-            </div>
-            <div class="box">
-              <plot-stats title="Lines (trending)" kind="usersMa" effort-key="lines" stats="model.trends.l_60d"></plot-stats>
-            </div>
-            <!-- <plot-stats title="Entropy (trending)" kind="usersMa" effort-key="entropy" stats="model.trends.l_60d"></plot-stats> -->
-            
+          <section class="section mt-2" style="padding: 0.5rem 0.5rem;">
+            <div class="columns">
+              <div class="column is-four-fifths"><q-settings-profile-bar profile="model.user" account="model.account"></q-settings-profile-bar></div>
+              <div class="column"><q-settings-toggle setting="model.views.settings.mfa"></q-settings-toggle></div>              
+            </div>                        
           </section>
-        </div>
-                
-        
+        </div>      
+        <modal modal="model.views.mfaStep1" title="'Sync with authenticator app'" auth=""></modal>
+        <modal modal="model.views.mfaStep2" title="'Provide authenticator code'" auth=""></modal>
     </div>
     
         

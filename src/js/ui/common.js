@@ -571,5 +571,23 @@ class Commons {
             ))
         );
     }
+
+    static imageInfo2ImagePropValue(imageInfo){
+        // name:BOR_REGUT_logo-4007437770.png;size:30205;
+        return {
+            value: `name:${imageInfo.name};size:${imageInfo.size};${imageInfo.src}`,
+            display_value: `${imageInfo.name} (${imageInfo.size} bytes)`
+        }
+    }
+
+    static imagePropValue2ImageInfo(imagePropValue){
+        return {
+            // /name:BOR_REGUT_logo-4007437770.png;size:30205;data:image/png;base64,abcdef
+            name: `${imagePropValue.split(";")[0].split(":")[1]}`,
+            size: Number.parseInt(`${imagePropValue.split(";")[1].split(":")[1]}`),
+            src: imagePropValue.split(";")[3]?`${imagePropValue.split(";")[2]};${imagePropValue.split(";")[3]}`:`${imagePropValue.split(";")[2]}`,
+            mimetype: imagePropValue.split(";")[3]?`${imagePropValue.split(";")[2].split(":")[1]}`:""
+        }
+    }
     
 }

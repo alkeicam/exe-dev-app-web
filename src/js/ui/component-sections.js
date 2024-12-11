@@ -8,6 +8,7 @@
     template: function() {
       const template = `        
         <h2 class="title is-2" rv-class-is-hidden="model.title | empty">{{model.title}}</h2>
+        <div class="notification" rv-if="model.form.intro" rv-html="model.form.intro"></div>        
         <div rv-class-is-invisible="model.form.visible | eq false">
             <form-section rv-each-section="model.form.sections" section="section" layout="section.layout" auth="model.auth"></form-section>
         </div>    
@@ -88,7 +89,8 @@ rivets.components['form-section'] = {
                     <form-root form="model.modal.form" title="model.title" auth="model.auth"></form-root>
                     
                     <footer class="modal-card-foot mt-5" >
-                        <button rv-if="model.modal.onSave" class="button is-success" rv-on-click="save">Save changes</button>
+                        <button rv-if="model.modal.onSave" class="button is-success" rv-class-is-hidden="model.modal.saveLabel | notEmpty" rv-on-click="save">Save changes</button>
+                        <button rv-if="model.modal.onSave" class="button is-success" rv-class-is-hidden="model.modal.saveLabel | empty" rv-on-click="save">{{model.modal.saveLabel}}</button>
                         <button class="button" rv-on-click="hide">Close</button>
                     </footer>
                 </div>

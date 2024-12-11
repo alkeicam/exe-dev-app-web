@@ -93,7 +93,169 @@ class Controller {
          
             account: {},                        
             handlers: {},
-            views: {}
+            views: {
+                settings: {
+                    mfa: {
+                        disabled: false,
+                        label: "MFA",
+                        cta: {
+                            label: "",
+                            action: async ()=>{
+                                const {codes} = await BackendApi.AUTH.mfaRegister(this.model.user.id);
+                                this.model.views.mfaStep1.form.sections[0].props.find(item=>item.unique_name == "code").value = codes.secret
+                                
+                                const imageInfo = {
+                                    name: `code.png`,
+                                    size: 100,
+                                    src: codes.qr_code,
+                                    mimetype: ""
+                                }
+                                
+                                // `name:code.png;size:100;data:${codes.qr_code}`
+                                this.model.views.mfaStep1.form.sections[0].props.find(item=>item.unique_name == "qrcode").value = Commons.imageInfo2ImagePropValue(imageInfo).value;
+                                this.model.views.mfaStep1.form.sections[0].props.find(item=>item.unique_name == "qrcode").display_value = Commons.imageInfo2ImagePropValue(imageInfo).display_value;
+                                
+                                this.model.views.mfaStep1.active = true; 
+                            }
+                        }
+                    }
+                },
+                profile: {
+                    visible: true,
+                    sections: [
+                        {
+                            layout: "is-full",
+                            section_name:"Core data",
+                            props: [
+                                {
+                                    label: "Id",
+                                    datatype: "string",
+                                    value: "",
+                                    editable: false,
+                                    obligatory: true,
+                                    unique_name: "id"
+                                },
+                                {
+                                    label: "Name",
+                                    datatype: "string",
+                                    value: "",
+                                    editable: false,
+                                    obligatory: true,
+                                    unique_name: "name"
+                                }
+                            ]
+                        },
+                        {
+                            layout: "is-full",
+                            section_name:"MFA",
+                            props: [
+                                {
+                                    label: "MFA Enabled",
+                                    datatype: "boolean",
+                                    value: "",
+                                    editable: false,
+                                    obligatory: true,
+                                    unique_name: "mfa.enabled"
+                                }
+                            ]
+                        },
+                        {
+                            layout: "is-full",
+                            section_name:"Alternative bindings",
+                            props: [
+                                {
+                                    label: "Emails",
+                                    datatype: "tags",
+                                    value: "",
+                                    editable: false,
+                                    obligatory: true,
+                                    unique_name: "authority"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                mfaStep1: {
+                    // title: "MFA Code",
+                    active: false,
+                    saveLabel: "Proceed",
+                    onSave: async (form)=>{                                
+                        // const item = Commons.objectFromFormWithProps(form);
+                        // await controller.handleLoginWithMFA(item.mfaToken);
+                        this.model.views.mfaStep2.active = true
+                    },
+                    form: {
+                        intro: `
+                        <strong>Step #1</strong><p>Open you authenticator app and either scan the qr code or enter code manually. Then proceed to next step.</p>
+                        `,
+                        visible: true,
+                        sections: [
+                            {
+                                layout: "is-full",
+                                section_name:"",
+                                props: [
+                                    {
+                                        label: "Code",
+                                        datatype: "string",
+                                        value: "",                                        
+                                        editable: false,
+                                        obligatory: true,
+                                        unique_name: "code"
+                                    },
+                                    {
+                                        label: "QRCode",
+                                        datatype: "image",
+                                        value: "",                                        
+                                        editable: false,
+                                        obligatory: true,
+                                        unique_name: "qrcode"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                },
+                mfaStep2: {
+                    // title: "MFA Code",
+                    active: false,
+                    saveLabel: "Verify",
+                    onSave: async (form)=>{                                
+                        const item = Commons.objectFromFormWithProps(form);
+                        // await controller.handleLoginWithMFA(item.mfaToken);
+
+                        try{
+                            await BackendApi.AUTH.mfaVerify(this.model.user.id, item.mfaToken);     
+                            window.alert("Success. MFA Enabled.")                                                   
+                        }
+                        catch(error){
+                            window.alert("Invalid token. Try again.")                            
+                        }                                                 
+                    },
+                    form: {
+                        visible: true,
+                        intro: `
+                        <strong>Step #2</strong><p>Now enter token from the authenticator app to verify authenticator and complete the process.</p>
+                        `,
+                        sections: [
+                            {
+                                layout: "is-full",
+                                section_name:"",
+                                props: [
+                                    {
+                                        label: "MFA Code",
+                                        datatype: "number",
+                                        value: "",
+                                        placeholder: "6 digits from your MFA app",
+                                        editable: true,
+                                        obligatory: true,
+                                        unique_name: "mfaToken"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                }
+            }
 
         }
     }
@@ -116,9 +278,13 @@ class Controller {
         try{
 
             await a._prepareAccounts(a.model.user);
-            const participantsData = await BackendApi.USERS.getUserInfo(user.id);
-            a.model.participant = participantsData[0]
-            a.model.participant.id = a.model.participant.email;                        
+            // const participantsData = await BackendApi.USERS.getUserInfo(user.id);
+            // a.model.participant = participantsData[0]
+            // a.model.participant.id = a.model.participant.email;  
+            
+            a.model.views.settings.mfa.disabled = a.model.user.mfa?.enabled?"true":undefined
+            // a.model.views.settings.mfa.disabled = a.model.user.mfa?.enabled?undefined:"true"
+            a.model.views.settings.mfa.cta.label = a.model.user.mfa?.enabled?"👍 MFA Enabled":"⚠️ Enable MFA"
         }catch(error){
             console.log(error);
             window.location = "hello.html?message=Session expired. Please log in again.";

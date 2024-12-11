@@ -17,6 +17,8 @@ class BackendApi {
         ACCOUNT: "/account/{{accountId}}",
         AUTH_SIGNIN: "/auth/signin",
         AUTH_MFA_CHECK: "/auth/mfa/check/{{login}}",
+        AUTH_MFA_REGISTER: "/auth/mfa/register/{{login}}",
+        AUTH_MFA_VERIFY: "/auth/mfa/verify/{{login}}/{{token}}",
         PROJECTS_CREATE: "/account/{{accountId}}/projects"
     }
 
@@ -67,6 +69,36 @@ class BackendApi {
             });
             // console.log(url);
             const response = await fetch(url,{
+                method: "GET", 
+                headers: {
+                  "Content-Type": "application/json",
+                }                
+            });
+            const responseJson = await response.json();
+            return responseJson;
+        },
+        async mfaRegister(login){
+            const urlFunction = Handlebars.compile(`${BackendApi.BASE_URL}${BackendApi.API.AUTH_MFA_REGISTER}`)
+            const url = urlFunction({
+                login
+            });
+            // console.log(url);
+            const response = await BackendApi._fetch(url,{
+                method: "GET", 
+                headers: {
+                  "Content-Type": "application/json",
+                }                
+            });
+            const responseJson = await response.json();
+            return responseJson;
+        },
+        async mfaVerify(login, token){
+            const urlFunction = Handlebars.compile(`${BackendApi.BASE_URL}${BackendApi.API.AUTH_MFA_VERIFY}`)
+            const url = urlFunction({
+                login, token
+            });
+            // console.log(url);
+            const response = await BackendApi._fetch(url,{
                 method: "GET", 
                 headers: {
                   "Content-Type": "application/json",

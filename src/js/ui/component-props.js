@@ -50,6 +50,10 @@ const template = `
             <prop-checkbox prop="model.prop" props="model.props" auth="model.auth" rv-if="model.prop.datatype | eqCI 'checkbox'" rv-uname="model.prop.unique_name" rv-tid="model.prop.type_id" rv-mid="model.prop.metadata_id"></prop-checkbox>
             <prop-tags prop="model.prop" props="model.props" auth="model.auth" rv-if="model.prop.datatype | eqCI 'tags'" rv-uname="model.prop.unique_name" rv-tid="model.prop.type_id" rv-mid="model.prop.metadata_id"></prop-tags>
             <prop-file prop="model.prop" props="model.props" auth="model.auth" rv-if="model.prop.datatype | eqCI 'file'" rv-uname="model.prop.unique_name" rv-tid="model.prop.type_id" rv-mid="model.prop.metadata_id"></prop-file>
+            <prop-image prop="model.prop" props="model.props" auth="model.auth" rv-if="model.prop.datatype | eqCI 'image'" rv-uname="model.prop.unique_name" rv-tid="model.prop.type_id" rv-mid="model.prop.metadata_id"></prop-image>
+
+
+            
             <prop-sign prop="model.prop" props="model.props" auth="model.auth" rv-if="model.prop.datatype | eqCI 'sign'" rv-uname="model.prop.unique_name" rv-tid="model.prop.type_id" rv-mid="model.prop.metadata_id"></prop-sign>
             <prop-table prop="model.prop" props="model.props" auth="model.auth" rv-if="model.prop.datatype | eqCI 'table'" rv-uname="model.prop.unique_name" rv-tid="model.prop.type_id" rv-mid="model.prop.metadata_id"></prop-table>
             <prop-checkbox-list prop="model.prop" props="model.props" auth="model.auth" rv-if="model.prop.datatype | eqCI 'checkbox-list'" rv-uname="model.prop.unique_name" rv-tid="model.prop.type_id" rv-mid="model.prop.metadata_id"></prop-checkbox-list>                                                                
@@ -1398,6 +1402,126 @@ const template = `
                         const firstPos = value.indexOf(';');
                         const fileName = value.substring(0,firstPos).replace("name:","");
                         const size = value.substring(firstPos+1,value.indexOf(';', firstPos+1)).replace("size:","");
+
+                        prop.display_value = `${fileName} (${size} bytes)`;
+                    }else{
+                        prop.display_value = `Empty (0 bytes)`
+                    }
+                    
+
+                },
+                handleOnChange: function(e,that){
+                    console.log(e.target.files);
+
+                    if(e.target.files.length>0){
+                        var fileReader = new FileReader();
+
+                        fileReader.onloadend = () => {
+                            // console.log(fileReader.result);
+                            const fileData = fileReader.result;
+                            // that.model.prop.display_value = `${e.target.files[0].name}`
+                            const fileName = e.target.files[0].name;
+                            const fileSize = e.target.files[0].size;
+                            that.model.prop.value = `name:${fileName};size:${fileSize};${fileData}`
+                            // Logs data:<type>;base64,wL2dvYWwgbW9yZ...
+                            that.validate();
+                            // process rule if validation is ok
+                            if(!that.model.error.message && that.model.prop.rule){
+                                const f = new Function('value','props', that.model.prop.rule);
+                                f.call(null, that.model.prop.value, that.model.props)
+                            }
+                        };
+    
+                        fileReader.readAsDataURL(e.target.files[0]);
+                    }else{
+                        that.validate();
+                        // process rule if validation is ok
+                        if(!that.model.error.message && that.model.prop.rule){
+                            const f = new Function('value','props', that.model.prop.rule);
+                            f.call(null, that.model.prop.value, that.model.props)
+                        }
+                    }                                        
+                }
+            }            
+            data.prop.validate = controller.validate.bind(controller)
+            return controller;
+        }
+    }
+
+    rivets.components['prop-image'] = {
+        // Return the template for the component.
+        template: function() {
+          const template = `
+            <div class="field">
+                
+                <label class="label" rv-if="model.prop.label">{{model.prop.label}} <span rv-if="model.prop.obligatory">*</span></label>
+                <div class="file has-name is-boxed" rv-class-is-hidden="model.prop.editable | eq false" rv-x="updateDisplay | call model.prop.value model.prop">
+                    <label class="file-label">
+                    <input class="file-input" type="file" rv-on-change="handleOnChange"/>
+                    <span class="file-cta">
+                        <span class="file-icon">
+                        <i class="fas fa-upload"></i>
+                        </span>
+                        <span class="file-label"> Choose a file… </span>
+                    </span>
+                    <span class="file-name" rv-class-is-hidden="model.prop.display_value | empty">{{model.prop.display_value}}</span>
+                    </label>
+                </div>
+                <div class="control">                    
+                    <figure  rv-if="model.image.preview" class="image is-128x128 my-3" style="margin-left: 10px;">
+                            <img rv-src="model.image.src" alt="Image">
+                    </figure>
+                    <input readonly type="text" class="input" rv-value="model.prop.display_value" rv-class-is-hidden="model.prop.editable">        
+                </div>
+
+
+                <p class="help is-danger is-hidden" rv-class-is-hidden="model.error.message | empty">{{model.error.message}}</p>
+            </div>      
+            `
+            return template;
+        },
+      
+        // Takes the original element and the data that was passed into the
+        // component (either from rivets.init or the attributes on the component
+        // element in the template).
+        initialize: function(el, data) {
+            const controller =  {
+                model: {
+                    prop: data.prop,
+                    props: data.props, // for rule working 
+                    image: {
+                        preview: false,
+                        src: undefined    
+                    },                                     
+                    error: {
+                        message: undefined
+                    }
+                },
+                validate: function(){
+                    let valid = true;
+                    this.model.error.message = undefined;
+                    if(this.model.prop.obligatory && (!this.model.prop.value || this.model.prop.value.length==0)){
+                        this.model.error.message = `${this.model.prop.label} must not be empty`;                        
+                        valid = false;
+                    }                    
+                    return valid;
+                },
+                updateDisplay: function(value, prop){                    
+                    if(value){
+                        // get filename
+                        const firstPos = value.indexOf(';');
+                        const fileName = value.substring(0,firstPos).replace("name:","");
+                        const size = value.substring(firstPos+1,value.indexOf(';', firstPos+1)).replace("size:","");
+
+                        // `${imagePropValue.split(";")[2].split(":")[1]}`
+                        // mimetype
+
+                        // case we have url not data url
+                        // name:teamlogo.png;size:100;https://picsum.photos/640/480
+                        const mimetype = value.split(";")[2].startsWith("http")?"image":value.split(";")[2].split(":")[1];                                                
+                        const data = value.split(";")[2].startsWith("http")?value.split(";")[2]:`${value.split(";")[2]};${value.split(";")[3]}`
+                        controller.model.image.preview = mimetype.includes("image")?true:false;
+                        controller.model.image.src = mimetype.includes("image")?data:""
 
                         prop.display_value = `${fileName} (${size} bytes)`;
                     }else{
