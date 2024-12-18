@@ -25,7 +25,7 @@
     rivets.formatters.timeFormatMoment = function (value, format) {
         let result = 'moment lib not detected';
         if(moment){
-            result = moment.utc(value).format(format)
+            result = value==-1?"no data":moment.utc(value).format(format)
         }
         return result;        
     }
